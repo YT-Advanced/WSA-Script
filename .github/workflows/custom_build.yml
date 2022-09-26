@@ -67,4 +67,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: WSA-${{ inputs.gapps }}-${{ inputs.arch }}-${{ inputs.release-type }}-${{ inputs.root-sol }}
-          path: ./output/${{ inputs.arch }}
+          path: ./output/*
