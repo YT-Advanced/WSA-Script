@@ -4,6 +4,9 @@
 > - Extract the package and execute `run.bat`. <br />
 > - Ask your queries in [discussion](https://github.com/rabilrbl/WSA-Magisk/discussions).
 
+:warning: For fork developers: Please detach the fork from [upstream](https://github.com/LSPosed/MagiskOnWSALocal) before building with Actions, Github will count the forked Actions usage to the upstream repository, which means if a forked repository abuses Actions, the repository that gets disabled will be upstream. We are not against forks, but please detach them from our repository. If you do not make changes one day after receiving the detachment request, our organization will ban you.
+
+
 ## Support for generating from these systems
 
 - Linux (x86_64 or arm64)
