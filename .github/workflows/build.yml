@@ -3,6 +3,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+concurrency: 
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
 
 
 jobs:
@@ -14,13 +17,7 @@ jobs:
         arch: [x64, arm64]
         root: [magisk, none]
         
-    steps:
-      - name: Cancel Previous Runs
-        uses: n1hility/cancel-previous-runs@v2
-        with: 
-          token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: build.yml
-          
+    steps:         
       - name: Checkout
         uses: actions/checkout@v3
         
