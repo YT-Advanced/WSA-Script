@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Sync Repo
-        run: gh repo sync ${{ github.repository }} -b main
+        run: gh repo sync ${{ github.repository }} -b main --source "LSPosed/MagiskOnWSALocal"
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
