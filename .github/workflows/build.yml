@@ -44,6 +44,11 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./output/*
           name: ${{ steps.date.outputs.date }}
+          body: |
+            # Release ${{ steps.date.outputs.date }}
+            
+            - Lower version is retail (recommended)
+            - Higher version in release preview
           tag: ${{ steps.date.outputs.date }}
           overwrite: true
           file_glob: true
