@@ -30,7 +30,10 @@ jobs:
           sudo apt-get install -y whiptail setools lzip wine winetricks patchelf e2fsprogs python3-pip aria2 p7zip-full attr
           pip list --disable-pip-version-check | grep -E "^requests " >/dev/null 2>&1 || python3 -m pip install requests
           winetricks list-installed | grep -E "^msxml6" >/dev/null 2>&1 || winetricks msxml6 || abort
-          
+       
+      - name: Grant executable permission
+        run: chmod +x ./scripts/build.sh
+       
       - name: Build WSA GAPPS ${{ matrix.root }} ${{ matrix.arch }}
         run:  ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${{ matrix.release }} --magisk-ver stable --remove-amazon --root-sol ${{ matrix.root }} --compress
     
