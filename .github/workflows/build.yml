@@ -18,6 +18,7 @@ jobs:
       matrix:
         arch: [x64, arm64]
         root: [magisk, none]
+        release: [retail, RP]
         
     steps:         
       - name: Checkout
@@ -31,7 +32,7 @@ jobs:
           winetricks list-installed | grep -E "^msxml6" >/dev/null 2>&1 || winetricks msxml6 || abort
           
       - name: Build WSA GAPPS ${{ matrix.root }} ${{ matrix.arch }}
-        run:  ./scripts/build.sh --arch ${{ matrix.arch }} --release-type retail --magisk-ver stable --remove-amazon --root-sol ${{ matrix.root }} --compress --debug
+        run:  ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${{ matrix.release }} --magisk-ver stable --remove-amazon --root-sol ${{ matrix.root }} --compress --debug
     
       - name: Prepare release tag
         id: date
