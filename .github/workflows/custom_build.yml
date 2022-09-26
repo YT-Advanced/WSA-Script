@@ -61,10 +61,11 @@ jobs:
           winetricks list-installed | grep -E "^msxml6" >/dev/null 2>&1 || winetricks msxml6 || abort
           
       - name: Build WSA GAPPS ${{ matrix.root }} ${{ matrix.arch }}
-        run:  ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${{ inputs.release-type }} --magisk-ver ${{ inputs.magisk-ver }} --gapps-brand ${{ inputs.gapps-brand }} --gapps-variant ${{ inputs.gapps-variant }} --root-sol ${{ inputs.root-sol }} --remove-amazon --debug
-
+        id: wsa
+        run: ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${{ inputs.release-type }} --magisk-ver ${{ inputs.magisk-ver }} --gapps-brand ${{ inputs.gapps-brand }} --gapps-variant ${{ inputs.gapps-variant }} --root-sol ${{ inputs.root-sol }} --remove-amazon --compress
+      
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: WSA-${{ inputs.gapps }}-${{ inputs.arch }}-${{ inputs.release-type }}-${{ inputs.root-sol }}
-          path: ./output/*
+          name: ${{ steps.wsa.outputs.artifact }}
+          path: ./output/${{ steps.wsa.outputs.artifact }}.7z

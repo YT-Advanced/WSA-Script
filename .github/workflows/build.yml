@@ -32,7 +32,7 @@ jobs:
           winetricks list-installed | grep -E "^msxml6" >/dev/null 2>&1 || winetricks msxml6 || abort
           
       - name: Build WSA GAPPS ${{ matrix.root }} ${{ matrix.arch }}
-        run:  ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${{ matrix.release }} --magisk-ver stable --remove-amazon --root-sol ${{ matrix.root }} --compress --debug
+        run:  ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${{ matrix.release }} --magisk-ver stable --remove-amazon --root-sol ${{ matrix.root }} --compress
     
       - name: Prepare release tag
         id: date
@@ -44,11 +44,6 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./output/*
           name: ${{ steps.date.outputs.date }}
-          body: |
-            # Release ${{ steps.date.outputs.date }}
-            
-            - Lower version is retail (recommended)
-            - Higher version in release preview
           tag: ${{ steps.date.outputs.date }}
           overwrite: true
           file_glob: true

@@ -799,8 +799,9 @@ else
         echo ":warning: Since OpenGApps doesn't officially support Android 12.1 yet, lock the variant to pico!"
     fi
 fi
-export artifact_name="WSA${name1}${name2}_${WSA_VER}_${ARCH}_${WSA_REL}"
-echo "$artifact_name"
+
+artifact_name="WSA-${RELEASE_NAME}${name1}${name2}_${WSA_VER}_${ARCH}_${WSA_REL}"
+echo "::set-output name=artifact::$(echo "$artifact_name")"
 echo -e "\nFinishing building...."
 if [ -f "$OUTPUT_DIR" ]; then
     $SUDO rm -rf "${OUTPUT_DIR:?}"
