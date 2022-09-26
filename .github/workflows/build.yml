@@ -1,5 +1,7 @@
 name: Build WSA Magisk
 on:
+  schedule:
+    - cron: "30 2 */14 * *"
   push:
     branches: [main]
   workflow_dispatch:
