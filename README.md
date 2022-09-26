@@ -1,6 +1,8 @@
 # Magisk on WSA (with Google Apps)
 
-> ## Grab the latest release package from [releases](https://github.com/rabilrbl/WSA-Magisk/releases/latest).
+> ## Grab the latest release from [releases](https://github.com/rabilrbl/WSA-Magisk/releases/latest).
+> - Extract the package and execute `run.bat`. <br />
+> - Ask your queries in [discussion](https://github.com/rabilrbl/WSA-Magisk/discussions).
 
 ## Support for generating from these systems
 
