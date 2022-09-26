@@ -62,12 +62,8 @@ jobs:
           
       - name: Build WSA GAPPS ${{ matrix.root }} ${{ matrix.arch }}
         run:  ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${{ inputs.release-type }} --magisk-ver ${{ inputs.magisk-ver }} --gapps-brand ${{ inputs.gapps-brand }} --gapps-variant ${{ inputs.gapps-variant }} --root-sol ${{ inputs.root-sol }} --remove-amazon --compress --debug
-    
-      - name: Prepare release tag
-        id: date
-        run: echo "::set-output name=date::$(date +'v%Y-%m-%d')"
 
-      - name: 
+      - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           path: ./output/*
