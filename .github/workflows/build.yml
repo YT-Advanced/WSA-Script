@@ -15,6 +15,11 @@ jobs:
         root: [magisk, none]
         
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.10.0
+        with:
+          access_token: ${{ github.token }}
+      
       - name: Checkout
         uses: actions/checkout@v3
         
@@ -37,6 +42,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./output/*
+          name: ${{ steps.date.outputs.date }}
           tag: ${{ steps.date.outputs.date }}
           overwrite: true
           file_glob: true
