@@ -1,5 +1,7 @@
 # Magisk on WSA (with Google Apps)
 
+> ## Grab the latest release package from [releases](https://github.com/rabilrbl/WSA-Magisk/releases/latest).
+
 ## Support for generating from these systems
 
 - Linux (x86_64 or arm64)
