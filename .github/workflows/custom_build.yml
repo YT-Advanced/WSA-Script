@@ -61,7 +61,7 @@ jobs:
           winetricks list-installed | grep -E "^msxml6" >/dev/null 2>&1 || winetricks msxml6 || abort
       
       - name: Grant exec permission to script 👑
-        run: chmod +x build.sh
+        run: chmod +x ./scripts/build.sh
       
       - name: Build WSA 🏗️
         id: wsa
