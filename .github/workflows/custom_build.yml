@@ -50,21 +50,24 @@ jobs:
     runs-on: ubuntu-latest
         
     steps:         
-      - name: Checkout
+      - name: Checkout ♻️
         uses: actions/checkout@v3
         
-      - name: Install Dependencies
+      - name: Install Dependencies 🧑‍🏭
         run: |
           sudo apt-get update
           sudo apt-get install -y whiptail setools lzip wine winetricks patchelf e2fsprogs python3-pip aria2 p7zip-full attr
           pip list --disable-pip-version-check | grep -E "^requests " >/dev/null 2>&1 || python3 -m pip install requests
           winetricks list-installed | grep -E "^msxml6" >/dev/null 2>&1 || winetricks msxml6 || abort
-          
-      - name: Build WSA GAPPS ${{ matrix.root }} ${{ matrix.arch }}
+      
+      - name: Grant exec permission to script 👑
+        run: chmod +x build.sh
+      
+      - name: Build WSA 🏗️
         id: wsa
         run: ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${{ inputs.release-type }} --magisk-ver ${{ inputs.magisk-ver }} --gapps-brand ${{ inputs.gapps-brand }} --gapps-variant ${{ inputs.gapps-variant }} --root-sol ${{ inputs.root-sol }} --remove-amazon --compress
       
-      - name: Upload Artifact
+      - name: Upload Artifact 🤌
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.wsa.outputs.artifact }}
