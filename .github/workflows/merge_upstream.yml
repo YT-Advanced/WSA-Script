@@ -18,7 +18,7 @@ jobs:
           git fetch upstream
           echo "::set-output name=merge_status::$(git log HEAD..upstream/master --oneline)"
           git checkout -b upstream
-          git merge upstream/master
+          git merge upstream/main
       - name: Merge to main
         run: |
           git checkout main
