@@ -1,38 +1,51 @@
 # Magisk on WSA (with Google Apps)
 
 > ## Grab the latest release from [releases](https://github.com/rabilrbl/WSA-Magisk/releases/latest).
+>
 > - Extract the package and execute `run.bat`. <br />
 > - Ask your queries in [discussion](https://github.com/rabilrbl/WSA-Magisk/discussions).
 
-:warning: For fork developers: Please detach the fork from [upstream](https://github.com/rabilrbl/WSA-Magisk/) before building with Actions, Github will count the forked Actions usage to the upstream repository, which means if a forked repository abuses Actions, the repository that gets disabled will be upstream. We are not against forks, but please detach them from our repository. If you do not make changes one day after receiving the detachment request, our organization will ban you.
+:warning: For fork developers: Please [use the GitHub Support virtual assistant chatbot](https://support.github.com/contact?flow=detach_fork&subject=Detach%20Fork&tags=rr-forks) to detach your fork from [upstream](https://github.com/creative-builds/WSA-Magisk) before building with GitHub Actions, as GitHub will count your forked GitHub Actions usage against this upstream repository, which may cause this upstream repository gets disabled by GitHub staff because of numerous forks building GitHub Actions, and counting the forks' Action usage against this upstream repository.
 
+We are not against forks, but please detach them from our repository. If you do not make changes one day after receiving the detachment request, our organization will ban you.
+
+<details>
+    <summary>How to detach your fork from this upstream repository (a visual guide):</summary>
+    <p>
+        <img src="https://user-images.githubusercontent.com/96967473/194208623-194e5926-feb9-4172-b57f-a82179245d02.png" title="How to detach form using GitHub Support virtual assistant chatbot">
+            </p>
+ </details>
 
 ## Support for generating from these systems
 
 - Linux (x86_64 or arm64)
 
-    The following dependencies are required: `setools lzip wine patchelf e2fsprogs aria2 python3 attr`
+  The following dependencies are required: `setools lzip wine patchelf e2fsprogs aria2 python3 attr`
 
-    The following components need to be installed using `winetricks`: `msxml6`
+  The following components need to be installed using `winetricks`: `msxml6`
 
-    The python3 library `requests` is used.
+  The python3 library `requests` is used.
 
-    Python version ≥ 3.7.
+  Python version ≥ 3.7.
+
   - Recommended Use
+
     - Ubuntu (You can use [WSL2](https://apps.microsoft.com/store/search?publisher=Canonical%20Group%20Limited))
 
-        Ready to use right out of the box.
+      Ready to use right out of the box.
+
     - Debian (You can use [WSL2](https://apps.microsoft.com/store/detail/debian/9MSVKQC78PK6))
 
-        Need to add `contrib` sources to the source list to install winetricks.
+      Need to add `contrib` sources to the source list to install winetricks.
 
     - OpenSUSE (You can use [WSL2](https://apps.microsoft.com/store/search?publisher=SUSE))
 
-        Ready to use right out of the box.
+      Ready to use right out of the box.
 
     `run.sh` will handle all dependencies automatically.
 
     No need to type any commands.
+
   - Other Distributions
 
     Install the dependencies manually.
@@ -63,73 +76,89 @@
 1. Select the WSA version and its architecture (mostly x64)
 1. Select the version of Magisk
 1. Choose which brand of GApps you want to install
+
    - OpenGApps
 
-        Select the [OpenGApps variant](https://github.com/opengapps/opengapps/wiki#variants) you like.
+     Select the [OpenGApps variant](https://github.com/opengapps/opengapps/wiki#variants) you like.
+
    - MindtheGapps
 
-       There is no other variant we can choose.
+     There is no other variant we can choose.
+
 1. Select the root solution (none means no root)
 1. If you are running the script for the first time, it will take some time to complete. After the script completes, two new folders named `output` and `download` will be generated in the `MagiskOnWSALocal` folder. Go to the `output` folder. While running the ./run.sh script in the last step, if you selected `Yes` for `Do you want to compress the output?` then in `output` folder you will see a compressed file called `WSA-with-magisk-stable-MindTheGapps_2207.40000.8.0_x64_Release-Nightly`or else there will be folder with the `WSA-with-magisk-stable-MindTheGapps_2207.40000.8.0_x64_Release-Nightly`. If there is a folder open it and skip to step 10. NOTE: The name of compressed file or the folder generated in the `output` folder may be different for you. It will be dependent on the choices made when executing `./run.sh`
 1. Extract the compressed file and open the folder created after the extraction of the file.
 1. Here look for file `Run.bat` and run it.
-    - If you previously have a MagiskOnWSA installation, it will automatically uninstall the previous one while **preserving all user data** and install the new one, so don't worry about your data.
-    - If you have an official WSA installation, you should uninstall it first. (In case you want to preserve your data, you can backup `%LOCALAPPDATA%\Packages\MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe\LocalCache\userdata.vhdx` before uninstallation and restore it after installation.) (If you want to restore the icons to the start menu, please install and use [WSAHelper](https://github.com/LSPosed/WSAHelper/releases/latest).)
-    - If the popup windows disappear **without asking administrative permission** and WSA is not installed successfully, you should manually run `Install.ps1` as administrator:
-        1. Press `Win+x` and select `Windows Terminal (Admin)`
-        2. Input `cd "{X:\path\to\your\extracted\folder}"` and press `enter`, and remember to replace `{X:\path\to\your\extracted\folder}` including the `{}`, for example `cd "D:\wsa"`
-        3. Input `PowerShell.exe -ExecutionPolicy Bypass -File .\Install.ps1` and press `enter`
-        4. The script will run and WSA will be installed
-        5. If this workaround does not work, your PC is not supported for WSA
+   - If you previously have a MagiskOnWSA installation, it will automatically uninstall the previous one while **preserving all user data** and install the new one, so don't worry about your data.
+   - If you have an official WSA installation, you should uninstall it first. (In case you want to preserve your data, you can backup `%LOCALAPPDATA%\Packages\MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe\LocalCache\userdata.vhdx` before uninstallation and restore it after installation.) (If you want to restore the icons to the start menu, please install and use [WSAHelper](https://github.com/LSPosed/WSAHelper/releases/latest).)
+   - If the popup windows disappear **without asking administrative permission** and WSA is not installed successfully, you should manually run `Install.ps1` as administrator:
+     1. Press `Win+x` and select `Windows Terminal (Admin)`
+     2. Input `cd "{X:\path\to\your\extracted\folder}"` and press `enter`, and remember to replace `{X:\path\to\your\extracted\folder}` including the `{}`, for example `cd "D:\wsa"`
+     3. Input `PowerShell.exe -ExecutionPolicy Bypass -File .\Install.ps1` and press `enter`
+     4. The script will run and WSA will be installed
+     5. If this workaround does not work, your PC is not supported for WSA
 1. Magisk/Play store will be launched. Enjoy by installing LSPosed-zygisk with zygisk enabled or Riru and LSPosed-riru
 
 ## FAQ
 
 - Can I delete the installed folder?
 
-    No.
+  No.
+
 - How can I update WSA to a new version?
 
-    Delete the `download` folder
-    Rerun the script, replace the content of your previous installation and rerun `Install.ps1`. Don't worry, your data will be preserved.
+  Delete the `download` folder
+  Rerun the script, replace the content of your previous installation and rerun `Install.ps1`. Don't worry, your data will be preserved.
+
 - How can I get the logcat from WSA?
 
-    `%LOCALAPPDATA%\Packages\MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe\LocalState\diagnostics\logcat`
+  `%LOCALAPPDATA%\Packages\MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe\LocalState\diagnostics\logcat`
+
 - How can I update Magisk to a new version?
 
-    Do the same as updating WSA
+  Do the same as updating WSA
+
 - How to pass safetynet?
 
-    Like all the other emulators, no way.
+  Like all the other emulators, no way.
+
 - Virtualization is not enabled?
 
-    `Install.ps1` helps you enable it if not enabled. After rebooting, rerun `Install.ps1` to install WSA. If it's still not working, you have to enable virtualization in BIOS. That's a long story so ask Google for help.
+  `Install.ps1` helps you enable it if not enabled. After rebooting, rerun `Install.ps1` to install WSA. If it's still not working, you have to enable virtualization in BIOS. That's a long story so ask Google for help.
+
 - How to remount the system as read-write?
 
-    No way in WSA since it's mounted as read-only by Hyper-V. You can modify the system by making a Magisk module. Or directly modify the system.img. Ask Google for help.
+  No way in WSA since it's mounted as read-only by Hyper-V. You can modify the system by making a Magisk module. Or directly modify the system.img. Ask Google for help.
+
 - I cannot `adb connect localhost:58526`
 
-    Make sure developer mode is enabled. If the issue persists, check the IP address of WSA on the setting page and try `adb connect ip:5555`.
+  Make sure developer mode is enabled. If the issue persists, check the IP address of WSA on the setting page and try `adb connect ip:5555`.
+
 - Magisk online module list is empty?
 
-    Magisk actively removes the online module repository. You can install the module locally or by `adb push module.zip /data/local/tmp` and `adb shell su -c magisk --install-module /data/local/tmp/module.zip`.
+  Magisk actively removes the online module repository. You can install the module locally or by `adb push module.zip /data/local/tmp` and `adb shell su -c magisk --install-module /data/local/tmp/module.zip`.
+
 - Can I use Magisk 23.0 stable or a lower version?
 
-    No. Magisk has bugs preventing itself from running on WSA. Magisk 24+ has fixed them. So you must use Magisk 24 or higher version.
+  No. Magisk has bugs preventing itself from running on WSA. Magisk 24+ has fixed them. So you must use Magisk 24 or higher version.
+
 - How can I get rid of Magisk?
 
-    Choose `none` as the root solution.
+  Choose `none` as the root solution.
+
 - How to install custom GApps?
 
-    [Tutorial](./Custom-GApps.md)
+  [Tutorial](./Custom-GApps.md)
+
 - Where can I download MindtheGapps?
 
-    You can download from here [MindtheGapps](https://androidfilehost.com/?w=files&flid=322935) ([mirror](http://downloads.codefi.re/jdcteam/javelinanddart/gapps))
+  You can download from here [MindtheGapps](https://androidfilehost.com/?w=files&flid=322935) ([mirror](http://downloads.codefi.re/jdcteam/javelinanddart/gapps))
 
-    Note that there is no x86_64 pre-build, so you need to build it by yourself ([Repository](https://gitlab.com/MindTheGapps/vendor_gapps)).
+  Note that there is no x86_64 pre-build, so you need to build it by yourself ([Repository](https://gitlab.com/MindTheGapps/vendor_gapps)).
+
 - Can I switch OpenGApps to MindTheGapps and keep user data in a previous build?
 
-    No. You should wipe data after changing the GApps brand. Otherwise, you will find that the installed GApps are not recognized.
+  No. You should wipe data after changing the GApps brand. Otherwise, you will find that the installed GApps are not recognized.
 
 ## Credits
 
