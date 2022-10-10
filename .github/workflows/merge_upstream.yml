@@ -17,7 +17,7 @@ jobs:
         run: |
           git fetch upstream
           echo "::set-output name=merge_status::$(git log HEAD..upstream/master --oneline)"
-          git checkout -b upstream-${{ github.sha }}
+          git checkout -b upstream
           git merge upstream/master
       - name: Merge to main
         run: |
