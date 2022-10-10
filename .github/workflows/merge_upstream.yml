@@ -17,8 +17,11 @@ jobs:
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          git fetch origin
+          git checkout main
+          git pull origin main
           git fetch upstream
-          git merge upstream/main --allow-unrelated-histories
+          git merge upstream/main
           git add .
           git diff --staged --quiet || git commit -am "🌍 Update JSON - $(date +'%d %b %Y | %I:%M %p')"
 
