@@ -19,18 +19,16 @@ jobs:
           echo "::set-output name=merge_status::$(git log HEAD..upstream/master --oneline)"
           git checkout -b upstream-${{ github.sha }}
           git merge upstream/master
-          echo "::set-output name=date::$(date +'%Y-%m-%d %H:%M:%S')"
       - name: Merge to main
         run: |
           git checkout main
           git merge upstream-${{ github.sha }}
+          git add .
+          git diff --staged --quiet || git commit -am "🌍 Update JSON - $(date +'%d %b %Y | %I:%M %p')"
 
-      - name: Push to origin
-        if: success()
-        uses: actions/github-auto-commit@v2
+      - name: Push changes
+        uses: ad-m/github-push-action@master
         with:
-          commit_message: Merge upstream changes on ${{ steps.merge_upstream.outputs.date }}
-          file_pattern: .
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
           
@@ -41,5 +39,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            Merge upstream failed for https://github.com/${{ github.repository }} from https://github.com/LSPosed/MagiskOnWSALocal
+            Merge upstream failed
+            Origin: https://github.com/${{ github.repository }}
+            Upstream: https://github.com/LSPosed/MagiskOnWSALocal
           
