@@ -1,7 +1,7 @@
 name: Sync with upstream
-on: 
+on:
   schedule:
-    - cron: '30 22 * * *'
+    - cron: "30 22 * * *"
   workflow_dispatch:
 
 jobs:
@@ -16,13 +16,7 @@ jobs:
         id: merge_upstream
         run: |
           git fetch upstream
-          echo "::set-output name=merge_status::$(git log HEAD..upstream/master --oneline)"
-          git checkout -b upstream
           git merge upstream/main
-      - name: Merge to main
-        run: |
-          git checkout main
-          git merge upstream-${{ github.sha }}
           git add .
           git diff --staged --quiet || git commit -am "🌍 Update JSON - $(date +'%d %b %Y | %I:%M %p')"
 
@@ -31,7 +25,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
-          
+
       - name: Create telegram alert for failure
         if: failure()
         uses: appleboy/telegram-action@master
@@ -42,4 +36,3 @@ jobs:
             Merge upstream failed
             Origin: https://github.com/${{ github.repository }}
             Upstream: https://github.com/LSPosed/MagiskOnWSALocal
-          
