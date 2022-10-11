@@ -9,27 +9,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Add remote upstream
-        run: |
-          git remote add upstream https://github.com/LSPosed/MagiskOnWSALocal
-      - name: Merge upstream
-        id: merge_upstream
-        run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git fetch origin
-          git checkout main
-          git pull origin main
-          git fetch upstream
-          git merge upstream/main
-          git add .
-          git diff --staged --quiet || git commit -am "🌍 Update JSON - $(date +'%d %b %Y | %I:%M %p')"
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
+          ref: upstream
+          fetch-depth: 0
+
+      - name: Merge Upstream
+        uses: exions/merge-upstream@v1
+        with:
+          upstream: LSPosed/MagiskOnWSALocal    # set the upstream repo
+          upstream-branch: main   # set the upstream branch to merge from
+          branch: main          # set the branch to merge to
 
       - name: Create telegram alert for failure
         if: failure()
