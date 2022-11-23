@@ -40,7 +40,7 @@ jobs:
     
       - name: Prepare release tag
         id: date
-        run: echo "::set-output name=date::$(date +'v%Y-%m-%d')"
+        run: echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
 
       - name: Upload build to release
         uses: svenstaro/upload-release-action@v2
