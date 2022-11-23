@@ -10,7 +10,7 @@ body:
 
         To make it easier for us to help you please enter detailed information below.
         
-       MagiskOnWSALocal
+        MagiskOnWSALocal
   - type: textarea
     attributes:
       label: Steps to reproduce
