@@ -65,38 +65,37 @@ We are not against forks, but please detach them from our repository. If you do 
 - Automatically activates developers mode in Windows 11
 - Update to the new version while preserving data with a one-click script
 - Merged all language packs
-- Support managing start menu icons (manually installing [WSAHelper](https://github.com/LSPosed/WSAHelper/releases/latest) to use this feature)
 
 ## Text Guide
 
 1. Star (if you like)
 1. Clone the repo to local
-   - Run `build.sh --help` to get the usage if you want to use CLI.
-1. Run `scripts/run.sh`
-1. Select the WSA version and its architecture (mostly x64)
-1. Select the version of Magisk
+   - Run `cd scripts`
+   - Then run `./build.sh --help` (optional) to get the usage if you want to use CLI.
+1. Run `./run.sh` under scripts directory.
+1. Select the WSA version and its architecture (mostly x64).
+1. Select the version of Magisk.
 1. Choose which brand of GApps you want to install
 
    - OpenGApps
 
-     Select the [OpenGApps variant](https://github.com/opengapps/opengapps/wiki#variants) you like.
-
-   - MindtheGapps
+        Select the [OpenGApps variant](https://github.com/opengapps/opengapps/wiki#variants) you like.
+   - MindTheGapps
 
      There is no other variant we can choose.
 
 1. Select the root solution (none means no root)
-1. If you are running the script for the first time, it will take some time to complete. After the script completes, two new folders named `output` and `download` will be generated in the `MagiskOnWSALocal` folder. Go to the `output` folder. While running the ./run.sh script in the last step, if you selected `Yes` for `Do you want to compress the output?` then in `output` folder you will see a compressed file called `WSA-with-magisk-stable-MindTheGapps_2207.40000.8.0_x64_Release-Nightly`or else there will be folder with the `WSA-with-magisk-stable-MindTheGapps_2207.40000.8.0_x64_Release-Nightly`. If there is a folder open it and skip to step 10. NOTE: The name of compressed file or the folder generated in the `output` folder may be different for you. It will be dependent on the choices made when executing `./run.sh`
+1. If you are running the script for the first time, it will take some time to complete. After the script completes, two new folders named `output` and `download` will be generated in the `MagiskOnWSALocal` folder. Go to the `output` folder. While running the `./run.sh` script in the step 3, if you selected `Yes` for `Do you want to compress the output?` then in `output` folder you will see a compressed file called `WSA-with-magisk-stable-MindTheGapps_2207.40000.8.0_x64_Release-Nightly`or else there will be folder with the `WSA-with-magisk-stable-MindTheGapps_2207.40000.8.0_x64_Release-Nightly`. If there is a folder open it and skip to step 10. NOTE: The name of compressed file or the folder generated in the `output` folder may be different for you. It will be dependent on the choices made when executing `./run.sh`
 1. Extract the compressed file and open the folder created after the extraction of the file.
 1. Here look for file `Run.bat` and run it.
-   - If you previously have a MagiskOnWSA installation, it will automatically uninstall the previous one while **preserving all user data** and install the new one, so don't worry about your data.
-   - If you have an official WSA installation, you should uninstall it first. (In case you want to preserve your data, you can backup `%LOCALAPPDATA%\Packages\MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe\LocalCache\userdata.vhdx` before uninstallation and restore it after installation.) (If you want to restore the icons to the start menu, please install and use [WSAHelper](https://github.com/LSPosed/WSAHelper/releases/latest).)
-   - If the popup windows disappear **without asking administrative permission** and WSA is not installed successfully, you should manually run `Install.ps1` as administrator:
-     1. Press `Win+x` and select `Windows Terminal (Admin)`
-     2. Input `cd "{X:\path\to\your\extracted\folder}"` and press `enter`, and remember to replace `{X:\path\to\your\extracted\folder}` including the `{}`, for example `cd "D:\wsa"`
-     3. Input `PowerShell.exe -ExecutionPolicy Bypass -File .\Install.ps1` and press `enter`
-     4. The script will run and WSA will be installed
-     5. If this workaround does not work, your PC is not supported for WSA
+    - If you previously have a MagiskOnWSA installation, it will automatically uninstall the previous one while **preserving all user data** and install the new one, so don't worry about your data.
+    - If you have an official WSA installation, you should uninstall it first. (In case you want to preserve your data, you can backup `%LOCALAPPDATA%\Packages\MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe\LocalCache\userdata.vhdx` before uninstallation and restore it after installation.)
+    - If the popup windows disappear **without asking administrative permission** and WSA is not installed successfully, you should manually run `Install.ps1` as administrator:
+        1. Press `Win+x` and select `Windows Terminal (Admin)`
+        2. Input `cd "{X:\path\to\your\extracted\folder}"` and press `enter`, and remember to replace `{X:\path\to\your\extracted\folder}` including the `{}`, for example `cd "D:\wsa"`
+        3. Input `PowerShell.exe -ExecutionPolicy Bypass -File .\Install.ps1` and press `enter`
+        4. The script will run and WSA will be installed
+        5. If this workaround does not work, your PC is not supported for WSA
 1. Magisk/Play store will be launched. Enjoy by installing LSPosed-zygisk with zygisk enabled or Riru and LSPosed-riru
 
 ## FAQ
@@ -148,14 +147,14 @@ We are not against forks, but please detach them from our repository. If you do 
 
 - How to install custom GApps?
 
-  [Tutorial](./Custom-GApps.md)
+    [Tutorial](./Custom-GApps.md)
+- Where can I download MindTheGapps?
 
-- Where can I download MindtheGapps?
+    You can download from here [MindTheGapps](https://androidfilehost.com/?w=files&flid=322935) ([mirror](http://downloads.codefi.re/jdcteam/javelinanddart/gapps))
 
-  You can download from here [MindtheGapps](https://androidfilehost.com/?w=files&flid=322935) ([mirror](http://downloads.codefi.re/jdcteam/javelinanddart/gapps))
+    Note that there is no x86_64 pre-build, so you need to build it by yourself ([Repository](https://gitlab.com/MindTheGapps/vendor_gapps)).
 
-  Note that there is no x86_64 pre-build, so you need to build it by yourself ([Repository](https://gitlab.com/MindTheGapps/vendor_gapps)).
-
+    Or you can download the built package for 12.1-x86_64 from [this page](https://sourceforge.net/projects/wsa-mtg/files/x86_64/).
 - Can I switch OpenGApps to MindTheGapps and keep user data in a previous build?
 
   No. You should wipe data after changing the GApps brand. Otherwise, you will find that the installed GApps are not recognized.
