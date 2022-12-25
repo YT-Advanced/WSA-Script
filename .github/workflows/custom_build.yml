@@ -56,10 +56,7 @@ jobs:
       - name: Install Dependencies 🧑‍🏭
         run: |
           sudo apt-get update
-          sudo apt-get install -y whiptail setools lzip wine patchelf e2fsprogs python3-pip aria2 p7zip-full attr
-          sudo wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks -P /usr/local/bin/
-          sudo chmod +x /usr/local/bin/winetricks
-          wget https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_REF_NAME}/wine/.cache/winetricks/msxml6/msxml6-KB973686-enu-amd64.exe -P /home/runner/.cache/winetricks/msxml6/
+          sudo apt-get install -y whiptail setools lzip wine winetricks patchelf e2fsprogs python3-pip aria2 p7zip-full attr
           pip list --disable-pip-version-check | grep -E "^requests " >/dev/null 2>&1 || python3 -m pip install requests
           winetricks list-installed | grep -E "^msxml6" >/dev/null 2>&1 || winetricks msxml6 || abort
       
