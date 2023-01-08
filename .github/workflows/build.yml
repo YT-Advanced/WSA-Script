@@ -20,36 +20,38 @@ jobs:
         root: [magisk, none]
         gapps: [MindTheGapps, none]
         release: [retail]
-        
-    steps:         
+        compress-format: [7z]
+
+    steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
+
       - name: Install Dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y whiptail setools lzip wine winetricks patchelf e2fsprogs python3-pip aria2 p7zip-full attr
+          sudo apt-get update -y
+          sudo apt-get install -y whiptail setools lzip wine patchelf e2fsprogs python3-pip aria2 p7zip-full attr xz-utils unzip cabextract
+          sudo wget -P /usr/local/bin/ https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+          sudo chmod +x /usr/local/bin/winetricks
+          wget -P /home/runner/.cache/winetricks/msxml6/ https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_REF_NAME}/wine/.cache/winetricks/msxml6/msxml6-KB973686-enu-amd64.exe
           pip list --disable-pip-version-check | grep -E "^requests " >/dev/null 2>&1 || python3 -m pip install requests
           winetricks list-installed | grep -E "^msxml6" >/dev/null 2>&1 || winetricks msxml6 || abort
-       
+
       - name: Grant executable permission
         run: chmod +x ./scripts/build.sh
-       
+
       - name: Build WSA GAPPS ${{ matrix.root }} ${{ matrix.arch }}
-        run:  ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${{ matrix.release }} --magisk-ver stable --gapps-brand ${{ matrix.gapps }} --remove-amazon --root-sol ${{ matrix.root }} --compress
-    
+        id: wsa
+        run: ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${{ matrix.release }} --magisk-ver stable --gapps-brand ${{ matrix.gapps }} --root-sol ${{ matrix.root }} --remove-amazon --compress-format ${{ matrix.compress-format }}
+
       - name: Prepare release tag
         id: date
         run: echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
 
       - name: Upload build to release
-        uses: svenstaro/upload-release-action@v2
+        uses: svenstaro/upload-release-action@master
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./output/*
-          name: ${{ steps.date.outputs.date }}
+          file: ./output/${{ steps.wsa.outputs.artifact }}.${{ matrix.compress-format }}
           tag: ${{ steps.date.outputs.date }}
           overwrite: true
           file_glob: true
-
-
