@@ -73,14 +73,14 @@ body:
           required: true
   - type: textarea
     attributes:
-      label: Logs/日志
+      label: Logs
       description: Please copy and paste the error or submit a screenshot. Without log, the issue will be closed.
       value: |
         <details>
-        <summary>Details</summary>
-
-
-
+        
+        ```
+        # Replace this line with the log
+        ```
         </details>
     validations:
       required: true
