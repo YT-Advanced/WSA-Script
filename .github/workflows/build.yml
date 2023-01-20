@@ -48,7 +48,7 @@ jobs:
         run: echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
 
       - name: Upload build to release
-        uses: svenstaro/upload-release-action@master
+        uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./output/${{ steps.wsa.outputs.artifact }}.${{ matrix.compress-format }}
