@@ -15,7 +15,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Pull from upstream
-        run: git pull https://github.com/LSPosed/MagiskOnWSALocal.git main
+        run: |
+          git config pull.rebase false
+          git pull https://github.com/LSPosed/MagiskOnWSALocal.git main
         
       - name: Push Changes
         run: git push origin main
