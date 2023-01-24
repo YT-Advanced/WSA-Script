@@ -9,7 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Sync Repo
-        run: gh repo sync ${{ github.repository }} -b main --source "LSPosed/MagiskOnWSALocal"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Git
+        uses: oleksiyrudenko/gha-git-credentials@v2-latest
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Pull from upstream
+        run: git pull https://github.com/LSPosed/MagiskOnWSALocal.git main
+        
+      - name: Push Changes
+        run: git push origin main
