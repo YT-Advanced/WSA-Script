@@ -5,22 +5,18 @@
 > - Extract the package and execute `run.bat`. <br />
 > - Ask your queries in [discussion](https://github.com/rabilrbl/WSA-Magisk/discussions).
 
-:warning: For fork developers: Please [use the GitHub Support virtual assistant chatbot](https://support.github.com/contact?flow=detach_fork&subject=Detach%20Fork&tags=rr-forks) to detach your fork from [upstream](https://github.com/creative-builds/WSA-Magisk) before building with GitHub Actions, as GitHub will count your forked GitHub Actions usage against this upstream repository, which may cause this upstream repository gets disabled by GitHub staff because of numerous forks building GitHub Actions, and counting the forks' Action usage against this upstream repository.
-
-We are not against forks, but please detach them from our repository. If you do not make changes one day after receiving the detachment request, our organization will ban you.
-
-<details>
-    <summary>How to detach your fork from this upstream repository (a visual guide):</summary>
-    <p>
-        <img src="https://user-images.githubusercontent.com/96967473/194208623-194e5926-feb9-4172-b57f-a82179245d02.png" title="How to detach form using GitHub Support virtual assistant chatbot">
-            </p>
- </details>
+:warning: For fork developers: Please don't build using GitHub Actions, as GitHub will count your forked GitHub Actions usage against this upstream repository, which may cause this upstream repository gets disabled by GitHub staff like [MagiskOnWSA](https://github.com/LSPosed/MagiskOnWSA) because of numerous forks building GitHub Actions, and counting the forks' Action usage against this upstream repository.
 
 ## Support for generating from these systems
 
 - Linux (x86_64 or arm64)
 
-  The following dependencies are required: `setools lzip wine patchelf e2fsprogs aria2 python3 attr`
+  The following dependencies are required:
+
+  | DistrOS |                                                                                                 |                   |            |           |
+  |:-------:|-------------------------------------------------------------------------------------------------|-------------------|------------|-----------|
+  |  Debian | `lzip wine winetricks patchelf e2fsprogs aria2 python3 python3-pip aria2 p7zip-full attr unzip` | `setools`         | `whiptail` | `xz-util` |
+  |   SuSE  | Same as above                                                                                   | `setools-console` | `dialog`   | `xz`      |
 
   The following components need to be installed using `winetricks`: `msxml6`
 
@@ -158,6 +154,10 @@ We are not against forks, but please detach them from our repository. If you do 
 - Can I switch OpenGApps to MindTheGapps and keep user data in a previous build?
 
   No. You should wipe data after changing the GApps brand. Otherwise, you will find that the installed GApps are not recognized.
+
+- WSA with OpenGApps integrated fails to start.
+
+  OpenGApps has not yet released a version built for Android 12L and 13, only built for Android 11, which may not be compatible and thus cause crashes. Consider switching to MindTheGapps.
 
 ## Credits
 
