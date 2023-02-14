@@ -75,7 +75,7 @@
 
    - OpenGApps
 
-        Select the [OpenGApps variant](https://github.com/opengapps/opengapps/wiki#variants) you like.
+     Select the [OpenGApps variant](https://github.com/opengapps/opengapps/wiki#variants) you like.
    - MindTheGapps
 
      There is no other variant we can choose.
@@ -143,14 +143,16 @@
 
 - How to install custom GApps?
 
-    [Tutorial](./Custom-GApps.md)
+  [Tutorial](./Custom-GApps.md)
+
 - Where can I download MindTheGapps?
 
-    You can download from here [MindTheGapps](https://androidfilehost.com/?w=files&flid=322935) ([mirror](http://downloads.codefi.re/jdcteam/javelinanddart/gapps))
+  You can download from here [MindTheGapps](https://androidfilehost.com/?w=files&flid=322935) ([mirror](http://downloads.codefi.re/jdcteam/javelinanddart/gapps))
 
-    Note that there is no x86_64 pre-build, so you need to build it by yourself ([Repository](https://gitlab.com/MindTheGapps/vendor_gapps)).
+  Note that there is no x86_64 pre-build, so you need to build it by yourself ([Repository](https://gitlab.com/MindTheGapps/vendor_gapps)).
 
-    Or you can download the built package for 12.1 and 13 for x86_64 from [this page](https://sourceforge.net/projects/wsa-mtg/files/x86_64/).
+  Or you can download the built package for 12.1 and 13 for x86_64 from [this page](https://sourceforge.net/projects/wsa-mtg/files/x86_64/).
+
 - Can I switch OpenGApps to MindTheGapps and keep user data in a previous build?
 
   No. You should wipe data after changing the GApps brand. Otherwise, you will find that the installed GApps are not recognized.
@@ -158,6 +160,10 @@
 - WSA with OpenGApps integrated fails to start.
 
   OpenGApps has not yet released a version built for Android 12L and 13, only built for Android 11, which may not be compatible and thus cause crashes. Consider switching to MindTheGapps.
+
+- How to install KernelSU?
+
+  [Tutorial](./KernelSU.md)
 
 ## Credits
 
