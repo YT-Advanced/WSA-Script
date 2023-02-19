@@ -29,7 +29,7 @@ function DownloadWinHttpDLL {
 }
 
 function DownloadWSAPatchDLL {
-        Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Magisk/blob/main/DLL/WsaPatch.dll?raw=true -OutFile .\WSAClient\WsaPatch.dll
+        Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/WsaPatch.dll?raw=true -OutFile .\WSAClient\WsaPatch.dll
         $hash = Get-FileHash ".\WSAClient\WsaPatch.dll" | Select-Object Hash
         if ($hash -ne "e15a619f91891419c2be09264d4a8e1ccbead002a895902f721d59ebc63a4b89") 
         {
@@ -38,7 +38,7 @@ function DownloadWSAPatchDLL {
 }
 
 function DownloadIcuDLL {
-        Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Magisk/blob/main/DLL/icu.dll?raw=true -OutFile .\WSAClient\icu.dll
+        Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/icu.dll?raw=true -OutFile .\WSAClient\icu.dll
         $hash = Get-FileHash ".\WSAClient\icu.dll" | Select-Object Hash
         if ($hash -ne "46eae8b730995198d24f1bc9bbbac6d05be5829acddc056536c024ecc927bd03") 
         {
