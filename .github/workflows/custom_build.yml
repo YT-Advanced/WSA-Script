@@ -6,8 +6,8 @@ on:
         type: choice
         description: Architecture of WSA.
         required: true
-        options: [x64, arm64]
-        default: x64
+        options: [x64, arm64, both]
+        default: both
       release-type:
         type: choice
         description: Release type of WSA. RP means Release Preview, WIS means Insider Slow, WIF means Insider Fas
@@ -38,11 +38,6 @@ on:
         required: true
         options: ["magisk","none"]
         default: "magisk"
-#       remove-amazon:
-#         description: Remove Amazon Appstore from the system
-#         required: true
-#         type: boolean 
-#         default: true
       compress-format:
         type: choice
         description: Compress format.
@@ -51,14 +46,40 @@ on:
         default: "7z"
 
 jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Generate build matrix
+        id: set-matrix
+        uses: actions/github-script@v6
+        with:
+          script: |
+            let matrix = {};
+            let arch = "${{ github.event.inputs.arch }}"
+            switch ( arch ) {
+              case "x64":
+                matrix.arch = ["x64"];
+                break;
+              case "arm64":
+                matrix.arch = ["arm64"];
+                break;
+              default:
+                matrix.arch = ["x64", "arm64"];
+                break;
+            }
+            core.setOutput("matrix",JSON.stringify(matrix));
+
   custbuild:
     name: Build WSA
     runs-on: ubuntu-latest
-
+    needs: matrix
+    strategy:
+      matrix: ${{fromJson(needs.matrix.outputs.matrix)}}
     steps:
       - name: Checkout ♻️
         uses: actions/checkout@v3
-
       - name: Install Dependencies 🧑‍🏭
         run: |
           sudo apt-get update -y
@@ -71,13 +92,13 @@ jobs:
 
       - name: Grant exec permission to script 👑
         run: chmod +x ./scripts/build.sh
-
+    
       - name: Build WSA 🏗️
         id: wsa
-        run: ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${{ inputs.release-type }} --magisk-ver ${{ inputs.magisk-ver }} --gapps-brand ${{ inputs.gapps-brand }} --gapps-variant ${{ inputs.gapps-variant }} --root-sol ${{ inputs.root-sol }} --remove-amazon --compress-format ${{ inputs.compress-format }}
+        run: ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${{ inputs.release-type }} --magisk-ver ${{ inputs.magisk-ver }} --gapps-brand ${{ inputs.gapps-brand }} --gapps-variant ${{ inputs.gapps-variant }} --root-sol ${{ inputs.root-sol }} --remove-amazon --compress-format ${{ inputs.compress-format }}
 
       - name: Upload Artifact 🤌
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.wsa.outputs.artifact }}
-          path: ./output/${{ steps.wsa.outputs.artifact }}.${{ inputs.compress-format }}
+          path: ./output
