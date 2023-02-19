@@ -19,6 +19,32 @@ function Get-InstalledDependencyVersion {
     }
 }
 
+function DownloadWinHttpDLL {
+        Invoke-WebRequest -Uri https://github.com/cinit/WSAPatch/blob/main/original.dll.win11.22h2/x86_64/winhttp.dll?raw=true -OutFile .\WSAClient\winhttp.dll
+        $hash = Get-FileHash ".\WSAClient\winhttp.dll" | Select-Object Hash
+        if ($hash -ne "373A742B37DCF3DD18E895F33816AEF1FC238D128B3BF2AA528F6838AB1DC304") 
+        {
+            DownloadWinHttpDLL
+        }
+}
+
+function DownloadWSAPatchDLL {
+        Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Magisk/blob/main/DLL/WsaPatch.dll?raw=true -OutFile .\WSAClient\WsaPatch.dll
+        $hash = Get-FileHash ".\WSAClient\WsaPatch.dll" | Select-Object Hash
+        if ($hash -ne "e15a619f91891419c2be09264d4a8e1ccbead002a895902f721d59ebc63a4b89") 
+        {
+            DownloadWSAPatchDLL
+        }
+}
+
+function DownloadIcuDLL {
+        Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Magisk/blob/main/DLL/icu.dll?raw=true -OutFile .\WSAClient\icu.dll
+        $hash = Get-FileHash ".\WSAClient\icu.dll" | Select-Object Hash
+        if ($hash -ne "46eae8b730995198d24f1bc9bbbac6d05be5829acddc056536c024ecc927bd03") 
+        {
+            DownloadIcuDLL
+        }
+}
 function Finish {
     Clear-Host
     Start-Process "wsa://com.topjohnwu.magisk"
@@ -96,9 +122,41 @@ If (($null -Ne $Installed) -And (-Not ($Installed.IsDevelopmentMode))) {
         exit 1
     }
 }
+
+Stop-Process -Name "WsaClient" -ErrorAction SilentlyContinue
+$winver = (Get-WmiObject -class Win32_OperatingSystem).Caption
+if ($winver.Contains("10")) {
+    if ((Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ReleaseId -eq 2009)
+    {
+        Clear-Host
+        Write-Host "Patching Windows 10 AppxManifest file..."
+        $xml = [xml](Get-Content '.\AppxManifest.xml')
+        $nsm = New-Object Xml.XmlNamespaceManager($xml.NameTable)
+        $nsm.AddNamespace('rescap', "http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities")
+        $nsm.AddNamespace('desktop6', "http://schemas.microsoft.com/appx/manifest/desktop/windows10/6")
+        $node = $xml.Package.Capabilities.SelectSingleNode("rescap:Capability[@Name='customInstallActions']", $nsm)
+        $xml.Package.Capabilities.RemoveChild($node) | Out-Null
+        $node = $xml.Package.Extensions.SelectSingleNode("desktop6:Extension[@Category='windows.customInstall']", $nsm)
+        $xml.Package.Extensions.RemoveChild($node) | Out-Null
+        $xml.Package.Dependencies.TargetDeviceFamily.MinVersion = "10.0.19045.2311"
+        $xml.Save(".\AppxManifest.xml")
+
+        Clear-Host
+        Write-Host "Downloading modifided DLL file..."
+        DownloadWinHttpDLL
+        DownloadWsaPatchDLL
+        DownloadIcuDLL
+    }
+    else {
+    Clear-Host
+    Write-Warning "Your Windows Version is lower than 10.0.19045.2311, please upgrade your Windows to be at least 10.0.19045.2311"
+    $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
+    exit 1
+    }
+}
+
 Clear-Host
 Write-Host "Installing MagiskOnWSA..."
-Stop-Process -Name "WsaClient" -ErrorAction SilentlyContinue
 Add-AppxPackage -ForceApplicationShutdown -ForceUpdateFromAnyVersion -Register .\AppxManifest.xml
 If ($?) {
     Finish
