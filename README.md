@@ -1,11 +1,11 @@
 # Magisk on WSA (with Google Apps)
 
-> ## Grab the latest release from [releases](https://github.com/creative-builds/WSA-Magisk/releases/latest).
+> ## Grab the latest release from [releases](https://github.com/YT-Advanced/WSA-Script/releases/latest).
 >
 > - Extract the package and execute `run.bat`. <br />
-> - Ask your queries in [discussion](https://github.com/creative-builds/WSA-Magisk/discussions).
+> - Ask your queries in [discussion](https://github.com/YT-Advanced/WSA-Script/discussions).
 
-:warning: For fork developers: Please don't build using GitHub Actions, as GitHub will count your forked GitHub Actions usage against this upstream repository, which may cause this upstream repository gets disabled by GitHub staff like [MagiskOnWSA](https://github.com/creative-builds/WSA-Magisk) because of numerous forks building GitHub Actions, and counting the forks' Action usage against this upstream repository.
+:warning: For fork developers: Please don't build using GitHub Actions, as GitHub will count your forked GitHub Actions usage against this upstream repository, which may cause this upstream repository gets disabled by GitHub staff like [MagiskOnWSA](https://github.com/YT-Advanced/WSA-Script) because of numerous forks building GitHub Actions, and counting the forks' Action usage against this upstream repository.
 
 ## Support for generating from these systems
 
@@ -172,6 +172,7 @@
 - [The Open GApps Project](https://opengapps.org): One of the most famous Google Apps packages solution
 - [WSA-Kernel-SU](https://github.com/LSPosed/WSA-Kernel-SU) and [kernel-assisted-superuser](https://git.zx2c4.com/kernel-assisted-superuser/): The kernel `su` for debugging Magisk Integration
 - [WSAGAScript](https://github.com/ADeltaX/WSAGAScript): The first GApps integration script for WSA
+- [WSAPatch](https://github.com/cinit/WSAPatch): Make WSA run on Windows 10.
 
 _The repository is provided as a utility._
 
