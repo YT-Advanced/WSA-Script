@@ -57,6 +57,7 @@ jobs:
           git checkout -f update || git switch --discard-changes --orphan update
 
       - uses: stefanzweifel/git-auto-commit-action@v4
+        if: ${{ env.SHOULD_BUILD == 'yes'}}
         with:
           branch: update
           skip_checkout: true
