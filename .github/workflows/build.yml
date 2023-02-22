@@ -1,10 +1,5 @@
 name: Build WSA Magisk
-on:
-  schedule:
-    - cron: "30 2 1 * *"
-  push:
-    branches: [main]
-  workflow_dispatch:
+on: [workflow_call, workflow_dispatch]
 
 concurrency: 
   group: ${{ github.head_ref || github.ref }}

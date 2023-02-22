@@ -1,0 +1,75 @@
+name: Check update
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Dependencies
+        run: |
+          pip3 install beautifulsoup4 lxml
+      - name: Get app version
+        shell: python
+        run: |
+          import requests
+          from bs4 import BeautifulSoup
+          import re
+          import os
+          import json
+          env_file = os.getenv('GITHUB_ENV')
+          res = requests.post("https://store.rg-adguard.net/api/GetFiles", f"type=CategoryId&url=858014f3-3934-4abe-8078-4aa193e74ca8&ring=Retail&lang=en-US", headers={
+              "content-type": "application/x-www-form-urlencoded"
+          }, verify=False) # source site has expired cert
+          html = BeautifulSoup(res.content, "lxml")
+          latestver = html.find("a", string=re.compile("MicrosoftCorporationII\.WindowsSubsystemForAndroid_.*\.msixbundle")).text
+          currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/wsa.txt").text
+          build = False
+          msg = ""
+          if currentver != latestver:
+              build = True
+              msg="Update WSA to newest version"
+              file = open('wsa.appversion', 'w')
+              file.write(latestver)
+              file.close()
+          currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/magisk.txt").text
+          latestver = json.loads(requests.get(f"https://github.com/topjohnwu/magisk-files/raw/master/stable.json").content)['magisk']['version']
+          if currentver != latestver:
+              build = True
+              msg = "Update to Magisk v" + latestver
+              file = open('magisk.appversion', 'w')
+              file.write(latestver)
+              file.close()
+              
+          if (build):
+              with open(env_file, "a") as wr:
+                  wr.write("SHOULD_BUILD=yes\nMSG=" + msg)
+          else:
+              with open(env_file, "a") as wr:
+                  wr.write("SHOULD_BUILD=no" + msg)
+      
+      - name: Create branch if not found
+        if: ${{ env.SHOULD_BUILD == 'yes'}}
+        run: |
+          git checkout -f update || git switch --discard-changes --orphan update
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: update
+          skip_checkout: true
+          file_pattern: '*.appversion'
+          commit_message: ${{ env.MSG }}
+
+    outputs:
+      SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
+
+
+  build:
+    permissions: write-all
+    needs: check
+    uses: ./.github/workflows/build.yml
+    if: ${{ needs.check.outputs.SHOULD_BUILD == 'yes' }}
+    secrets: inherit
