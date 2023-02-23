@@ -32,6 +32,12 @@ on:
         required: true
         options: ["super","stock","full","mini","micro","nano","pico","tvstock","tvmini"]
         default: "pico"
+      remove-amazon:
+        type: choice
+        description: Remove Amazon Appstore from system
+        required: true
+        options: ["remove","keep"]
+        default: "remove"
       root-sol:
         type: choice
         description: Root solution. none means no root.
@@ -92,10 +98,16 @@ jobs:
 
       - name: Grant exec permission to script 👑
         run: chmod +x ./scripts/build.sh
-    
+        
+      - name: Generate ARG
+        id: arg
+        if: ${{ github.event.inputs.remove-amazon == 'remove'}}
+        run: |
+          echo "ARGUMENT=--remove-amazon" >> $GITHUB_OUTPUT
+  
       - name: Build WSA 🏗️
         id: wsa
-        run: ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${{ inputs.release-type }} --magisk-ver ${{ inputs.magisk-ver }} --gapps-brand ${{ inputs.gapps-brand }} --gapps-variant ${{ inputs.gapps-variant }} --root-sol ${{ inputs.root-sol }} --remove-amazon --compress-format ${{ inputs.compress-format }}
+        run: ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${{ inputs.release-type }} --magisk-ver ${{ inputs.magisk-ver }} --gapps-brand ${{ inputs.gapps-brand }} --gapps-variant ${{ inputs.gapps-variant }} --root-sol ${{ inputs.root-sol }} --compress-format ${{ inputs.compress-format }} ${{ steps.arg.outputs.ARGUMENT }}
 
       - name: Upload Artifact 🤌
         uses: actions/upload-artifact@v3
