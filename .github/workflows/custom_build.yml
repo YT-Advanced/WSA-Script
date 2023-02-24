@@ -18,7 +18,7 @@ on:
         type: choice
         description: Magisk version.
         required: true
-        options: ["stable","beta","canary","debug"]
+        options: ["stable","beta","canary","debug", "delta"]
         default: "stable"
       gapps-brand:
         type: choice
