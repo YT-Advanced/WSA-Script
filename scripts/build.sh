@@ -132,6 +132,7 @@ MAGISK_VER_MAP=(
     "canary"
     "debug"
     "release"
+    "delta"
 )
 
 GAPPS_BRAND_MAP=(

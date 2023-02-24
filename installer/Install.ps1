@@ -48,6 +48,7 @@ function DownloadIcuDLL {
 function Finish {
     Clear-Host
     Start-Process "wsa://com.topjohnwu.magisk"
+    Start-Process "wsa://io.github.huskydg.magisk"
     Start-Process "wsa://com.android.vending"
 }
 
@@ -126,7 +127,7 @@ If (($null -Ne $Installed) -And (-Not ($Installed.IsDevelopmentMode))) {
 Stop-Process -Name "WsaClient" -ErrorAction SilentlyContinue
 $winver = (Get-WmiObject -class Win32_OperatingSystem).Caption
 if ($winver.Contains("10")) {
-    if ((Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ReleaseId -eq 2009)
+    if ((Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").DisplayVersion -eq "22H2")
     {
         Clear-Host
         Write-Host "Patching Windows 10 AppxManifest file..."
@@ -138,7 +139,7 @@ if ($winver.Contains("10")) {
         $xml.Package.Capabilities.RemoveChild($node) | Out-Null
         $node = $xml.Package.Extensions.SelectSingleNode("desktop6:Extension[@Category='windows.customInstall']", $nsm)
         $xml.Package.Extensions.RemoveChild($node) | Out-Null
-        $xml.Package.Dependencies.TargetDeviceFamily.MinVersion = "10.0.19045.2311"
+        $xml.Package.Dependencies.TargetDeviceFamily.MinVersion = "10.0.19041.264"
         $xml.Save(".\AppxManifest.xml")
 
         Clear-Host
@@ -149,7 +150,7 @@ if ($winver.Contains("10")) {
     }
     else {
     Clear-Host
-    Write-Warning "Your Windows Version is lower than 10.0.19045.2311, please upgrade your Windows to be at least 10.0.19045.2311"
+    Write-Warning "Your Windows Version is lower than 10.0.19045.2311, install KB5014032 and KB5022282 then run again."
     $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     exit 1
     }
