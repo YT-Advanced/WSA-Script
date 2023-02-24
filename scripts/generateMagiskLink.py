@@ -38,8 +38,7 @@ if magisk_ver == "stable" or magisk_ver == "beta" or magisk_ver == "canary" or m
         print("Failed to fetch from GitHub API, fallbacking to jsdelivr...")
         magisk_link = json.loads(requests.get(
             f"https://fastly.jsdelivr.net/gh/topjohnwu/magisk-files@master/{magisk_ver}.json").content)['magisk']['link']
-
-else if magisk_ver == "delta":
+elif magisk_ver == "delta":
     try:
         magisk_link = json.loads(requests.get(
             f"https://raw.githubusercontent.com/HuskyDG/magisk-files/main/canary.json").content)['magisk']['link']
