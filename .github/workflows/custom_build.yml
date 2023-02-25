@@ -6,50 +6,49 @@ on:
         type: choice
         description: Architecture of WSA.
         required: true
-        options: [x64, arm64, both]
-        default: both
-      release-type:
+        options: [x64, arm64, Both]
+        default: Both
+      release_type:
         type: choice
-        description: Release type of WSA. RP means Release Preview, WIS means Insider Slow, WIF means Insider Fas
+        description: WSA Release Channel
         required: true
-        options: ["retail","RP","WIS","WIF"]
-        default: "retail"
-      magisk-ver:
+        options: ["Retail","Release Preview","Insider Slow","Insider Fast"]
+        default: "Retail"
+      root_sol:
+        type: choice
+        description: Root solution. none means no root.
+        required: true
+        options: ["Magisk","None"]
+        default: "Magisk"
+      magisk_ver:
         type: choice
         description: Magisk version.
         required: true
-        options: ["stable","beta","canary","debug", "delta"]
-        default: "stable"
-      gapps-brand:
+        options: ["Stable","Beta","Canary","Debug","Delta"]
+        default: "Stable"
+      gapps_brand:
         type: choice
         description: GApps brand. none for no integration of GApps
         required: true
         options: ["OpenGApps","MindTheGapps","none"]
         default: "MindTheGapps"
-      gapps-variant:
+      gapps_var:
         type: choice
         description: GApps variant.
         required: true
-        options: ["super","stock","full","mini","micro","nano","pico","tvstock","tvmini"]
-        default: "pico"
-      remove-amazon:
-        type: choice
-        description: Remove Amazon Appstore from system
-        required: true
-        options: ["remove","keep"]
-        default: "remove"
-      root-sol:
-        type: choice
-        description: Root solution. none means no root.
-        required: true
-        options: ["magisk","none"]
-        default: "magisk"
-      compress-format:
+        options: ["Super","Stock","Full","Mini","Micro","Nano","Pico","TVStock","TVMini"]
+        default: "Pico"
+      compression:
         type: choice
         description: Compress format.
         required: true
-        options: ["zip","7z","xz"]
-        default: "7z"
+        options: ["*.zip","*.7z","*.xz"]
+        default: "*.7z"
+      remove_amazon:
+        description: "Remove Amazon AppStore"
+        required: true
+        default: true
+        type: boolean
 
 jobs:
   matrix:
@@ -98,16 +97,12 @@ jobs:
 
       - name: Grant exec permission to script 👑
         run: chmod +x ./scripts/build.sh
-        
-      - name: Generate ARG
-        id: arg
-        if: ${{ github.event.inputs.remove-amazon == 'remove'}}
-        run: |
-          echo "ARGUMENT=--remove-amazon" >> $GITHUB_OUTPUT
-  
+
       - name: Build WSA 🏗️
         id: wsa
-        run: ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${{ inputs.release-type }} --magisk-ver ${{ inputs.magisk-ver }} --gapps-brand ${{ inputs.gapps-brand }} --gapps-variant ${{ inputs.gapps-variant }} --root-sol ${{ inputs.root-sol }} --compress-format ${{ inputs.compress-format }} ${{ steps.arg.outputs.ARGUMENT }}
+        run: |
+          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF" ["MAGISK_VER,Stable"]="stable" ["MAGISK_VER,Beta"]="beta" ["MAGISK_VER,Canary"]="canary" ["MAGISK_VER,Debug"]="debug" ["MAGISK_VER,Delta"]="delta" ["ROOT_SOL,None"]="none" ["ROOT_SOL,Magisk"]="magisk" ["GAPPS_VAR,Pico"]="pico" ["GAPPS_VAR,Nano"]="nano" ["GAPPS_VAR,Micro"]="micro" ["GAPPS_VAR,Mini"]="mini" ["GAPPS_VAR,Full"]="full" ["GAPPS_VAR,Stock"]="stock" ["GAPPS_VAR,Super"]="super" ["GAPPS_VAR,TVStock"]="tvstock" ["GAPPS_VAR,TVMini"]="tvmini" ["REMOVE_AMAZON,true"]="--remove-amazon" ["COMPRESSION,*.zip"]="zip" ["COMPRESSION,*.7z"]="7z" ["COMPRESSION,*.xz"]="xz" )
+          ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver ${opts[MAGISK_VER,${{ inputs.magisk_ver }}]} --gapps-brand ${{ inputs.gapps_brand }} --gapps-variant ${opts[GAPPS_VAR,${{ inputs.gapps_var }}]} --root-sol ${opts[ROOT_SOL,${{ inputs.root_sol }}]} --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
 
       - name: Upload Artifact 🤌
         uses: actions/upload-artifact@v3
