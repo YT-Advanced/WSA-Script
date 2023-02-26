@@ -209,9 +209,22 @@
 
 - No. GApps will no longer function. Do a [complete uninstallation](#uninstallation) before switching
 
-**How do I install custom Magisk or GApps?**
+**How do I build WSA with my custom Magisk or GApps?**
 
-- To request a build with custom Magisk or GApps, feel free to open an issue in the [Issues page](https://github.com/YT-Advanced/WSA-Script/issues.) You can also achieve this by using the [MagiskOnWSALocal](https://github.com/LSPosed/MagiskOnWSALocal) Script and following the provided instructions located in the repo.
+- Yes, you can do this by follow these step then go to Github Action, choose Actions menu --> 
+      
+1. Star (if you like) and [Fork this repository](https://github.com/YT-Advanced/WSA-Script/fork)
+1. Go to the **Action** tab in your forked repo
+    ![Action Tab](https://docs.github.com/assets/images/help/repository/actions-tab.png)
+1. In the left sidebar, click the **Custom Build** workflow.
+    ![Workflow](https://docs.github.com/assets/images/help/repository/actions-select-workflow-2022.png)
+1. Above the list of workflow runs, select **Run workflow**
+    ![Run Workflow](https://docs.github.com/assets/images/actions-workflow-dispatch.png)
+1. Select the option then click **Run workflow**
+    ![Run Workflow](https://docs.github.com/assets/images/actions-manually-run-workflow.png)
+1. Wait for the action to complete and download the artifact
+**DO NOT download it via multithread downloaders like IDM**
+    ![Download](https://docs.github.com/assets/images/help/repository/artifact-drop-down-updated.png)
 </details>
 
 &nbsp;
@@ -254,35 +267,12 @@
 
 </details>  
 
-<!--
-1. Fork this repository
-2. **A)** Magisk
-   1. **a)** Via local file:
-      1. Create a folder named `download` in the root
-      2. Move your custom Magisk APK/ZIP file to the `download` folder and rename it to `magisk-debug.zip`
-   2. In GitHub Actions, click on `Build MagiskOnWSA`
-   3. Choose `Custom` in the `Magisk Version` field
-   4. **b)** Via URL:
-      1. Input the URL pointing to your custom Magisk APK/ZIP file in the `Custom Magisk APK/ZIP URL` field
-3. **B)** GApps
-   1. **a)** Via local file:
-      1. Create a folder named `download` in the root
-      2. Move your custom OpenGApps or MindTheGapps ZIP file to the `download` folder and rename it to `OpenGApps-{arch}-{variant}.zip` or `MindTheGapps-{arch}.zip` *(e.g. `OpenGApps-x64-pico.zip` or `MindTheGapps-arm64.zip`)*
-   2. In GitHub Actions, click on `Build MagiskOnWSA`
-   3. Choose `Custom (OpenGApps)` or `Custom (MindTheGapps)` in the `GApps Variant` field
-   4. **b)** Via URL:
-      1. Input the URL pointing to your custom OpenGApps or MindTheGapps ZIP file in the `Custom GApps ZIP URL` field
--->
-
 &nbsp;      
       
 <details>     
    <summary><img style="float: right;" src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/null/external-credits-movie-theater-flaticons-lineal-color-flat-icons.png" width="60" height="60"/><h1> &nbsp; Credits<h1></summary>
 
 - [Microsoft](https://apps.microsoft.com/store/detail/windows-subsystem-for-android%E2%84%A2-with-amazon-appstore/9P3395VX91NR): For providing Windows Subsystem For Android™ and related files. Windows Subsystem For Android™, Windows Subsystem For Android™ Logo, Windows™ 10 and Windows™ 11 Logos are trademarks of Microsoft Corporation. Microsoft Corporation reserves all rights to these trademarks. By downloading and installing Windows Subsystem For Android™, you agree to the [Terms and Conditions](https://support.microsoft.com/en-gb/windows/microsoft-software-license-terms-microsoft-windows-subsystem-for-android-cf8dfb03-ba62-4daa-b7f3-e2cb18f968ad) and [Privacy Policy](https://privacy.microsoft.com/en-gb/privacystatement)
-<!-- 
-- [PeterNjeim](https://github.com/PeterNjeim/MagiskOnWSA): For providing and continuing the development of the script made by LSPosed, this Github Repository and the Github Action workflow is based on his Github Repo. I do not claim his work and the work of the many contributers as my own and nor intend to do so. Most Windows™ 11 Build rely on the Github Action provided to build, hence credit is given where due
--->
 - [Cinit and the WSAPatch Guide](https://github.com/cinit/WSAPatch): Many thanks for the comprehensive guide, files and support provided by Cinit and the contributers at the WSAPatch repository. Windows™ 10 Builds in this repo rely on the hard work of this project and  hence credit is given where due
 - [StoreLib](https://github.com/StoreDev/StoreLib): API for downloading WSA
 - [Magisk](https://github.com/topjohnwu/Magisk): The Magic Mask for Android
