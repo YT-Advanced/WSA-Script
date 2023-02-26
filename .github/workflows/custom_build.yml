@@ -14,17 +14,11 @@ on:
         required: true
         options: ["Retail","Release Preview","Insider Slow","Insider Fast"]
         default: "Retail"
-      root_sol:
-        type: choice
-        description: Root solution. none means no root.
-        required: true
-        options: ["Magisk","None"]
-        default: "Magisk"
       magisk_ver:
         type: choice
         description: Magisk version.
         required: true
-        options: ["Stable","Beta","Canary","Debug","Delta"]
+        options: ["None","Stable","Beta","Canary","Debug","Delta"]
         default: "Stable"
       gapps_brand:
         type: choice
@@ -40,12 +34,12 @@ on:
         default: "Pico"
       compression:
         type: choice
-        description: Compress format.
+        description: Compression format.
         required: true
         options: ["*.zip","*.7z","*.xz"]
         default: "*.7z"
       remove_amazon:
-        description: "Remove Amazon AppStore"
+        description: "Remove Amazon AppStore from the system"
         required: true
         default: true
         type: boolean
@@ -101,8 +95,16 @@ jobs:
       - name: Build WSA 🏗️
         id: wsa
         run: |
-          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF" ["MAGISK_VER,Stable"]="stable" ["MAGISK_VER,Beta"]="beta" ["MAGISK_VER,Canary"]="canary" ["MAGISK_VER,Debug"]="debug" ["MAGISK_VER,Delta"]="delta" ["ROOT_SOL,None"]="none" ["ROOT_SOL,Magisk"]="magisk" ["GAPPS_VAR,Pico"]="pico" ["GAPPS_VAR,Nano"]="nano" ["GAPPS_VAR,Micro"]="micro" ["GAPPS_VAR,Mini"]="mini" ["GAPPS_VAR,Full"]="full" ["GAPPS_VAR,Stock"]="stock" ["GAPPS_VAR,Super"]="super" ["GAPPS_VAR,TVStock"]="tvstock" ["GAPPS_VAR,TVMini"]="tvmini" ["REMOVE_AMAZON,true"]="--remove-amazon" ["COMPRESSION,*.zip"]="zip" ["COMPRESSION,*.7z"]="7z" ["COMPRESSION,*.xz"]="xz" )
-          ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver ${opts[MAGISK_VER,${{ inputs.magisk_ver }}]} --gapps-brand ${{ inputs.gapps_brand }} --gapps-variant ${opts[GAPPS_VAR,${{ inputs.gapps_var }}]} --root-sol ${opts[ROOT_SOL,${{ inputs.root_sol }}]} --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
+          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF" ["MAGISK_VER,Stable"]="stable" ["MAGISK_VER,Beta"]="beta" ["MAGISK_VER,Canary"]="canary" ["MAGISK_VER,Debug"]="debug" ["MAGISK_VER,Delta"]="delta" ["GAPPS_VAR,Pico"]="pico" ["GAPPS_VAR,Nano"]="nano" ["GAPPS_VAR,Micro"]="micro" ["GAPPS_VAR,Mini"]="mini" ["GAPPS_VAR,Full"]="full" ["GAPPS_VAR,Stock"]="stock" ["GAPPS_VAR,Super"]="super" ["GAPPS_VAR,TVStock"]="tvstock" ["GAPPS_VAR,TVMini"]="tvmini" ["REMOVE_AMAZON,true"]="--remove-amazon" ["COMPRESSION,*.zip"]="zip" ["COMPRESSION,*.7z"]="7z" ["COMPRESSION,*.xz"]="xz" )
+          if [[ "${{ inputs.magisk_ver }}" != "None" ]]; then
+              ROOT_SOL="magisk"
+              MAGISK_VER="${opts[MAGISK_VER,${{ inputs.magisk_ver }}]}"
+          else
+              ROOT_SOL="none"
+              MAGISK_VER="${opts[MAGISK_VER,Stable]}"
+          fi
+          
+          ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${{ inputs.gapps_brand }} --gapps-variant ${opts[GAPPS_VAR,${{ inputs.gapps_var }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
 
       - name: Upload Artifact 🤌
         uses: actions/upload-artifact@v3
