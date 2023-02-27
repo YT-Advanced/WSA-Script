@@ -1,5 +1,5 @@
 name: Build WSA Magisk
-on: [workflow_call, workflow_dispatch]
+on: [workflow_call]
 
 concurrency: 
   group: ${{ github.head_ref || github.ref }}
