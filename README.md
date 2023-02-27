@@ -1,6 +1,27 @@
 # WSA-Script
 ### MagiskOnWSA (For Windows™ 10 and 11)
 #### Windows Subsystem For Android™ (WSA) with Google Play Services and Magisk 
+<details>     
+   <summary><h3> &nbsp; ❓Want to build your custom build❓ <h3></summary>
+   
+> **Note**
+> <br /> If you can, please download WSA from the [Release](https://github.com/YT-Advanced/WSA-Script/releases/latest)<br />
+      
+1. Star (if you like) and [Fork this repository](https://github.com/YT-Advanced/WSA-Script/fork)
+    ![Fork Button](https://docs.github.com/assets/images/help/repository/fork_button.png)
+1. Go to the **Action** tab in your forked repo
+    ![Action Tab](https://docs.github.com/assets/images/help/repository/actions-tab.png)
+1. In the left sidebar, click the **Custom Build** workflow.
+    ![Workflow](https://docs.github.com/assets/images/help/repository/actions-select-workflow-2022.png)
+1. Above the list of workflow runs, select **Run workflow**
+    ![Run Workflow](https://docs.github.com/assets/images/actions-workflow-dispatch.png)
+1. Select the option then click **Run workflow**
+    ![Run Workflow](https://docs.github.com/assets/images/actions-manually-run-workflow.png)
+1. Wait for the action to complete and download the artifact
+**DO NOT download it via multithread downloaders like IDM**
+    ![Download](https://docs.github.com/assets/images/help/repository/artifact-drop-down-updated.png)
+</details>
+
 ## Requirements
 |     <img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/Windows_11_logo.svg" width=40% height=40%>        |  <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Windows_10_Logo.svg" width=40% height=40%>     |
 |-----------------------|-----------------------|
@@ -208,23 +229,6 @@
 **Can I switch between OpenGApps and MindTheGapps?**
 
 - No. GApps will no longer function. Do a [complete uninstallation](#uninstallation) before switching
-
-**How do I build WSA with my custom Magisk or GApps?**
-
-- Yes, you can do this by follow these step then go to Github Action, choose Actions menu --> 
-      
-1. Star (if you like) and [Fork this repository](https://github.com/YT-Advanced/WSA-Script/fork)
-1. Go to the **Action** tab in your forked repo
-    ![Action Tab](https://docs.github.com/assets/images/help/repository/actions-tab.png)
-1. In the left sidebar, click the **Custom Build** workflow.
-    ![Workflow](https://docs.github.com/assets/images/help/repository/actions-select-workflow-2022.png)
-1. Above the list of workflow runs, select **Run workflow**
-    ![Run Workflow](https://docs.github.com/assets/images/actions-workflow-dispatch.png)
-1. Select the option then click **Run workflow**
-    ![Run Workflow](https://docs.github.com/assets/images/actions-manually-run-workflow.png)
-1. Wait for the action to complete and download the artifact
-**DO NOT download it via multithread downloaders like IDM**
-    ![Download](https://docs.github.com/assets/images/help/repository/artifact-drop-down-updated.png)
 </details>
 
 &nbsp;
