@@ -3,10 +3,19 @@
 #### Windows Subsystem For Android™ (WSA) with Google Play Services and Magisk 
 <details>     
    <summary><h3> &nbsp; ❓Want to build your custom build❓ <h3></summary>
-   
-> **Note**
-> <br /> If you can, please download WSA from the [Release](https://github.com/YT-Advanced/WSA-Script/releases/latest)<br />
       
+
+| :exclamation: **Important:**  &nbsp;  `⚠️DO NOT FORK⚠️`               |
+|------------------------------------------------------------------------|
+|**This repository is designed specifically not to be forked. MagiskOnWSA and some of the various forks and clones that have sprung up on the platform (***potentially***) violate GitHub's Terms of Service due to abuse of GitHub Actions and have been ultimately warned, disabled or banned.**| 
+|**Therefore, don't fork this repository unless you're a developer and want to modify the code itself and/or want to contribute to this Github repository.**|
+|**If you want to create your Custom Build, please follow the instructions set out clearly, to avoid the repo from being taken down as a result of a misuse of Github Actions due to the large number of forks.**|
+      
+---
+      
+1. Log into your Github Account (this is necessary) and go to [this page directly](https://github.com/new/import)
+1. [Copy the URL of this Repo](https://github.com/YT-Advanced/WSA-Script) and paste it into the the text box below then press "Import"** 
+![image](https://user-images.githubusercontent.com/68516357/221643582-72d71f68-8f53-48d9-a940-692a54d42098.png)
 1. Star (if you like) and [Fork this repository](https://github.com/YT-Advanced/WSA-Script/fork)
     ![Fork Button](https://docs.github.com/assets/images/help/repository/fork_button.png)
 1. Go to the **Action** tab in your forked repo
