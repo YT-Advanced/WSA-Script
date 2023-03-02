@@ -13,22 +13,58 @@
       
 ---
       
-1. Log into your Github Account (this is necessary) and go to [this page directly](https://github.com/new/import)
-1. [Copy the URL of this Repo](https://github.com/YT-Advanced/WSA-Script) and paste it into the the text box below then press "Import"** 
+#### **1. Log into your Github Account (this is necessary) and in the home page, click on the button (shown below) and select "import a repository" or go to [this page directly](https://github.com/new/import)**
+   ***Step 1:***
+   
+   <img src="https://user-images.githubusercontent.com/68516357/221636520-78d0716a-247b-4034-aa9d-bdbe2277950c.png" style="width: 350px;"/>
+   
+   ***Step 2:***
+   
+   ![image](https://user-images.githubusercontent.com/68516357/221641202-e3ef4deb-f2dd-46e6-82c8-fb4767f82e99.png)
+   
+---   
+#### **2. [Copy the URL of this Repo](https://github.com/YT-Advanced/WSA-Script) and paste it into the the text box below and press "Import"** 
+
 ![image](https://user-images.githubusercontent.com/68516357/221643582-72d71f68-8f53-48d9-a940-692a54d42098.png)
-1. Star (if you like) and [Fork this repository](https://github.com/YT-Advanced/WSA-Script/fork)
-    ![Fork Button](https://docs.github.com/assets/images/help/repository/fork_button.png)
-1. Go to the **Action** tab in your forked repo
-    ![Action Tab](https://docs.github.com/assets/images/help/repository/actions-tab.png)
-1. In the left sidebar, click the **Custom Build** workflow.
-    ![Workflow](https://docs.github.com/assets/images/help/repository/actions-select-workflow-2022.png)
-1. Above the list of workflow runs, select **Run workflow**
-    ![Run Workflow](https://docs.github.com/assets/images/actions-workflow-dispatch.png)
-1. Select the option then click **Run workflow**
-    ![Run Workflow](https://docs.github.com/assets/images/actions-manually-run-workflow.png)
-1. Wait for the action to complete and download the artifact
+
+---
+#### **3. Go to the **Setting** tab in your newly imported repo and enable "Github Actions"**
+
+![Settings](https://user-images.githubusercontent.com/68516357/222214308-b52b1c6f-a60b-44ef-9ce0-bc335087e3a2.png)
+![MRq9WD3SO2](https://user-images.githubusercontent.com/68516357/222215598-30d68ad3-9700-4061-bba4-815b3befcb10.png)
+
+
+---
+#### **5. Now, Go to the **Action** tab**
+
+![CvYhP0B0CI](https://user-images.githubusercontent.com/68516357/222221960-f48ab9c3-eb77-4cb0-b932-5cd343381048.png)
+
+    
+---
+#### **4. In the left sidebar, click the **Custom Build** workflow.**
+    
+![image](https://user-images.githubusercontent.com/68516357/222221307-8a4571d2-ac3e-410b-b999-0eb62b14d8d5.png)
+    
+---
+#### **5. Above the list of workflow runs, select **Run workflow****
+    
+![image](https://user-images.githubusercontent.com/68516357/222222850-f991890c-5a80-4cc2-b83d-0ef35c24a79e.png)
+    
+---
+#### **6. Select your desired options such as ***Magisk Version***, ***WSA Release Channel + WSA Archetecture*** , ***GApps Varient*** and ***Compression Format*** then click **Run workflow****
+    
+![image](https://user-images.githubusercontent.com/68516357/222224185-abcfa0cf-c8c6-46e3-bc38-871c968b86f2.png)
+    
+---    
+#### **7. Wait for the action to complete and download the artifact**
+
 **DO NOT download it via multithread downloaders like IDM**
-    ![Download](https://docs.github.com/assets/images/help/repository/artifact-drop-down-updated.png)
+
+![image](https://user-images.githubusercontent.com/68516357/222224469-5748b78a-158e-46ff-9f65-317dbb519aac.png)
+
+---
+#### **8. Install like normal using the instructions in this repository** and most important of all....
+
 </details>
 
 ## Requirements
@@ -37,7 +73,7 @@
 | - RAM: 6 GB (not recommended), 8 GB (minimum) and 16 GB (recommended).|- RAM: 6 GB (not recommended), 8 GB (minimum) and 16 GB (recommended).|
 |- Processor: Your PC should meet the basic Windows™ 11 requirements i.e Core i3 8th Gen, Ryzen 3000, Snapdragon 8c, or above.| - Processor: N/A (This is a bit of a hit or miss)
 |- Processor type: x64 or ARM64.| - Processor type: x64 or ARM64.|
-|- GPU: Any compatible Intel, AMD or Nvidia GPU <br /> GPU Performance may vary depending on its compatibility with Windows Subsystem For Android™ <br /><br />Nvidia GPUs are known to cause problems. If Windows Subsystem For Android™ does not start or there are graphical glitches when an Nvidia GPU is used, [follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/master/Guides/ChangingGPU.md) to switch to another iGPU/dGPU/eGPU  that you may have or Microsoft Basic Renderer|- GPU: Any compatible Intel, AMD or Nvidia GPU <br /> GPU Performance may vary depending on its compatibility with Windows Subsystem For Android™ <br /><br />Nvidia GPUs are known to cause problems. If Windows Subsystem For Android™ does not start or there are graphical glitches when an Nvidia GPU is used, [follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/master/Guides/ChangingGPU.md) to switch to  another iGPU/dGPU/eGPU  that you may have or Microsoft Basic Renderer|
+|- GPU: Any compatible Intel, AMD or Nvidia GPU <br /> GPU Performance may vary depending on its compatibility with Windows Subsystem For Android™ <br /><br />Nvidia GPUs or Intel HD Graphics older than v530 are known to cause problems. If Windows Subsystem For Android™ does not start or there are graphical glitches when these GPU is used, [follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/master/Guides/ChangingGPU.md) to switch to another iGPU/dGPU/eGPU that you may have or Microsoft Basic Renderer|- GPU: Any compatible Intel, AMD or Nvidia GPU <br /> GPU Performance may vary depending on its compatibility with Windows Subsystem For Android™ <br /><br />Nvidia GPUs or Intel HD Graphics older than v530 are known to cause problems. If Windows Subsystem For Android™ does not start or there are graphical glitches when these GPU is used, [follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/master/Guides/ChangingGPU.md) to switch to another iGPU/dGPU/eGPU that you may have or Microsoft Basic Renderer|
 |- Virtual Machine Platform Enabled: <br /> This optional setting is for virtualization and you can enable the setting from Control Panel/ Optional Features.| - Virtual Machine Platform Enabled: <br /> This optional setting is for virtualization and you can enable the setting from Control Panel/ Optional Features.|
 |- Storage: Solid-state drive (SSD) <br /> - Hard Disk Drive (HDD) (NOT RECOMMENDED).| - Storage: Solid-state drive (SSD) <br /> - Hard Disk Drive (HDD) (NOT RECOMMENDED).|
 | - Partition: NTFS <br /> Windows Subsystem For Android™ can only be installed on a NTFS partition, not on an exFAT partition |- Partition: NTFS <br /> Windows Subsystem For Android™ can only be installed on a NTFS partition, not on an exFAT partition|
