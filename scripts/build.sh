@@ -446,9 +446,6 @@ if [ -f "$MAGISK_PATH" ]; then
     fi
     # shellcheck disable=SC1091
     source "${WORK_DIR:?}/ENV" || abort
-    $SUDO patchelf --replace-needed libc.so "../linker/$HOST_ARCH/libc.so" "$WORK_DIR"/magisk/magiskpolicy || abort
-    $SUDO patchelf --replace-needed libm.so "../linker/$HOST_ARCH/libm.so" "$WORK_DIR"/magisk/magiskpolicy || abort
-    $SUDO patchelf --replace-needed libdl.so "../linker/$HOST_ARCH/libdl.so" "$WORK_DIR"/magisk/magiskpolicy || abort
     $SUDO chmod +x "../linker/$HOST_ARCH/linker64" || abort
     $SUDO patchelf --set-interpreter "../linker/$HOST_ARCH/linker64" "$WORK_DIR"/magisk/magiskpolicy || abort
     chmod +x "$WORK_DIR"/magisk/magiskpolicy || abort
@@ -491,21 +488,21 @@ fi
 echo "Expand images"
 if [ ! -f /etc/mtab ]; then $SUDO ln -s /proc/self/mounts /etc/mtab; fi
 e2fsck -pf "$WORK_DIR"/wsa/"$ARCH"/system_ext.img || abort
-SYSTEM_EXT_SIZE=$(($(du --apparent-size -sB512 "$WORK_DIR"/wsa/"$ARCH"/system_ext.img | cut -f1) + 20000))
+SYSTEM_EXT_SIZE=$(($(du --apparent-size -sB512 "$WORK_DIR"/wsa/"$ARCH"/system_ext.img | cut -f1) + 20480))
 if [ -d "$WORK_DIR"/gapps/system_ext ]; then
     SYSTEM_EXT_SIZE=$(( SYSTEM_EXT_SIZE + $(du --apparent-size -sB512 "$WORK_DIR"/gapps/system_ext | cut -f1) ))
 fi
 resize2fs "$WORK_DIR"/wsa/"$ARCH"/system_ext.img "$SYSTEM_EXT_SIZE"s || abort
 
 e2fsck -pf "$WORK_DIR"/wsa/"$ARCH"/product.img || abort
-PRODUCT_SIZE=$(($(du --apparent-size -sB512 "$WORK_DIR"/wsa/"$ARCH"/product.img | cut -f1) + 20000))
+PRODUCT_SIZE=$(($(du --apparent-size -sB512 "$WORK_DIR"/wsa/"$ARCH"/product.img | cut -f1) + 20480))
 if [ -d "$WORK_DIR"/gapps/product ]; then
     PRODUCT_SIZE=$(( PRODUCT_SIZE + $(du --apparent-size -sB512 "$WORK_DIR"/gapps/product | cut -f1) ))
 fi
 resize2fs "$WORK_DIR"/wsa/"$ARCH"/product.img "$PRODUCT_SIZE"s || abort
 
 e2fsck -pf "$WORK_DIR"/wsa/"$ARCH"/system.img || abort
-SYSTEM_SIZE=$(($(du --apparent-size -sB512 "$WORK_DIR"/wsa/"$ARCH"/system.img | cut -f1) + 20000))
+SYSTEM_SIZE=$(($(du --apparent-size -sB512 "$WORK_DIR"/wsa/"$ARCH"/system.img | cut -f1) + 20480))
 if [ -d "$WORK_DIR"/gapps ]; then
     SYSTEM_SIZE=$(( SYSTEM_SIZE + $(du --apparent-size -sB512 "$WORK_DIR"/gapps | cut -f1) - $(du --apparent-size -sB512 "$WORK_DIR"/gapps/product | cut -f1) ))
     if [ -d "$WORK_DIR"/gapps/system_ext ]; then
@@ -524,7 +521,7 @@ fi
 resize2fs "$WORK_DIR"/wsa/"$ARCH"/system.img "$SYSTEM_SIZE"s || abort
 
 e2fsck -pf "$WORK_DIR"/wsa/"$ARCH"/vendor.img || abort
-VENDOR_SIZE=$(($(du --apparent-size -sB512 "$WORK_DIR"/wsa/"$ARCH"/vendor.img | cut -f1) + 20000))
+VENDOR_SIZE=$(($(du --apparent-size -sB512 "$WORK_DIR"/wsa/"$ARCH"/vendor.img | cut -f1) + 20480))
 resize2fs "$WORK_DIR"/wsa/"$ARCH"/vendor.img "$VENDOR_SIZE"s || abort
 echo -e "Expand images done\n"
 
@@ -574,10 +571,10 @@ EOF
     $SUDO find "$MOUNT_DIR"/sbin -type f -exec chown root:root {} \;
     $SUDO find "$MOUNT_DIR"/sbin -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
 
-    TMP_PATH=$(Gen_Rand_Str 8)
+    TMP_PATH=$(Gen_Rand_Str 14)
     echo "/dev/$TMP_PATH(/.*)?    u:object_r:magisk_file:s0" | $SUDO tee -a "$MOUNT_DIR"/vendor/etc/selinux/vendor_file_contexts
     echo '/data/adb/magisk(/.*)?   u:object_r:magisk_file:s0' | $SUDO tee -a "$MOUNT_DIR"/vendor/etc/selinux/vendor_file_contexts
-    $SUDO "$WORK_DIR"/magisk/magiskpolicy --load "$MOUNT_DIR"/vendor/etc/selinux/precompiled_sepolicy --save "$MOUNT_DIR"/vendor/etc/selinux/precompiled_sepolicy --magisk "allow * magisk_file lnk_file *" || abort
+    $SUDO LD_LIBRARY_PATH=../linker/$HOST_ARCH "$WORK_DIR"/magisk/magiskpolicy --load "$MOUNT_DIR"/vendor/etc/selinux/precompiled_sepolicy --save "$MOUNT_DIR"/vendor/etc/selinux/precompiled_sepolicy --magisk || abort
     LOAD_POLICY_SVC_NAME=$(Gen_Rand_Str 12)
     PFD_SVC_NAME=$(Gen_Rand_Str 12)
     LS_SVC_NAME=$(Gen_Rand_Str 12)
@@ -597,9 +594,10 @@ on post-fs-data
     chmod 0755 /dev/$TMP_PATH/magiskinit
     copy /sbin/magiskpolicy /dev/$TMP_PATH/magiskpolicy
     chmod 0755 /dev/$TMP_PATH/magiskpolicy
-    mkdir /dev/$TMP_PATH/.magisk 700
-    mkdir /dev/$TMP_PATH/.magisk/mirror 700
-    mkdir /dev/$TMP_PATH/.magisk/block 700
+    mkdir /dev/$TMP_PATH/.magisk 755
+    mkdir /dev/$TMP_PATH/.magisk/worker 0
+    mkdir /dev/$TMP_PATH/.magisk/mirror 0
+    mkdir /dev/$TMP_PATH/.magisk/block 0
     copy /sbin/magisk.apk /dev/$TMP_PATH/stub.apk
     chmod 0644 /dev/$TMP_PATH/stub.apk
     rm /dev/.magisk_unblock
@@ -722,7 +720,7 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
         find "$WORK_DIR"/gapps/system_ext/priv-app/ -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder $SUDO find "$MOUNT_DIR"/system_ext/priv-app/placeholder -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     fi
 
-    $SUDO "$WORK_DIR"/magisk/magiskpolicy --load "$MOUNT_DIR"/vendor/etc/selinux/precompiled_sepolicy --save "$MOUNT_DIR"/vendor/etc/selinux/precompiled_sepolicy "allow gmscore_app gmscore_app vsock_socket { create connect write read }" "allow gmscore_app device_config_runtime_native_boot_prop file read" "allow gmscore_app system_server_tmpfs dir search" "allow gmscore_app system_server_tmpfs file open" "allow gmscore_app system_server_tmpfs filesystem getattr" "allow gmscore_app gpu_device dir search" || abort
+    $SUDO LD_LIBRARY_PATH=../linker/$HOST_ARCH "$WORK_DIR"/magisk/magiskpolicy --load "$MOUNT_DIR"/vendor/etc/selinux/precompiled_sepolicy --save "$MOUNT_DIR"/vendor/etc/selinux/precompiled_sepolicy "allow gmscore_app gmscore_app vsock_socket { create connect write read }" "allow gmscore_app device_config_runtime_native_boot_prop file read" "allow gmscore_app system_server_tmpfs dir search" "allow gmscore_app system_server_tmpfs file open" "allow gmscore_app system_server_tmpfs filesystem getattr" "allow gmscore_app gpu_device dir search" || abort
     echo -e "Integrate $GAPPS_BRAND done\n"
 fi
 
