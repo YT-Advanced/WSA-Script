@@ -1,4 +1,5 @@
 name: Custom Build
+run-name: WSA ${{ inputs.release_type }} Channel with ${{ inputs.root_sol }}
 on:
   workflow_dispatch:
     inputs:
