@@ -97,7 +97,7 @@ jobs:
         id: wsa
         run: |
           declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF" ["ROOT_SOL,Magisk Stable"]="stable" ["ROOT_SOL,Magisk Beta"]="beta" ["ROOT_SOL,Magisk Canary"]="canary" ["ROOT_SOL,Magisk Debug"]="debug" ["ROOT_SOL,Magisk Delta"]="delta" ["ROOT_SOL,KernelSU"]="kernelsu" ["ROOT_SOL,Non-root"]="none" ["GAPPS_VAR,Pico"]="pico" ["GAPPS_VAR,Nano"]="nano" ["GAPPS_VAR,Micro"]="micro" ["GAPPS_VAR,Mini"]="mini" ["GAPPS_VAR,Full"]="full" ["GAPPS_VAR,Stock"]="stock" ["GAPPS_VAR,Super"]="super" ["GAPPS_VAR,TVStock"]="tvstock" ["GAPPS_VAR,TVMini"]="tvmini" ["REMOVE_AMAZON,true"]="--remove-amazon" ["COMPRESSION,*.zip"]="zip" ["COMPRESSION,*.7z"]="7z" ["COMPRESSION,*.xz"]="xz" )
-          if [[ "${{ inputs.root_sol }}" == "Magisk" ]]; then
+          if [[ "${{ inputs.root_sol }}" != *Magisk* ]]; then
               MAGISK_VER="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
               ROOT_SOL="magisk"
           else
