@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   check:
+    if: ${{github.repository == 'YT-Advanced/WSA-Script'}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
