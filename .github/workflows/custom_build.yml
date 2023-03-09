@@ -19,7 +19,7 @@ on:
         description: Root solution
         required: true
         options: ["KernelSU","Non-root","Magisk Stable","Magisk Beta","Magisk Canary","Magisk Debug","Magisk Delta"]
-        default: "Stable"
+        default: "Magisk Stable"
       gapps_brand:
         type: choice
         description: GApps brand. none for no integration of GApps
