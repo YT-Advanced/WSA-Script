@@ -31,7 +31,7 @@ function DownloadWinHttpDLL {
 function DownloadWSAPatchDLL {
         Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/WsaPatch.dll?raw=true -OutFile .\WSAClient\WsaPatch.dll
         $hash = Get-FileHash ".\WSAClient\WsaPatch.dll" | Select-Object Hash
-        if ($hash -ne "e15a619f91891419c2be09264d4a8e1ccbead002a895902f721d59ebc63a4b89") 
+        if ($hash -ne "f770062d5de3a8c1d65bc149dbc4b727aa773ba2f04a825f84c34051ee3c577f") 
         {
             DownloadWSAPatchDLL
         }
