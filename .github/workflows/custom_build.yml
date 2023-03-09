@@ -101,7 +101,7 @@ jobs:
               ROOT_SOL="magisk"
           else
               ROOT_SOL="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
-              MAGISK_VER="${opts[ROOT_SOL,Stable]}"
+              MAGISK_VER="${opts[ROOT_SOL,Magisk Stable]}"
           fi
           
           ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${{ inputs.gapps_brand }} --gapps-variant ${opts[GAPPS_VAR,${{ inputs.gapps_var }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
