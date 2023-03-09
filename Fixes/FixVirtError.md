@@ -1,20 +1,11 @@
 # WSAGuides
 
-&nbsp;
-&nbsp;
-
 ## Issues:
-
-&nbsp;
-&nbsp;
-
 <img src="https://user-images.githubusercontent.com/68629435/213985345-a6fc6e97-63f3-4741-8965-8d62a0d6b824.png"/>
 
 ## Solution: 
 
 You may encounter this problem, even if Virtualization is enabled on your PC (in the BIOS) and shows up as enabled in Task Manager (as seen below) and Virtual Machine Platform + Windows Hypervisor Platform is Enabled. The solution is:
-
-&nbsp;
 
 1. ***Remove WSA***: Right clicking on "Windows Subsystem for Android™ Settings" and pressing uninstall + Deleting the extracted WSA (MagiskOnWSA folder that you extracted and installed from) + Go to %LOCALAPPDATA%/Packages/ and delete the folder: MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe
 
@@ -35,6 +26,7 @@ You may encounter this problem, even if Virtualization is enabled on your PC (in
 ```cmd
 bcdedit /set hypervisorlaunchtype auto
 ```
-7. ***Reinstall WSA by running `Run.bat`***
 
-&nbsp;
+7. ***Restart the Computer***
+
+8. ***Reinstall WSA by running `Run.bat`***
