@@ -28,7 +28,7 @@ jobs:
         id: compare
         run: |
           git diff --name-only HEAD origin/main
-          echo "changes=$(git diff --name-only HEAD origin/main)" >> $GITHUB_OUTPUT
+          echo "changes=$(git diff --name-only HEAD origin/main  | tr '\n' ' ')" >> $GITHUB_OUTPUT
           
       - name: Push all changes
         if: ${{ steps.compare.outputs.changes != '' }}
