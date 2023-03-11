@@ -844,7 +844,7 @@ if [ "$REMOVE_AMAZON" = "yes" ]; then
     artifact_name+="-RemovedAmazon"
 fi
 echo "$artifact_name"
-echo "artifact=$(echo "$artifact_name")" >> $GITHUB_OUTPUT
+echo "artifact=$artifact_name" >> $GITHUB_OUTPUT
 echo -e "\nFinishing building...."
 if [ -f "$OUTPUT_DIR" ]; then
     "$SUDO" rm -rf "${OUTPUT_DIR:?}"
