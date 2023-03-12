@@ -124,7 +124,7 @@ ROOT_SOL=$(
                      [default]="magisk")' \
         \
         'magisk' "Magisk" 'on' \
-        'kernelsu' "KernelSU" 'on' \
+        'kernelsu' "KernelSU" 'off' \
         'none' "Without root" 'off'
 )
 
