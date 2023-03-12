@@ -23,7 +23,7 @@ In E:\WSA\Install.ps1:102 Character:1
 
 **2. Redownload WSA .zip file on [Release page](https://github.com/YT-Advanced/WSA-Script/releases/latest) (sometime the files can be corrupted during download and extraction)**
 
-**3. Delete all folders containing WindowsSubsystemForAndroid from these path:
+**3. Delete all folders containing WindowsSubsystemForAndroid from these path:**
 ```
 C:\ProgramData\Microsoft\Windows\AppRepository\
 C:\ProgramData\Microsoft\Windows\WindowsApps\
