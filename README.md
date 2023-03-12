@@ -74,7 +74,7 @@
 | - RAM: 6 GB (not recommended), 8 GB (minimum) and 16 GB (recommended).|- RAM: 6 GB (not recommended), 8 GB (minimum) and 16 GB (recommended).|
 |- Processor: Your PC should meet the basic Windows™ 11 requirements i.e Core i3 8th Gen, Ryzen 3000, Snapdragon 8c, or above.| - Processor: N/A (This is a bit of a hit or miss)
 |- Processor type: x64 or ARM64.| - Processor type: x64 or ARM64.|
-|- GPU: Any compatible Intel, AMD or Nvidia GPU <br /> GPU Performance may vary depending on its compatibility with Windows Subsystem For Android™ <br /><br />Nvidia GPUs or Intel HD Graphics older than v530 are known to cause problems. If Windows Subsystem For Android™ does not start or there are graphical glitches when these GPU is used, [follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/master/Guides/ChangingGPU.md) to switch to another iGPU/dGPU/eGPU that you may have or Microsoft Basic Renderer|- GPU: Any compatible Intel, AMD or Nvidia GPU <br /> GPU Performance may vary depending on its compatibility with Windows Subsystem For Android™ <br /><br />Nvidia GPUs or Intel HD Graphics older than v530 are known to cause problems. If Windows Subsystem For Android™ does not start or there are graphical glitches when these GPU is used, [follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/master/Guides/ChangingGPU.md) to switch to another iGPU/dGPU/eGPU that you may have or Microsoft Basic Renderer|
+|- GPU: Any compatible Intel, AMD or Nvidia GPU <br /> GPU Performance may vary depending on its compatibility with Windows Subsystem For Android™ <br /><br />Nvidia GPUs or Intel HD Graphics older than v530 are known to cause problems. If Windows Subsystem For Android™ does not start or there are graphical glitches when these GPU is used, [follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/ChangingGPU.md) to switch to another iGPU/dGPU/eGPU that you may have or Microsoft Basic Renderer|- GPU: Any compatible Intel, AMD or Nvidia GPU <br /> GPU Performance may vary depending on its compatibility with Windows Subsystem For Android™ <br /><br />Nvidia GPUs or Intel HD Graphics older than v530 are known to cause problems. If Windows Subsystem For Android™ does not start or there are graphical glitches when these GPU is used, [follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/ChangingGPU.md) to switch to another iGPU/dGPU/eGPU that you may have or Microsoft Basic Renderer|
 |- Virtual Machine Platform Enabled: <br /> This optional setting is for virtualization and you can enable the setting from Control Panel/ Optional Features.| - Virtual Machine Platform Enabled: <br /> This optional setting is for virtualization and you can enable the setting from Control Panel/ Optional Features.|
 |- Storage: Solid-state drive (SSD) <br /> - Hard Disk Drive (HDD) (NOT RECOMMENDED).| - Storage: Solid-state drive (SSD) <br /> - Hard Disk Drive (HDD) (NOT RECOMMENDED).|
 | - Partition: NTFS <br /> Windows Subsystem For Android™ can only be installed on a NTFS partition, not on an exFAT partition |- Partition: NTFS <br /> Windows Subsystem For Android™ can only be installed on a NTFS partition, not on an exFAT partition|
@@ -285,16 +285,16 @@
 &nbsp;
 
 ### Install KernerSU:
-[<img src="https://img.shields.io/badge/-How%20to%20install%20KernelSU%20Manager-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Guides/KernelSU.md)
+[<img src="https://img.shields.io/badge/-How%20to%20install%20KernelSU%20Manager-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/KernelSU.md)
 
 ### GPU Guide:
-[<img src="https://img.shields.io/badge/-How%20to%20Change%20the%20GPU%20Used-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Guides/ChangingGPU.md)
+[<img src="https://img.shields.io/badge/-How%20to%20Change%20the%20GPU%20Used-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/ChangingGPU.md)
 
 ### Sideload Guide:
-[<img src="https://img.shields.io/badge/-How%20to%20Sideload%20apps-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Guides/Sideloading.md)
+[<img src="https://img.shields.io/badge/-How%20to%20Sideload%20apps-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/Sideloading.md)
 
 ### Moving WSA to another drive or partition:
-[<img src="https://img.shields.io/badge/-How%20to%20Move%20WSA%20to%20another%20drive%20or%20partition-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Guides/MoveToExtDrive.md)
+[<img src="https://img.shields.io/badge/-How%20to%20Move%20WSA%20to%20another%20drive%20or%20partition-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/MoveToExtDrive.md)
 
 
 </details> 
@@ -305,15 +305,22 @@
    <summary><img style="float: right;" src="https://img.icons8.com/external-soft-fill-juicy-fish/96/null/external-bug-coding-and-development-soft-fill-soft-fill-juicy-fish-2.png" width="60" height="60"/><h1> &nbsp; Having Issues?<h1></summary>
 
 ### Common Issues:
-[<img src="https://img.shields.io/badge/-Fix%20Install.ps1%20Issue-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Fixes/FixInstallps1.md)
 
-[<img src="https://img.shields.io/badge/-Fix Virtualization and Virtual Machine Platform Error-%23EF2D5E?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Fixes/FixVirtError.md)
+[<img src="https://img.shields.io/badge/-Fix%20Install.ps1%20Issue-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/FixInstallps1.md)
 
-[<img src="https://img.shields.io/badge/-Fix%20Internet%20Issues-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Fixes/FixInternet.md)
+[<img src="https://img.shields.io/badge/-Fix Virtualization and Virtual Machine Platform Error-%23EF2D5E?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/FixVirtError.md)
 
-[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073CF9-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Fixes/Fix%20Error%200x80073CF9.md)
+[<img src="https://img.shields.io/badge/-Fix%20Internet%20Issues-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/FixInternet.md)
 
-[<img src="https://img.shields.io/badge/-Fix%20Path%20Too%20Long-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Fixes/FixPathTooLong.md)
+[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073CF6-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/Fix%20Error%200x80073CF6.md)
+
+[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073CF9-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/Fix%20Error%200x80073CF9.md)
+
+[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073D10-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/Fix%20Error%200x80073D10.md)
+
+[<img src="https://img.shields.io/badge/-Fix%20Path%20Too%20Long-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/FixPathTooLong.md)
+
+[<img src="https://img.shields.io/badge/-Fix%20Missing%20Icons%20Issue-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/MissingIcons.md)
 
 </details>  
 
