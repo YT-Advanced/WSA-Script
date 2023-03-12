@@ -75,3 +75,23 @@ jobs:
     uses: ./.github/workflows/build.yml
     if: ${{ needs.check.outputs.SHOULD_BUILD == 'yes' }}
     secrets: inherit
+
+  hashes:
+    name: Generate release hashes
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Generate Release Hashes
+        uses: MCJack123/ghaction-Generate-Release-Hashes@v4
+        with:
+          file-name: hashes.txt
+          get-assets: "true"
+      - name: Upload a Release Asset
+        uses: shogo82148/actions-upload-release-asset@v1.6.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: hashes.txt
+          asset_name: sha256-hashes.txt
+          asset_content_type: text/plain
