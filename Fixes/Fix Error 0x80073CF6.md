@@ -21,12 +21,12 @@ In E:\WSA\Install.ps1:102 Character:1
 
 **1. Ensure the partition/drive you are installing from is NTFS**
 
-**2. Redownload WSA Build .zip (sometime the files can be corrupted during download and extraction)**
+**2. Redownload WSA .zip file on [Release page](https://github.com/YT-Advanced/WSA-Script/releases/latest) (sometime the files can be corrupted during download and extraction)**
 
-**3. Delete all folders containing WindowsSubsystemForAndroid from "C:\ProgramData\Microsoft\Windows\AppRepository"**
-
-**4. Delete all folders containing WindowsSubsystemForAndroid from "C:\ProgramData\Microsoft\Windows\WindowsApps\"**
-
-**5. Delete all folders containing WindowsSubsystemForAndroid from "%localappdata%\ProgramData\Packages"**
-
-**6. Restart your Computer**
+**3. Delete all folders containing WindowsSubsystemForAndroid from these path:
+```
+C:\ProgramData\Microsoft\Windows\AppRepository\
+C:\ProgramData\Microsoft\Windows\WindowsApps\
+"%LOCALAPPDATA%\ProgramData\Packages
+```
+**6. Restart your Computer and rerun the `Run.bat` file**
