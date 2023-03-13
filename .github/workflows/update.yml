@@ -34,7 +34,7 @@ jobs:
           msg = ""
           if currentver != latestver:
               build = True
-              msg="Update WSA to v" + latestver
+              msg="Update WSA Version from `v" + currentver + "` to `v" + latestver + "`"
               file = open('wsa.appversion', 'w')
               file.write(latestver)
               file.close()
@@ -42,7 +42,7 @@ jobs:
           latestver = json.loads(requests.get(f"https://github.com/topjohnwu/magisk-files/raw/master/stable.json").content)['magisk']['version']
           if currentver != latestver:
               build = True
-              msg = "Update to Magisk v" + latestver
+              msg="Update Magisk Version from `v" + currentver + "` to `v" + latestver + "`"
               file = open('magisk.appversion', 'w')
               file.write(latestver)
               file.close()
@@ -54,19 +54,14 @@ jobs:
               with open(env_file, "a") as wr:
                   wr.write("SHOULD_BUILD=no")
       
-      - name: Create branch if not found
-        if: ${{ env.SHOULD_BUILD == 'yes'}}
-        run: |
-          git checkout -f update || git switch --discard-changes --orphan update
-
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v4.16.0
         if: ${{ env.SHOULD_BUILD == 'yes'}}
         with:
           branch: update
-          skip_checkout: true
-          skip_dirty_check: true
+          push_options: '--force'
           file_pattern: '*.appversion'
           commit_message: ${{ env.MSG }}
+          create_branch: true
           
       - name: Prepare release tag
         if: ${{ env.SHOULD_BUILD == 'yes'}}
@@ -78,7 +73,7 @@ jobs:
         uses: softprops/action-gh-release@v0.1.15
         with:
           tag_name: ${{ steps.date.outputs.date }}
-          body: "SHA256 checksum\n```"
+          body: "# Changelog\n### ${{ env.MSG }}\n### SHA256 Checksum\n```"
 
     outputs:
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
