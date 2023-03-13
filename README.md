@@ -95,14 +95,19 @@
 
 1. Go to the [Releases page](https://github.com/YT-Advanced/WSA-Script/releases/latest)
 2. In the latest release, go to the Assets section and download the Windows Subsystem For Android™ version of your choosing (do not download "Source code")
-3. Extract the zip file
-4. Delete the zip file
-5. Move the newly extracted folder to a suitable location (Documents folder is a good choice), as you will need to keep the folder on your PC to use MagiskOnWSA
+
+> **Note** : 
+> If you want to download WSA with KernelSU or Magisk Delta, please go to [![Action Tab](https://github.com/YT-Advanced/WSA-Script/actions/workflows/custom_build.yml/badge.svg)](https://github.com/YT-Advanced/WSA-Script/actions/workflows/custom_build.yml) and download the package from the Action. 
+
+3. Check integrity of downloaded file by [Follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/Checksum.md)
+4. Extract the zip file
+5. Delete the zip file
+6. Move the newly extracted folder to a suitable location (Documents folder is a good choice), as you will need to keep the folder on your PC to use MagiskOnWSA
 
 > **Note** :  
 > If you're updating WSA, merge the folders and replace the files for all items when asked
 
-6. Open the Windows Subsystem For Android™ folder: Search for and double-click `Run.bat`
+7. Open the Windows Subsystem For Android™ folder: Search for and double-click `Run.bat`
    - If you previously have a MagiskOnWSA installation, it will automatically uninstall the previous one while preserving all user data and install the new one, so don't worry about your data.
    - If the popup windows disappear without asking administrative permission and Windows Subsystem For Android™ is not installed successfully, you should manually run Install.ps1 as administrator:
       
@@ -121,10 +126,10 @@
       - The script will run and Windows Subsystem For Android™ will be installed
       - If this workaround does not work, your PC is not supported for WSA
       
-7. Once the installation process completes, Windows Subsystem For Android™ will launch (if this is a first-time install, a window asking for consent to diagnositic information will be shown instead. Sometimes two identical windows will show, this is fine and nothing bad happens if you click OK in both windows)
-8. Click on the PowerShell window, then press any key on the keyboard, the PowerShell window should close
-9. Close File Explorer
-10. **Enjoy**
+8. Once the installation process completes, Windows Subsystem For Android™ will launch (if this is a first-time install, a window asking for consent to diagnositic information will be shown instead. Sometimes two identical windows will show, this is fine and nothing bad happens if you click OK in both windows)
+9. Click on the PowerShell window, then press any key on the keyboard, the PowerShell window should close
+10. Close File Explorer
+11. **Enjoy**
 
 &nbsp;
 
@@ -283,6 +288,10 @@
    <summary><img style="float: right;" src="https://img.icons8.com/external-xnimrodx-lineal-color-xnimrodx/96/null/external-guide-education-xnimrodx-lineal-color-xnimrodx.png" width="60" height="60"/><h1> &nbsp; Usage Guides<h1></summary>
 
 &nbsp;
+
+
+### Check Integrity Guide:
+[<img src="https://img.shields.io/badge/-HOW%20TO%20CHECK%20INTEGRITY%20OF%20DOWNLOAD%20PACKAGES-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/Checksum.md)
 
 ### Install KernerSU:
 [<img src="https://img.shields.io/badge/-How%20to%20install%20KernelSU%20Manager-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/KernelSU.md)
