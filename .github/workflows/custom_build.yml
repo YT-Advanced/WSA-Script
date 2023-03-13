@@ -70,7 +70,6 @@ jobs:
                 break;
             }
             core.setOutput("matrix",JSON.stringify(matrix));
-
   custbuild:
     name: Build WSA
     runs-on: ubuntu-latest
@@ -89,7 +88,6 @@ jobs:
           wget -P /home/runner/.cache/winetricks/msxml6/ https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_REF_NAME}/wine/.cache/winetricks/msxml6/msxml6-KB973686-enu-amd64.exe
           pip list --disable-pip-version-check | grep -E "^requests " >/dev/null 2>&1 || python3 -m pip install requests
           winetricks list-installed | grep -E "^msxml6" >/dev/null 2>&1 || winetricks msxml6 || abort
-
       - name: Grant exec permission to script 👑
         run: chmod +x ./scripts/build.sh
 
@@ -107,7 +105,9 @@ jobs:
           
           ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${{ inputs.gapps_brand }} --gapps-variant ${opts[GAPPS_VAR,${{ inputs.gapps_var }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
       - name: File Checksum ✔️
-        run: sha256sum ./output/${{ steps.wsa.outputs.artifact }}${{ inputs.compression }} >> ./output/sha256-checksum.txt
+        run: |
+          cd ./output/
+          sha256sum ${{ steps.wsa.outputs.artifact }}${{ inputs.compression }} >> sha256-checksum.txt
       - name: Upload Artifact 🤌
         uses: actions/upload-artifact@v3
         with:
