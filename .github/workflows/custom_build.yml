@@ -107,7 +107,7 @@ jobs:
       - name: File Checksum ✔️
         run: |
           cd ./output/
-          sha256sum ${{ steps.wsa.outputs.artifact }}${{ inputs.compression }} >> sha256-checksum.txt
+          sha256sum '${{ steps.wsa.outputs.artifact }}${{ inputs.compression }}' >> sha256-checksum.txt
       - name: Upload Artifact 🤌
         uses: actions/upload-artifact@v3
         with:
