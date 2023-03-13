@@ -27,12 +27,14 @@ jobs:
           }, verify=False) # source site has expired cert
           html = BeautifulSoup(res.content, "lxml")
           latestver = html.find("a", string=re.compile("MicrosoftCorporationII\.WindowsSubsystemForAndroid_.*\.msixbundle")).text
+          latestver = latestver.replace('MicrosoftCorporationII.WindowsSubsystemForAndroid_', '')
+          latestver = latestver.replace('_neutral_~_8wekyb3d8bbwe.msixbundle', '')
           currentver = requests.get(f"https://raw.githubusercontent.com/${{github.repository}}/update/wsa.appversion").text
           build = False
           msg = ""
           if currentver != latestver:
               build = True
-              msg="Update WSA to newest version"
+              msg="Update WSA to v" + latestver
               file = open('wsa.appversion', 'w')
               file.write(latestver)
               file.close()
@@ -50,7 +52,7 @@ jobs:
                   wr.write("SHOULD_BUILD=yes\nMSG=" + msg)
           else:
               with open(env_file, "a") as wr:
-                  wr.write("SHOULD_BUILD=no" + msg)
+                  wr.write("SHOULD_BUILD=no")
       
       - name: Create branch if not found
         if: ${{ env.SHOULD_BUILD == 'yes'}}
@@ -62,6 +64,7 @@ jobs:
         with:
           branch: update
           skip_checkout: true
+          skip_dirty_check: true
           file_pattern: '*.appversion'
           commit_message: ${{ env.MSG }}
           
