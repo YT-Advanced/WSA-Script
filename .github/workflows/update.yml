@@ -64,6 +64,18 @@ jobs:
           skip_checkout: true
           file_pattern: '*.appversion'
           commit_message: ${{ env.MSG }}
+          
+      - name: Prepare release tag
+        if: ${{ env.SHOULD_BUILD == 'yes'}}
+        id: date
+        run: echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
+        
+      - name: Add text format to release
+        if: ${{ env.SHOULD_BUILD == 'yes'}}
+        uses: softprops/action-gh-release@v0.1.15
+        with:
+          tag_name: ${{ steps.date.outputs.date }}
+          body: "SHA256 checksum\n```"
 
     outputs:
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
