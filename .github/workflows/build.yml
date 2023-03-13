@@ -1,4 +1,4 @@
-name: Build WSA Magisk
+name: Auto Build
 on: [workflow_call]
 
 concurrency: 
@@ -40,13 +40,16 @@ jobs:
 
       - name: Prepare release tag
         id: date
-        run: echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
+        run: |
+          echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
+          cd ./output/
+          echo "checksum=$(sha256sum '${{ steps.wsa.outputs.artifact }}.${{ matrix.compress-format }}')" >> $GITHUB_OUTPUT
 
-      - name: Upload build to release
-        uses: svenstaro/upload-release-action@v2
+      - name: Update build to release
+        uses: softprops/action-gh-release@v0.1.15
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./output/${{ steps.wsa.outputs.artifact }}.${{ matrix.compress-format }}
-          tag: ${{ steps.date.outputs.date }}
-          overwrite: true
-          file_glob: true
+          files: ./output/${{ steps.wsa.outputs.artifact }}.${{ matrix.compress-format }}
+          fail_on_unmatched_files: true
+          append_body: true
+          tag_name: ${{ steps.date.outputs.date }}
+          body: ${{ steps.date.outputs.checksum }}
