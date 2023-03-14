@@ -13,6 +13,9 @@ jobs:
       - name: Dependencies
         run: |
           pip3 install beautifulsoup4 lxml
+      - name: Create branch if not found
+        run: |
+          git checkout -f update || git switch --discard-changes --orphan update
       - name: Get app version
         shell: python
         run: |
@@ -30,22 +33,26 @@ jobs:
           latestver = latestver.replace('MicrosoftCorporationII.WindowsSubsystemForAndroid_', '')
           latestver = latestver.replace('_neutral_~_8wekyb3d8bbwe.msixbundle', '')
           currentver = requests.get(f"https://raw.githubusercontent.com/${{github.repository}}/update/wsa.appversion").text
+          latestver = latestver.replace('\n', '')
+          currentver = currentver.replace('\n', '')
           build = False
           msg = ""
           if currentver != latestver:
               build = True
               msg="Update WSA Version from `v" + currentver + "` to `v" + latestver + "`"
-              file = open('wsa.appversion', 'w')
-              file.write(latestver)
-              file.close()
+          file = open('wsa.appversion', 'w')
+          file.write(latestver)
+          file.close()
           currentver = requests.get(f"https://raw.githubusercontent.com/${{github.repository}}/update/magisk.appversion").text
           latestver = json.loads(requests.get(f"https://github.com/topjohnwu/magisk-files/raw/master/stable.json").content)['magisk']['version']
+          latestver = latestver.replace('\n', '')
+          currentver = currentver.replace('\n', '')
           if currentver != latestver:
               build = True
               msg="Update Magisk Version from `v" + currentver + "` to `v" + latestver + "`"
-              file = open('magisk.appversion', 'w')
-              file.write(latestver)
-              file.close()
+          file = open('magisk.appversion', 'w')
+          file.write(latestver)
+          file.close()
               
           if (build):
               with open(env_file, "a") as wr:
@@ -53,7 +60,7 @@ jobs:
           else:
               with open(env_file, "a") as wr:
                   wr.write("SHOULD_BUILD=no")
-      
+                  
       - uses: stefanzweifel/git-auto-commit-action@v4.16.0
         if: ${{ env.SHOULD_BUILD == 'yes'}}
         with:
