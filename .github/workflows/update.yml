@@ -53,7 +53,16 @@ jobs:
           file = open('magisk.appversion', 'w')
           file.write(latestver)
           file.close()
-              
+          currentver = requests.get(f"https://raw.githubusercontent.com/${{github.repository}}/update/gapps.appversion").text
+          latestver = json.loads(requests.get(f"https://api.github.com/repos/s1204IT/MindTheGappsBuilder/releases/latest").content)['name']
+          latestver = latestver.replace('\n', '')
+          currentver = currentver.replace('\n', '')
+          if currentver != latestver:
+              build = True
+              msg="Update MindTheGapps Version from `v" + currentver + "` to `v" + latestver + "`"
+          file = open('gapps.appversion', 'w')
+          file.write(latestver)
+          file.close()
           if (build):
               with open(env_file, "a") as wr:
                   wr.write("SHOULD_BUILD=yes\nMSG=" + msg)
