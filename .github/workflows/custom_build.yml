@@ -82,12 +82,8 @@ jobs:
       - name: Install Dependencies 🧑‍🏭
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y whiptail lzip wine patchelf e2fsprogs python3-pip aria2 p7zip-full attr xz-utils unzip cabextract
-          sudo wget -P /usr/local/bin/ https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
-          sudo chmod +x /usr/local/bin/winetricks
-          wget -P /home/runner/.cache/winetricks/msxml6/ https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_REF_NAME}/wine/.cache/winetricks/msxml6/msxml6-KB973686-enu-amd64.exe
+          sudo apt-get install -y lzip patchelf e2fsprogs aria2 python3 python3-pip aria2 p7zip-full attr unzip whiptail xz-utils qemu-utils
           python3 -m pip install -r scripts/requirements.txt -q
-          winetricks list-installed | grep -E "^msxml6" >/dev/null 2>&1 || winetricks msxml6 || abort
       - name: Grant exec permission to script 👑
         run: chmod +x ./scripts/build.sh
 
