@@ -84,7 +84,6 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y lzip patchelf e2fsprogs aria2 python3 python3-pip aria2 p7zip-full attr unzip whiptail xz-utils qemu-utils
           python3 -m pip install -r scripts/requirements.txt -q
-          winetricks list-installed | grep -E "^msxml6" >/dev/null 2>&1 || winetricks msxml6 || abort
       - name: Grant exec permission to script 👑
         run: chmod +x ./scripts/build.sh
 
