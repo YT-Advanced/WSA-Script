@@ -45,7 +45,19 @@ function DownloadIcuDLL {
             DownloadIcuDLL
         }
 }
+
+Function Test-CommandExists {
+    Param ($command)
+    $oldPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'stop'
+    try { if (Get-Command $command) { RETURN $true } }
+    Catch { Write-Host "$command does not exist"; RETURN $false }
+    Finally { $ErrorActionPreference = $oldPreference }
+} #end function test-CommandExists
+
 function Finish {
+    Write-Host "Optimizing VHDX size...."
+    If (Test-CommandExists Optimize-VHD) { Optimize-VHD ".\*.vhdx" -Mode Full }
     Clear-Host
     Start-Process "wsa://com.topjohnwu.magisk"
     Start-Process "wsa://io.github.huskydg.magisk"
@@ -76,7 +88,11 @@ If (((Test-Path -Path $FileList) -Eq $false).Count) {
 }
 
 If ((Test-Path -Path "MakePri.ps1") -Eq $true) {
-    Start-Process powershell.exe -Wait -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory $PSScriptRoot
+    $ProcMakePri = Start-Process powershell.exe -PassThru -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory $PSScriptRoot
+    $ProcMakePri.WaitForExit()
+    If ($ProcMakePri.ExitCode -Ne 0) {
+        Write-Warning "Failed to merge resources, WSA Seetings will always be in English`r`n"
+    }
 }
 
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
@@ -162,6 +178,7 @@ if ($winver.Contains("10")) {
 
 Clear-Host
 Write-Host "Installing MagiskOnWSA..."
+If (Test-CommandExists WsaClient) { Start-Process WsaClient -Wait -Args "/shutdown" }
 Add-AppxPackage -ForceApplicationShutdown -ForceUpdateFromAnyVersion -Register .\AppxManifest.xml
 If ($?) {
     Finish
