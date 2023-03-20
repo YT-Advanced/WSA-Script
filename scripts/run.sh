@@ -77,7 +77,6 @@ if [ "$ROOT_SOL" = "magisk" ]; then
         Radiolist '([title]="Magisk version"
                     [default]="stable")' \
             'stable' "Stable Channel" 'on' \
-            'delta' "Delta Channel by HuskyDG" 'off' \
             'beta' "Beta Channel" 'off' \
             'canary' "Canary Channel" 'off' \
             'debug' "Canary Channel Debug Build" 'off'
