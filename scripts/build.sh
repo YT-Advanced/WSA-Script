@@ -905,7 +905,7 @@ if [ "$COMPRESS_OUTPUT" ] || [ -n "$COMPRESS_FORMAT" ]; then
         fi
     elif [ "$COMPRESS_FORMAT" = "zip" ]; then
         echo "Compressing with zip"
-        7z a -tzip -mx=9 "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name" || abort
+        7z a -tzip "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name" || abort
     fi
 else
     rm -rf "${OUTPUT_PATH:?}" || abort
