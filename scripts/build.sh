@@ -896,7 +896,7 @@ if [ "$COMPRESS_OUTPUT" ] || [ -n "$COMPRESS_FORMAT" ]; then
     rm -f "${OUTPUT_PATH:?}" || abort
     if [ "$COMPRESS_FORMAT" = "7z" ]; then
         echo "Compressing with 7z"
-        7z a "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
+        7z a -mx=9 "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
     elif [ "$COMPRESS_FORMAT" = "xz" ]; then
         echo "Compressing with tar xz"
         if ! (tar -cP -I 'xz -9 -T0' -f "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name"); then
@@ -905,7 +905,7 @@ if [ "$COMPRESS_OUTPUT" ] || [ -n "$COMPRESS_FORMAT" ]; then
         fi
     elif [ "$COMPRESS_FORMAT" = "zip" ]; then
         echo "Compressing with zip"
-        7z -tzip a "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name" || abort
+        7z a -tzip -mx=9 "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name" || abort
     fi
 else
     rm -rf "${OUTPUT_PATH:?}" || abort
