@@ -8,8 +8,8 @@
 
 ## Solution
 
-**1. To ensure that you download the correct package for your CPU archtecture, go to the [Release](https://github.com/YT-Advanced/WSA-Script/releases/latest) of this repository**
+**1. To ensure that you download the correct package for your CPU archtecture, go to the [Release](https://github.com/YT-Advanced/WSA-Script/releases/latest) of this repository then check again**
 
 **2. Click on the package matching your Operating System (OS) and CPU Archetecture**
 
-**3. Download then install the package by the [Installation guide](https://github.com/YT-Advanced/WSA-Script#--installation) in README.md file**
+**3. Download then install the package by follow the [Installation guide](https://github.com/YT-Advanced/WSA-Script#--installation) in README.md file**
