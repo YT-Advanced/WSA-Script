@@ -17,32 +17,29 @@
  </br> 
   
  --- 
- ## Solution 1: Previous installation is blocking installation 
+ ## Prequisite Steps: 
   
  **1. Ensure the partition/drive you are installing from is NTFS** 
   
- **2. Redownload WSA Build in [Release](https://github.com/YT-Advanced/WSA-Script/releases/latest) (sometime the files can be corrupted during download and extraction)** 
+ **2. Redownload WSA Build .zip (sometime the files can be corrupted during download and extraction)** 
   
- **3. Delete all folders containing "WindowsSubsystemForAndroid" in the following directories/paths:**  
+ **3. If you have installed WSA prior, make sure that it has been uninstalled and delete all folders containing "WindowsSubsystemForAndroid" from the following directories/paths and the subdirectories within:**  
   
  <br> 
-
-``` 
-C:\ProgramData\Microsoft\Windows\AppRepository
-C:\ProgramData\Microsoft\Windows\WindowsApps
-%localappdata\ProgramData\Packages
-```
-
+  
+    - *C:\ProgramData\Microsoft\Windows\AppRepository* 
+     
+    - *C:\ProgramData\Microsoft\Windows\WindowsApps* 
+     
+    - *%localappdata\ProgramData\Packages* 
+  
  <br> 
   
  **4. Restart your Computer** 
   
  <br> 
   
- **Hope this works for you!** 
-  
- --- 
-If the issue has been fixed, then there is no need to follow through the rest of the guide. 
+ If the issue has been fixed, then there is no need to follow through the rest of the guide. 
  However, if you have the same issue, it is vital that you obtain the logs and try to decipher what is causing the error 
   
  To obtain the logs (admin privilege required): 
@@ -50,15 +47,14 @@ If the issue has been fixed, then there is no need to follow throug
  1. Open a PowerShell window and change working directory to your Windows Subsystem For Android™ directory. 
       
  2. Run the command below in PowerShell. This should fail with an ActivityID, which is a UUID required for the next step. 
-
-```Powershell 
+       ```Powershell 
         Add-AppxPackage -ForceApplicationShutdown -ForceUpdateFromAnyVersion -Register .\AppxManifest.xml 
-```    
+       ```    
  3. Run the command below in PowerShell. This should print the log of the failed operation. 
         
-```Powershell 
+       ```Powershell 
         Get-AppPackageLog -ActivityID <UUID> 
-``` 
+       ``` 
         
  </br> 
  </br> 
@@ -110,8 +106,4 @@ If the issue has been fixed, then there is no need to follow throug
   
  ***Or*** 
   
- **2.** If you encounter this problem when installing using prebuilt builds from [Releases](https://github.com/YT-Advanced/WSA-Script/releases/latest) from this repo, try redownloading the latest build. If the issue persists, report to the [Issues](https://github.com/YT-Advanced/WSA-Script/issues) and I will be happy to assist you 
-
- --- 
-  
- **Hope these fixes work for you!**
+ **2.** If you encounter this problem when installing using prebuilt builds from [Releases](https://github.com/YT-Advanced/WSA-Script/releases/latest) from this repo, try redownloading the latest build. If the issue persists, report to the [Issues](https://github.com/YT-Advanced/WSA-Script/issues) and I will be happy to assist you
