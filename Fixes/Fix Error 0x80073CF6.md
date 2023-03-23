@@ -50,14 +50,15 @@ If the issue has been fixed, then there is no need to follow throug
  1. Open a PowerShell window and change working directory to your Windows Subsystem For Android™ directory. 
       
  2. Run the command below in PowerShell. This should fail with an ActivityID, which is a UUID required for the next step. 
-       ```Powershell 
+
+```Powershell 
         Add-AppxPackage -ForceApplicationShutdown -ForceUpdateFromAnyVersion -Register .\AppxManifest.xml 
-       ```    
+```    
  3. Run the command below in PowerShell. This should print the log of the failed operation. 
         
-       ```Powershell 
+```Powershell 
         Get-AppPackageLog -ActivityID <UUID> 
-       ``` 
+``` 
         
  </br> 
  </br> 
