@@ -90,7 +90,14 @@ jobs:
         with:
           tag_name: ${{ steps.date.outputs.date }}
           body: "# Changelog\n### ${{ env.MSG }}\n### SHA256 Checksum\n```"
-
+      - name: Delete old workflow run
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 1
+          keep_minimum_runs: 1
+          delete_workflow_pattern: "Check update"
     outputs:
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
 
@@ -100,10 +107,4 @@ jobs:
     needs: check
     uses: ./.github/workflows/build.yml
     if: ${{ needs.check.outputs.SHOULD_BUILD == 'yes' }}
-    secrets: inherit
-
-  clear-workflow:
-    permissions: write-all
-    needs: check
-    uses: ./.github/workflows/workflow.yml
     secrets: inherit
