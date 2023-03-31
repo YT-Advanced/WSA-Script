@@ -101,3 +101,9 @@ jobs:
     uses: ./.github/workflows/build.yml
     if: ${{ needs.check.outputs.SHOULD_BUILD == 'yes' }}
     secrets: inherit
+
+  clear-workflow:
+    permissions: write-all
+    needs: check
+    uses: ./.github/workflows/workflow.yml
+    secrets: inherit
