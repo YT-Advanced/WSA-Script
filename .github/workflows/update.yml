@@ -54,7 +54,7 @@ jobs:
           file.write(latestver)
           file.close()
           currentver = requests.get(f"https://raw.githubusercontent.com/${{github.repository}}/update/gapps.appversion").text
-          latestver = json.loads(requests.get(f"https://api.github.com/repos/s1204IT/MindTheGappsBuilder/releases/latest").content)['name']
+          latestver = json.loads(requests.get(f"https://api.github.com/repos/Howard20181/MindTheGappsBuilder/releases/latest").content)['name']
           latestver = latestver.replace('\n', '')
           currentver = currentver.replace('\n', '')
           if currentver != latestver:
