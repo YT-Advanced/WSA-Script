@@ -1,7 +1,7 @@
 # WSA-Script
-### MagiskOnWSA (For Windows™ 10 and 11) by @YT-Advanced
+### MagiskOnWSA (For Windows™ 10 and 11) by [@YT-Advanced](https://github.com/YT-Advanced/)
 #### Windows Subsystem For Android™ (WSA) with Google Play Services and Magisk 
-<details>     
+<details>
    <summary><h3> &nbsp; ❓Want to build your custom build❓ <h3></summary>
       
 
@@ -12,9 +12,10 @@
 |**If you want to create your Custom Build, please follow the instructions set out clearly, to avoid the repo from being taken down as a result of a misuse of Github Actions due to the large number of forks.**|
       
 ---
-#### **1. Check the version from [Release](https://github.com/YT-Advanced/WSA-Script/releases/latest) and [Action Tab](https://github.com/YT-Advanced/WSA-Script/actions/workflows/custom_build.yml) first.  If it doesn't have the version you want, continue to follow this guide. If it does, then feel free to use those prebuild WSA builds
+#### **1. Star this repos (I will happy if you do that)**
+#### **2. Check the version from [Release](https://github.com/YT-Advanced/WSA-Script/releases/latest) and [Action Tab](https://github.com/YT-Advanced/WSA-Script/actions/workflows/custom_build.yml) first.  If it doesn't have the version you want, continue to follow this guide. If it does, then feel free to use those prebuild WSA builds**
       
-#### **2. Log into your Github Account (this is necessary) and in the home page, click on the button (shown below) and select "import a repository" or go to [this page directly](https://github.com/new/import)**
+#### **3. Log into your Github Account (this is necessary) and in the home page, click on the button (shown below) and select "import a repository" or go to [this page directly](https://github.com/new/import)**
    ***Step 1:***
    
    <img src="https://user-images.githubusercontent.com/68516357/221636520-78d0716a-247b-4034-aa9d-bdbe2277950c.png" style="width: 350px;"/>
@@ -24,64 +25,65 @@
    ![image](https://user-images.githubusercontent.com/68516357/221641202-e3ef4deb-f2dd-46e6-82c8-fb4767f82e99.png)
    
 ---   
-#### **3. [Copy the URL of this Repo](https://github.com/YT-Advanced/WSA-Script) and paste it into the the text box below and press "Import"** 
+#### **4. [Copy the URL of this Repo](https://github.com/YT-Advanced/WSA-Script) and paste it into the the text box below and press "Import"** 
 
 ![image](https://user-images.githubusercontent.com/68516357/221643582-72d71f68-8f53-48d9-a940-692a54d42098.png)
 
 ---
-#### **4. Go to the **Setting** tab in your newly imported repo and enable "Github Actions"**
+#### **5. Go to the **Setting** tab in your newly imported repo and enable "Github Actions"**
 
 ![Settings](https://user-images.githubusercontent.com/68516357/222214308-b52b1c6f-a60b-44ef-9ce0-bc335087e3a2.png)
 ![MRq9WD3SO2](https://user-images.githubusercontent.com/68516357/222215598-30d68ad3-9700-4061-bba4-815b3befcb10.png)
 
 
 ---
-#### **5. Now, Go to the **Action** tab**
+#### **6. Now, Go to the **Action** tab**
 
 ![CvYhP0B0CI](https://user-images.githubusercontent.com/68516357/222221960-f48ab9c3-eb77-4cb0-b932-5cd343381048.png)
 
     
 ---
-#### **6. In the left sidebar, click the **Custom Build** workflow.**
+#### **7. In the left sidebar, click the **Custom Build** workflow.**
     
 ![image](https://user-images.githubusercontent.com/68516357/222221307-8a4571d2-ac3e-410b-b999-0eb62b14d8d5.png)
     
 ---
-#### **7. Above the list of workflow runs, select **Run workflow****
+#### **8. Above the list of workflow runs, select **Run workflow****
     
 ![image](https://user-images.githubusercontent.com/68516357/222222850-f991890c-5a80-4cc2-b83d-0ef35c24a79e.png)
     
 ---
-#### **8. Select your desired options such as ***Magisk Version***, ***WSA Release Channel + WSA Archetecture*** , ***GApps Varient*** and ***Compression Format*** then click **Run workflow****
+#### **9. Select your desired options such as ***Magisk Version***, ***WSA Release Channel + WSA Archetecture*** , ***GApps Varient*** and ***Compression Format*** then click **Run workflow****
     
 ![image](https://user-images.githubusercontent.com/68516357/222224185-abcfa0cf-c8c6-46e3-bc38-871c968b86f2.png)
     
 ---    
-#### **9. Wait for the action to complete and download the artifact**
+#### **10. Wait for the action to complete and download the artifact**
 
 **DO NOT download it via multithread downloaders like IDM**
 
 ![image](https://user-images.githubusercontent.com/68516357/222224469-5748b78a-158e-46ff-9f65-317dbb519aac.png)
 
 ---
-#### **10. Install like normal using the instructions in this repository** and most important of all....
+#### **11. Install like normal using [the instructions](https://github.com/YT-Advanced/WSA-Script#--installation) in this repository** and most important of all....
 
 </details>
 
 ## Requirements
-|     <img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/Windows_11_logo.svg" width=40% height=40%>        |  <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Windows_10_Logo.svg" width=40% height=40%>     |
-|-----------------------|-----------------------|
-| - RAM: 6 GB (not recommended), 8 GB (minimum) and 16 GB (recommended).|- RAM: 6 GB (not recommended), 8 GB (minimum) and 16 GB (recommended).|
-|- Processor: Your PC should meet the basic Windows™ 11 requirements i.e Core i3 8th Gen, Ryzen 3000, Snapdragon 8c, or above.| - Processor: N/A (This is a bit of a hit or miss)
-|- Processor type: x64 or ARM64.| - Processor type: x64 or ARM64.|
-|- GPU: Any compatible Intel, AMD or Nvidia GPU <br /> GPU Performance may vary depending on its compatibility with Windows Subsystem For Android™ <br /><br />Nvidia GPUs or Intel HD Graphics older than v530 are known to cause problems. If Windows Subsystem For Android™ does not start or there are graphical glitches when these GPU is used, [follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/ChangingGPU.md) to switch to another iGPU/dGPU/eGPU that you may have or Microsoft Basic Renderer|- GPU: Any compatible Intel, AMD or Nvidia GPU <br /> GPU Performance may vary depending on its compatibility with Windows Subsystem For Android™ <br /><br />Nvidia GPUs or Intel HD Graphics older than v530 are known to cause problems. If Windows Subsystem For Android™ does not start or there are graphical glitches when these GPU is used, [follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/ChangingGPU.md) to switch to another iGPU/dGPU/eGPU that you may have or Microsoft Basic Renderer|
-|- Virtual Machine Platform Enabled: <br /> This optional setting is for virtualization and you can enable the setting from Control Panel/ Optional Features.| - Virtual Machine Platform Enabled: <br /> This optional setting is for virtualization and you can enable the setting from Control Panel/ Optional Features.|
-|- Storage: Solid-state drive (SSD) <br /> - Hard Disk Drive (HDD) (NOT RECOMMENDED).| - Storage: Solid-state drive (SSD) <br /> - Hard Disk Drive (HDD) (NOT RECOMMENDED).|
-| - Partition: NTFS <br /> Windows Subsystem For Android™ can only be installed on a NTFS partition, not on an exFAT partition |- Partition: NTFS <br /> Windows Subsystem For Android™ can only be installed on a NTFS partition, not on an exFAT partition|
-|- Windows™ 11: Build 22000.526 or higher.| - Windows™ 10: 20H1 10.0.19041.264 or higher. <br /> <br /> However, you need to install [KB5014032](https://www.catalog.update.microsoft.com/Search.aspx?q=KB5014032) then install [KB5022834](https://www.catalog.update.microsoft.com/Search.aspx?q=KB5022834) to use WSA |
-|- The Computer must support virtualization and be enabled in BIOS/UEFI and Optional Features. [Guide](https://support.microsoft.com/en-us/windows/enable-virtualization-on-windows-11-pcs-c5578302-6e43-4b4b-a449-8ced115f58e1)|- The Computer must support virtualization and be enabled in BIOS/UEFI and Optional Features. [Guide](https://support.microsoft.com/en-us/windows/enable-virtualization-on-windows-11-pcs-c5578302-6e43-4b4b-a449-8ced115f58e1)|
+|Component|     <img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/Windows_11_logo.svg" style="width: 200px;"/>|  <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Windows_10_Logo.svg" style="width: 200px;"/>     |
+|-----------------|-----------------------|-----------------------|
+|Windows Version|Windows™ 11: Build 22000.526 or higher.|Windows™ 10: 20H1 Build 19041.264 or higher. <br /> <br /> **You must install [KB5014032](https://www.catalog.update.microsoft.com/Search.aspx?q=KB5014032) then install [KB5022834](https://www.catalog.update.microsoft.com/Search.aspx?q=KB5022834) to use WSA on these Windows 10 builds** <br /> <br /> |
+|RAM|6 GB (not recommended), 8 GB (minimium) and 16 GB (recommended).|6 GB (not recommended), 8 GB (minimium) and 16 GB (recommended).|
+|Processor|Your PC should meet the basic Windows™ 11 requirements i.e Core i3 8th Gen, Ryzen 3000, Snapdragon 8c, or above.|</br> This is a bit of a hit or miss, but it is highly recommended that your processor is listed in the [supported CPU lists for Windows 11 requirements](https://learn.microsoft.com/en-gb/windows-hardware/design/minimum/windows-processor-requirements)
+|Processor type|x64 or ARM64.|x64 or ARM64.|
+|GPU|- Any compatible Intel, AMD or Nvidia GPU that support Windows 11.<br />- If WSA does not start or there are graphical glitches when your GPU is used, [follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/ChangingGPU.md) to switch to another iGPU/dGPU/eGPU that you may have or Microsoft Basic Renderer|- Any compatible Intel, AMD or Nvidia GPU that support Windows 11.<br />- If WSA does not start or there are graphical glitches when your GPU is used, [follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/ChangingGPU.md) to switch to another iGPU/dGPU/eGPU that you may have or Microsoft Basic Renderer <br />
+|Storage| - Solid-state drive (SSD) <br /> Or Hard Disk Drive (HDD) (Not Recommended).|- Solid-state drive (SSD) <br /> Or Hard Disk Drive (HDD) (Not Recommended).|
+|Partition|NTFS <br /> Windows Subsystem For Android™ can only be installed on a NTFS partition, not on an exFAT partition |NTFS <br /> Windows Subsystem For Android™ can only be installed on a NTFS partition, not on an exFAT partition|
+|Windows Feature|- Virtual Machine Platform Enabled: <br /> This optional setting is for virtualization and you can enable the setting from Control Panel/ Optional Features.| - Virtual Machine Platform Enabled: <br /> This optional setting is for virtualization and you can enable the setting from Control Panel/ Optional Features.|
+|Virtualization|- The Computer must support virtualization and be enabled in BIOS/UEFI and Optional Features. [Guide](https://support.microsoft.com/en-us/windows/enable-virtualization-on-windows-11-pcs-c5578302-6e43-4b4b-a449-8ced115f58e1)|- The Computer must support virtualization and be enabled in BIOS/UEFI and Optional Features. [Guide](https://support.microsoft.com/en-us/windows/enable-virtualization-on-windows-11-pcs-c5578302-6e43-4b4b-a449-8ced115f58e1)|
 
 &nbsp;
+
 
 <details>     
    <summary><img style="float: right;" src="https://img.icons8.com/color/96/null/software-installer.png" width="60" height="60"/><h1> &nbsp; Installation<h1></summary>
