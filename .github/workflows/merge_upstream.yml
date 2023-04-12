@@ -36,18 +36,18 @@ jobs:
       - name: Merge changes from main
         run: |
           git pull https://github.com/YT-Advanced/WSA-Script main --no-edit
-      
-      - name: Restore workflow file (don't have permission to edit)
-        if: ${{ env.super_secret == '' }}
-        run: |
-          git restore --source=HEAD~1 .github/workflows/build.yml .github/workflows/custom_build.yml .github/workflows/merge_upstream.yml .github/workflows/update.yml .github/workflows/workflow.yml .github/workflows/shellcheck.yml .github/workflows/lock.yml .github/workflows/lock-closed-issues.yml
-          git commit -a -m "Revert changes"
-          
+
       - name: Compare changes
         id: compare
         run: |
           echo "changes=$(git diff --name-only HEAD origin/main | grep -v '.github/workflows/custom_build.yml' | grep -v '.github/workflows/build.yml' | grep -v '.github/workflows/lock-closed-issues.yml' | grep -v '.github/workflows/lock.yml' | grep -v '.github/workflows/merge_upstream.yml' | grep -v '.github/workflows/shellcheck.yml' | grep -v '.github/workflows/update.yml' | grep -v '.github/workflows/workflow.yml' | tr '\n' ' ')" >> $GITHUB_OUTPUT
           
+      - name: Restore workflow file
+        if: ${{ env.super_secret == '' && steps.compare.outputs.changes != '' }}
+        run: |
+          git restore --source=HEAD~1 .github/workflows/build.yml .github/workflows/custom_build.yml .github/workflows/merge_upstream.yml .github/workflows/update.yml .github/workflows/workflow.yml .github/workflows/shellcheck.yml .github/workflows/lock.yml .github/workflows/lock-closed-issues.yml
+          git commit -a -m "Revert changes"
+      
       - name: Push all changes
         if: ${{ steps.compare.outputs.changes != '' }}
         run: |
