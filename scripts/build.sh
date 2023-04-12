@@ -511,7 +511,7 @@ if [ "$GAPPS_BRAND" != "none" ] || [ "$ROOT_SOL" = "magisk" ]; then
         fi
         # shellcheck disable=SC1090
         source "$WSA_WORK_ENV" || abort
-        if [ "$MAGISK_VERSION_CODE" -lt 25211 ] && [ "$MAGISK_VER" != "stable" ] && [ -z ${CUSTOM_MAGISK+x} ]; then
+        if [ "$MAGISK_VERSION_CODE" -lt 25211 ] && [ "$MAGISK_VER" != "delta" ] && [ -z ${CUSTOM_MAGISK+x} ]; then
             echo "Please install Magisk v25211+"
             abort
         fi
