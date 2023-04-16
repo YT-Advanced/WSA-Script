@@ -79,11 +79,13 @@ jobs:
     steps:
       - name: Checkout ♻️
         uses: actions/checkout@v3
+      
       - name: Install Dependencies 🧑‍🏭
         run: |
           sudo apt-get update -y
           sudo apt-get install -y lzip patchelf e2fsprogs python3 python3-pip aria2 p7zip-full attr unzip whiptail xz-utils qemu-utils
           python3 -m pip install -r scripts/requirements.txt -q
+      
       - name: Grant exec permission to script 👑
         run: chmod +x ./scripts/build.sh
 
@@ -100,10 +102,12 @@ jobs:
           fi
           
           ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --gapps-variant ${opts[GAPPS_VAR,${{ inputs.gapps_var }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
+      
       - name: File Checksum ✔️
         run: |
           cd ./output/
           sha256sum '${{ steps.wsa.outputs.artifact }}${{ inputs.compression }}' >> sha256-checksum.txt
+      
       - name: Upload Artifact 🤌
         uses: actions/upload-artifact@v3
         with:
