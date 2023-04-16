@@ -11,13 +11,12 @@
 |**Therefore, don't fork this repository unless you're a developer and want to modify the code itself and/or want to contribute to this Github repository.**|
 |**If you want to create your Custom Build, please follow the instructions set out clearly, to avoid the repo from being taken down as a result of a misuse of Github Actions due to the large number of forks.**|
       
----
 #### **1. Star this repos (I will happy if you do that)**
 
----
+
 #### **2. Check the version from [Releases](https://github.com/MustardChef/WSABuilds/releases) first. If it does not have the version you want, continue to follow this guide. If it does, then feel free to use those prebuild WSA builds**
 
----      
+  
 #### **3. Log into your Github Account (this is necessary) and in the home page, click on the button (shown below) and select "import a repository" or go to [this page directly](https://github.com/new/import)**
    ***Step 3.1:***
    
