@@ -14,7 +14,7 @@
 #### **1. Star this repos (I will happy if you do that)**
 
 
-#### **2. Check the version from [Releases](https://github.com/MustardChef/WSABuilds/releases) first. If it does not have the version you want, continue to follow this guide. If it does, then feel free to use those prebuild WSA builds**
+#### **2. Check the version from [Releases](https://github.com/YT-Advanced/WSA-Scrpt/releases/latest) first. If it does not have the version you want, continue to follow this guide. If it does, then feel free to use those prebuild WSA builds**
 
   
 #### **3. Log into your Github Account (this is necessary) and in the home page, click on the button (shown below) and select "import a repository" or go to [this page directly](https://github.com/new/import)**
@@ -338,6 +338,8 @@
 [<img src="https://img.shields.io/badge/-Fix Virtualization and Virtual Machine Platform Error-%23EF2D5E?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/FixVirtError.md)
 
 [<img src="https://img.shields.io/badge/-Fix%20Internet%20Issues-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/FixInternet.md)
+      
+[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073CF0-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/Fix%20Error%200x80073CF0.md)
 
 [<img src="https://img.shields.io/badge/-Fix%20Error%200x80073CFD-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/Fix%20Error%200x80073CFD.md)
 
@@ -370,7 +372,6 @@
 - [WSAGAScript](https://github.com/ADeltaX/WSAGAScript): The first GApps integration script for WSA
 - [MagiskOnWSA](https://github.com/LSPosed/MagiskOnWSA): `Deprecated` Integrate Magisk root and Google Apps into WSA
 - [MagiskOnWSALocal](https://github.com/LSPosed/MagiskOnWSALocal): Integrate Magisk root and Google Apps into WSA
-- [WSA-Build](https://github.com/MustardChef/WSABuilds): Run Windows Subsystem For Android on your Windows 10 and Windows 11 PC using prebuilt binaries with Google Play Store (OpenGApps/ MindTheGapps) and/or Magisk or KernelSU (root solutions) built in.
 
 ***The repository is provided as a utility.***
 
