@@ -40,15 +40,15 @@ jobs:
 
       - name: File Checksum ✔️
         id: date
+        working-directory: output
         run: |
           echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
-          cd ./output/
           echo "checksum=$(sha256sum '${{ steps.wsa.outputs.artifact }}.${{ matrix.compress-format }}')" >> $GITHUB_OUTPUT
 
       - name: Update build to release 🤌
         uses: softprops/action-gh-release@v0.1.15
         with:
-          files: ./output/${{ steps.wsa.outputs.artifact }}.${{ matrix.compress-format }}
+          files: output/${{ steps.wsa.outputs.artifact }}.${{ matrix.compress-format }}
           fail_on_unmatched_files: true
           append_body: true
           tag_name: ${{ steps.date.outputs.date }}
