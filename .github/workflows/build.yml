@@ -20,11 +20,6 @@ jobs:
       - name: Checkout ♻️
         uses: actions/checkout@v3
 
-      - name: Install Dependencies 🧑‍🏭
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y ca-certificates lzip patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils
-
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -32,6 +27,12 @@ jobs:
           python-version: '3.x'
           cache: 'pip'
           cache-dependency-path: scripts/
+
+      - name: Install Dependencies 🧑‍🏭
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ca-certificates lzip patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils
+          python3 -m pip install --disable-pip-version-check -r scripts/requirements.txt --no-warn-script-location
 
       - name: Build WSA GAPPS ${{ matrix.root }} ${{ matrix.arch }} 🏗️
         id: wsa
