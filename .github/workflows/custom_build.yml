@@ -15,6 +15,11 @@ on:
         required: true
         options: ["Retail","Release Preview","Insider Slow","Insider Fast"]
         default: "Retail"
+      user_code:
+        type: string
+        description: User code for WSA Insider User (Optional)
+        required: false
+        default: ""
       root_sol:
         type: choice
         description: Root solution
@@ -80,14 +85,19 @@ jobs:
       - name: Checkout ♻️
         uses: actions/checkout@v3
       
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          check-latest: true
+          python-version: '3.x'
+          cache: 'pip'
+          cache-dependency-path: scripts/
+
       - name: Install Dependencies 🧑‍🏭
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y lzip patchelf e2fsprogs python3 python3-pip aria2 p7zip-full attr unzip whiptail xz-utils qemu-utils sudo
-          python3 -m pip install -r scripts/requirements.txt -q
-      
-      - name: Grant exec permission to script 👑
-        run: chmod +x ./scripts/build.sh
+          sudo apt-get install -y ca-certificates lzip patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils
+          python3 -m pip install --upgrade -r scripts/requirements.txt
 
       - name: Build WSA 🏗️
         id: wsa
@@ -100,16 +110,21 @@ jobs:
               ROOT_SOL="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
               MAGISK_VER="${opts[ROOT_SOL,Magisk Stable]}"
           fi
+
+          if [[ ! "${{ github.event.inputs.user_code }}" == "" ]]; then
+              mkdir -p download
+              echo -e "user_code=::add-mask::$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
+          fi
           
           ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --gapps-variant ${opts[GAPPS_VAR,${{ inputs.gapps_var }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
       
       - name: File Checksum ✔️
+        working-directory: output
         run: |
-          cd ./output/
           sha256sum '${{ steps.wsa.outputs.artifact }}${{ inputs.compression }}' >> sha256-checksum.txt
       
       - name: Upload Artifact 🤌
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.wsa.outputs.artifact }}
-          path: ./output
+          path: output

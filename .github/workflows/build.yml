@@ -20,14 +20,19 @@ jobs:
       - name: Checkout ♻️
         uses: actions/checkout@v3
 
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          check-latest: true
+          python-version: '3.x'
+          cache: 'pip'
+          cache-dependency-path: scripts/
+
       - name: Install Dependencies 🧑‍🏭
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y lzip patchelf e2fsprogs python3 python3-pip aria2 p7zip-full attr unzip whiptail xz-utils qemu-utils sudo
-          python3 -m pip install -r scripts/requirements.txt -q
-          
-      - name: Grant executable permission 👑
-        run: chmod +x ./scripts/build.sh
+          sudo apt-get install -y ca-certificates lzip patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils
+          python3 -m pip install --upgrade -r scripts/requirements.txt -q
 
       - name: Build WSA GAPPS ${{ matrix.root }} ${{ matrix.arch }} 🏗️
         id: wsa
@@ -35,15 +40,15 @@ jobs:
 
       - name: File Checksum ✔️
         id: date
+        working-directory: output
         run: |
           echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
-          cd ./output/
           echo "checksum=$(sha256sum '${{ steps.wsa.outputs.artifact }}.${{ matrix.compress-format }}')" >> $GITHUB_OUTPUT
 
       - name: Update build to release 🤌
         uses: softprops/action-gh-release@v0.1.15
         with:
-          files: ./output/${{ steps.wsa.outputs.artifact }}.${{ matrix.compress-format }}
+          files: output/${{ steps.wsa.outputs.artifact }}.${{ matrix.compress-format }}
           fail_on_unmatched_files: true
           append_body: true
           tag_name: ${{ steps.date.outputs.date }}
