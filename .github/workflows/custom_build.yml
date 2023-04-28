@@ -17,7 +17,7 @@ on:
         default: "Retail"
       user_code:
         type: string
-        description: User code (Optional)
+        description: User code for WSA Insider User (Optional)
         required: false
         default: ""
       root_sol:
