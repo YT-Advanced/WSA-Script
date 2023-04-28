@@ -32,7 +32,7 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y ca-certificates lzip patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils
-          python3 -m pip install --upgrade --disable-pip-version-check -r scripts/requirements.txt --no-warn-script-location
+          python3 -m pip install --upgrade -r scripts/requirements.txt -q
 
       - name: Build WSA GAPPS ${{ matrix.root }} ${{ matrix.arch }} 🏗️
         id: wsa
