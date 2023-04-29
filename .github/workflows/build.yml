@@ -39,7 +39,7 @@ jobs:
           packages: ca-certificates lzip patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils
           version: 1.0
 
-      - name: Build WSA GAPPS ${{ matrix.root }} ${{ matrix.arch }} 🏗️
+      - name: Build WSA ${{ matrix.arch }} with GAPPS ${{ matrix.root }} 🏗️
         id: wsa
         run: ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${{ matrix.release }} --magisk-ver stable --gapps-brand ${{ matrix.gapps }} --root-sol ${{ matrix.root }} --remove-amazon --compress-format ${{ matrix.compress-format }}
 
