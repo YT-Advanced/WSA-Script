@@ -85,7 +85,7 @@ jobs:
       - name: Checkout ♻️
         uses: actions/checkout@v3
       
-      - name: Setup Python
+      - name: Setup Python 🏭
         uses: actions/setup-python@v4
         with:
           check-latest: true
@@ -93,11 +93,16 @@ jobs:
           cache: 'pip'
           cache-dependency-path: scripts/
 
-      - name: Install Dependencies 🧑‍🏭
+      - name: Update Package 👷
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y ca-certificates lzip patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils
           python3 -m pip install --upgrade -r scripts/requirements.txt
+    
+      - name: Install Ubuntu Dependencies 🧑‍🏭
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: ca-certificates lzip patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils
+          version: 1.0
 
       - name: Build WSA 🏗️
         id: wsa
