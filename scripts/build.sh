@@ -163,6 +163,7 @@ MAGISK_VER_MAP=(
     "debug"
     "release"
     "delta"
+    "alpha"
 )
 
 GAPPS_BRAND_MAP=(
