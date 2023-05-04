@@ -87,16 +87,64 @@
 </details>
 
 ## Requirements
-|Component|     <img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/Windows_11_logo.svg" style="width: 200px;"/>|  <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Windows_10_Logo.svg" style="width: 200px;"/>     |
-|-----------------|-----------------------|-----------------------|
-|<img style="float: right;" src="https://img.icons8.com/fluency/96/null/windows-update--v1.png" width="60" height="60"/><h4>Windows Build Number<h4>|Windows™ 11: Build 22000.526 or higher.|Windows™ 10: 20H2 Build 19042.2604 or higher. <br /> <br /> You must install [KB5014032](https://www.catalog.update.microsoft.com/Search.aspx?q=KB5014032) then install [KB5022834](https://www.catalog.update.microsoft.com/Search.aspx?q=KB5022834) to use WSA on these older Windows 10 builds <br /> <br /> |
-|<img style="float: right;" src="https://img.icons8.com/external-smashingstocks-flat-smashing-stocks/66/null/external-RAM-technology-and-devices-smashingstocks-flat-smashing-stocks.png" width="60" height="60"/><h4>RAM<h4>|6 GB (not recommended), 8 GB (minimum) and 16 GB (recommended).|6 GB (not recommended), 8 GB (minimum) and 16 GB (recommended).|
-|<img style="float: right;" src="https://img.icons8.com/3d-fluency/94/null/electronics.png" width="60" height="60"/><h4>Processor<h4>|Your PC should meet the basic Windows™ 11 requirements i.e Core i3 8th Gen, Ryzen 3000, Snapdragon 8c, or above.|N/A </br></br> This is a bit of a hit or miss, but it is highly recommended that your processor is listed in the [supported CPU lists for Windows 11 requirements](https://learn.microsoft.com/en-gb/windows-hardware/design/minimum/windows-processor-requirements)
-|<img style="float: right;" src="https://img.icons8.com/3d-fluency/94/null/video-card.png" width="60" height="60"/><h4>GPU<h4>|- Any compatible Intel, AMD or Nvidia GPU. <br /> - GPU Performance may vary depending on its compatibility with Windows Subsystem For Android™  <br />|- Any compatible Intel, AMD or Nvidia GPU. <br /> - GPU Performance may vary depending on its compatibility with Windows Subsystem For Android™  <br />|
-<img style="float: right;" src="https://img.icons8.com/3d-fluency/94/null/ssd.png" width="60" height="60"/><h4>Storage<h4>|Solid-state drive (SSD) <br /> - Hard Disk Drive (HDD) (NOT RECOMMENDED).|Solid-state drive (SSD) <br /> - Hard Disk Drive (HDD) (NOT RECOMMENDED).|
-|<img style="float: right;" src="https://img.icons8.com/stickers/100/null/storage.png" width="60" height="60"/><h4>Partition<h4>|NTFS <br /> Windows Subsystem For Android™ can only be installed on a NTFS partition, not on an exFAT partition |NTFS <br /> Windows Subsystem For Android™ can only be installed on a NTFS partition, not on an exFAT partition|
-|<img style="float: left;" src="https://user-images.githubusercontent.com/68516357/230764789-ad8f7361-4a3b-49a8-a8e9-24fdc87d5781.png" width="66" height="58"/><h4>Windows Features Needed<h4>|- Virtual Machine Platform Enabled <br /> - Windows Hypervisor Platform Enabled (Optinal)<br /> - Hyper V Enabled (Optinal)<br /> - Windows Subsystem For Linux™ Enabled (Optional) <br /><br /> These optional settings are for virtualization and provide components that are needed to run WSA. You can enable these settings from Control Panel/ Optional Features.|- Virtual Machine Platform Enabled <br /> - Windows Hypervisor Platform Enabled (Optinal)<br /> - Hyper V Enabled (Optinal) <br /> - Windows Subsystem For Linux™ Enabled (Optional) <br /><br /> These optional settings are for virtualization and provide components that are needed to run WSA. You can enable these settings from Control Panel/ Optional Features.|
-|<img style="float: right;" src="https://user-images.githubusercontent.com/68516357/230759907-5d11950e-1b17-4811-8f4e-a0f82e598079.png" width="60" height="60"/><h4>Virtualization<h4>|- The Computer must support virtualization and be enabled in BIOS/UEFI and Optional Features. [Guide](https://support.microsoft.com/en-us/windows/enable-virtualization-on-windows-11-pcs-c5578302-6e43-4b4b-a449-8ced115f58e1)|- The Computer must support virtualization and be enabled in BIOS/UEFI and Optional Features. [Guide](https://support.microsoft.com/en-us/windows/enable-virtualization-on-windows-11-pcs-c5578302-6e43-4b4b-a449-8ced115f58e1)|
+
+<center><table>
+<thead>
+  <tr>
+    <th></th>
+    <th><img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/Windows_11_logo.svg" style="width: 200px;"/></th>
+    <th><img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Windows_10_Logo.svg" style="width: 200px;"/></th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><img style="float: right;" src="https://img.icons8.com/fluency/96/null/windows-update--v1.png" width="60" height="60"/><h4>Windows Build Number<h4></td>
+    <td>Windows™ 11: Build 22000.526 or higher.</td>
+    <td>Windows™ 10: 22H2 10.0.19042.2604 or higher. <br /><br /><b>To use WSA, you must install <a href="https://www.catalog.update.microsoft.com/Search.aspx?q=KB5014032" target="_blank" rel="noopener noreferrer">KB5014032</a> then install <a href="https://www.catalog.update.microsoft.com/Search.aspx?q=KB5022834" target="_blank" rel="noopener noreferrer">KB5022834</a> to use WSA on these Windows 10 builds<b><br /><br /><b></td>
+  </tr>
+  <tr>
+    <td><img style="float: right;" src="https://img.icons8.com/external-smashingstocks-flat-smashing-stocks/66/null/external-RAM-technology-and-devices-smashingstocks-flat-smashing-stocks.png" width="60" height="60"/><h4>RAM<h4></td>
+    <td colspan="2">6 GB (not recommended), 8 GB (minimum) and 16 GB (recommended)</td>
+  </tr>
+  <tr>
+    <td><img style="float: right;" src="https://img.icons8.com/3d-fluency/94/null/electronics.png" width="60" height="60"/><h4>Processor<h4></td>
+    <td>Your PC should meet the basic Windows™ 11 requirements i.e Core i3 8th Gen, Ryzen 3000, Snapdragon 8c, or above</td>
+    <td>N/A </br></br> This is a bit of a hit or miss, but it is highly recommended that your processor is listed in the <a href="https://learn.microsoft.com/en-gb/windows-hardware/design/minimum/windows-processor-requirements" target="_blank" rel="noopener noreferrer">supported CPU lists for Windows 11 requirements</a></td>
+  </tr>
+  <tr>
+    <td><img style="float: right;" src="https://img.icons8.com/3d-fluency/94/null/video-card.png" width="60" height="60"/><h4>GPU<h4></td>
+      <td colspan="2">Any compatible Intel, AMD or Nvidia GPU. <br /> GPU Performance may vary depending on its compatibility with Windows Subsystem For Android™  <br /</td>
+  </tr>
+  <tr>
+    <td><img style="float: right;" src="https://img.icons8.com/3d-fluency/94/null/ssd.png" width="60" height="60"/><h4>Storage<h4></td>
+    <td colspan="2">Solid-state drive (SSD) (RECOMMENDED) <br />OR</br> Hard Disk Drive (HDD)   (NOT RECOMMENDED)</td>
+  </tr>
+  <tr>
+    <td><img style="float: right;" src="https://img.icons8.com/stickers/100/null/storage.png" width="60" height="60"/><h4>Partition<h4></td>
+    <td colspan="2"><b><i>NTFS ONLY<b><i> <br /><br /> Windows Subsystem For Android™ can only be installed on a NTFS partition, not on an exFAT partition</td>
+  </tr>
+  <tr>
+    <td rowspan="5"><img style="float: left;" src="https://user-images.githubusercontent.com/68516357/230764789-ad8f7361-4a3b-49a8-a8e9-24fdc87d5781.png" width="66" height="58"/><h4>Windows Features Needed<h4></td>
+    <td colspan="2">Virtual Machine Platform Enabled</td>
+  </tr>
+  <tr>
+    <td colspan="2">Windows Hypervisor Platform Enabled</td>
+  </tr>
+  <tr>
+    <td colspan="2">Windows Subsystem For Linux™ Enabled (Optional)</td>
+  </tr>
+  <tr>
+    <td colspan="2">Hyper V Enabled (Optional)</td>
+  </tr>
+  <tr>
+    <td colspan="2"><b><i>These optional settings are for virtualization and provide components that are needed to run WSA. You can enable these settings by pressing the Windows Key + R on your keyboard and typing "OptionalFeatures.exe" into the box, pressing enter and selecting the features above followed by pressing apply<b><i></td>
+  </tr>
+  <tr>
+    <td><img style="float: right;" src="https://user-images.githubusercontent.com/68516357/230759907-5d11950e-1b17-4811-8f4e-a0f82e598079.png" width="60" height="60"/><h4>Virtualization<h4></td>
+    <td colspan="2">The Computer must support virtualization and be enabled in BIOS/UEFI and Optional Features. </br> <h3><a href="https://support.microsoft.com/en-us/windows/enable-virtualization-on-windows-11-pcs-c5578302-6e43-4b4b-a449-8ced115f58e1" target="_blank" rel="noopener noreferrer">Guide on how to enable</a><h3></td>
+  </tr>
+</tbody>
+</table>
 
 
 &nbsp;
