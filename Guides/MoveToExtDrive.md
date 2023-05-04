@@ -34,7 +34,7 @@
 
 
 - ### Step 2: Install WSA from the desired partition 
-    - **1.)** Download the latest WSA Build according to Windows Version and CPU Archtecture from [Release](https://github.com/YT-Advanced/WSA-Script/releases/latest) or [Action tab](https://github.com/YT-Advanced/WSA-Script/actions/workflows/custom_build.yml) for prebuilt KernelSU and Magisk Delta version.
+    - **1.)** Download the latest WSA Build according to Windows Version and CPU Archtecture from [Release](https://github.com/YT-Advanced/WSA-Script/releases/latest).
     - **2.)** Extract to the desired partition or drive
     -  Using the same process as detailed in [Installation](https://github.com/YT-Advanced/WSA-Script#--installation)
     - **3.)** Open the extracted folder and run ``Run.bat``
