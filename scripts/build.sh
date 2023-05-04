@@ -916,6 +916,7 @@ if [ "$COMPRESS_OUTPUT" ] || [ -n "$COMPRESS_FORMAT" ]; then
         if [ "$FILE_EXT" = ".xz" ]; then
             FILE_EXT=".tar$FILE_EXT"
         fi
+        echo "file_ext=$FILE_EXT" >> "$GITHUB_OUTPUT"
         OUTPUT_PATH="$OUTPUT_PATH$FILE_EXT"
     fi
     rm -f "${OUTPUT_PATH:?}" || abort
