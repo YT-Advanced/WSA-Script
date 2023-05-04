@@ -21,20 +21,24 @@
 #### **4. Click "Create Issues" Button, the issues page will be generated and open. Then you click "Submit New Issues" (green button) and wait.**
 ![image](https://user-images.githubusercontent.com/70064328/236150320-65fdd492-9fc4-4176-b3bd-a3cee8b7753d.png)
 
-#### **5. After about 10 minutes, the bot will reply that the workflow have built successfully. Open the link and download the build as artifact**
-![image](https://user-images.githubusercontent.com/70064328/236153713-ec22be32-3ba2-4464-9680-46702789345f.png)
+#### **5. After about 15 minutes, the bot will reply that the workflow have built successfully (like the picture below), OPEN THE LINK BELOW THE BOT COMMENT**
+![image](https://user-images.githubusercontent.com/70064328/236154819-75dd1997-1999-43fd-a482-050f21e34b72.png)
 
-#### **6. Install like normal using [the instructions](https://github.com/YT-Advanced/WSA-Script#--installation) in this repository** and most important of all....
+#### **6. Download the package as artifact**
+**DO NOT download it via multithread downloaders like IDM**
+![image](https://user-images.githubusercontent.com/68516357/222224469-5748b78a-158e-46ff-9f65-317dbb519aac.png)
+
+#### **7. Install like normal using [the instructions](https://github.com/YT-Advanced/WSA-Script#--installation) in this repository** and most important of all....
 
 ---
-<summary><h3> &nbsp; The workflow didn't work ❓ Follow these instruction <h3></summary>
+<summary><h3> &nbsp; The workflow didn't work ❓ Follow these step <h3></summary>
 
 #### **1. Open the home page, click on the button (shown below) and select "import a repository" or go to [this page directly](https://github.com/new/import)**
-   ***Step 3.1:***
+   ***Step 1.1:***
    
    <img src="https://user-images.githubusercontent.com/68516357/221636520-78d0716a-247b-4034-aa9d-bdbe2277950c.png" style="width: 350px;"/>
    
-   ***Step 3.2:***
+   ***Step 1.2:***
    
    ![image](https://user-images.githubusercontent.com/68516357/221641202-e3ef4deb-f2dd-46e6-82c8-fb4767f82e99.png)
    
@@ -45,11 +49,11 @@
 
 ---
 #### **3. Go to the **Setting** tab in your newly imported repo and enable "Github Actions"**
-   ***Step 5.1:***
+   ***Step 3.1:***
    
 ![Settings](https://user-images.githubusercontent.com/68516357/222214308-b52b1c6f-a60b-44ef-9ce0-bc335087e3a2.png)
 
-   ***Step 5.2:***
+   ***Step 3.2:***
    
 ![MRq9WD3SO2](https://user-images.githubusercontent.com/68516357/222215598-30d68ad3-9700-4061-bba4-815b3befcb10.png)
 
