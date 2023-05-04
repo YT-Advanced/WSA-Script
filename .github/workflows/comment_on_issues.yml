@@ -1,0 +1,239 @@
+name: Auto comment Issues
+
+on:
+  issues:
+    types: [opened, reopened]
+  workflow_dispatch:
+    inputs:
+      body: 
+        description: 'Issues Body'
+        required: true
+        default: ''
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Create Issues comment
+        if: github.event_name == 'issues'
+        id: comment
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: | 
+            We are checking your Issues body and head ...  
+            > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
+            ----
+          emoji: heart
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          check-latest: true
+          python-version: '3.x'
+          cache: 'pip'
+          cache-dependency-path: scripts/
+
+      - name: Update Package
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          sudo apt-get update -y
+          sudo apt-get install -y lzip
+          python3 -m pip install --upgrade pip setuptools
+          python3 -m pip install --upgrade -r scripts/requirements.txt
+
+      - name: Get Issues Info
+        if: github.event_name == 'issues'
+        id: get-issues
+        uses: actions/github-script@v6
+        with:
+          script: |
+            var fs = require('fs');
+            var issuenumber = ${{ toJSON(github.event.issue.number) }};
+            var issueauth = ${{ toJSON(github.event.issue.user.login) }};
+            var issuetitle = ${{ toJSON(github.event.issue.title) }};
+            var issuebody = ${{ toJSON(github.event.issue.body) }};
+            if (issuetitle != null) {
+              issuetitle = issuetitle.replace(/\u000A|\u000D/g, ""); //Replace newline letter
+            }
+            
+            if (issuebody != null) {
+              issuebody = issuebody.replace(/\u0008|\u0009|\u000A|\u000B|\u000C|\u000D|\u00A0|\u2028|\u2029|\uFEFF/g, "");
+              issuebody = issuebody.replace(/—/g, "-");
+            }
+            core.setOutput("issuenumber", JSON.stringify(issuenumber));
+            core.setOutput("issueauth", JSON.stringify(issueauth));
+            core.setOutput("issuetitle", JSON.stringify(issuetitle));
+            if (issuebody != null) {
+               core.setOutput("issuebody", JSON.stringify(issuebody));
+            }
+            else {
+               core.setOutput("issuebody", "It is a null variable");
+            }
+            
+      - name: Set Issues Info
+        if: github.event_name == 'issues' && success()
+        run: |
+          echo "issuenumber="${{ steps.get-issues.outputs.issuenumber }}"" >> $GITHUB_ENV
+          echo "issueauth="${{ steps.get-issues.outputs.issueauth }}"" >> $GITHUB_ENV
+          echo "issuetitle="${{ steps.get-issues.outputs.issuetitle }}"" >> $GITHUB_ENV
+          echo "issuebody="${{ steps.get-issues.outputs.issuebody }}"" >> $GITHUB_ENV
+          
+      - name: Get Build Info
+        shell: python
+        run: |
+          import os, re, json, shutil, string, subprocess
+          def set_output(name, value):
+              subprocess.call(["echo '{}={}' >> $GITHUB_ENV".format(name, value)], shell=True)
+          if __name__ == '__main__':
+              issues = 'false'
+              iscustom = 'true'
+              errinfo = ''
+              body = ''
+              try:
+                  body = ''
+                  if '${{ github.event_name }}' == 'issues':
+                      if '${{ env.issuetitle }}'.lower().startswith('custom wsa build'):
+                          issues = 'true'
+                          body = '${{ env.issuebody }}'
+                      else:
+                          iscustom = 'false'
+                  else:
+                      body = '${{ inputs.body }}'
+                  if body == 'It is a null variable':
+                      iscustom = 'false'
+                      errinfo = 'Argument is null, please update the body of the Issues'
+              except Exception as e:
+                  iscustom = 'false'
+                  errinfo = 'Issues Body error, {}.'.format(e)
+              set_output('issues', issues)
+              set_output('iscustom', iscustom)
+              set_output('errinfo', errinfo)
+              set_output('body', body)
+              
+      - name: Add Issues labels
+        if: env.issues == 'true' && env.iscustom == 'true'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'add-labels'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ env.issuenumber }}
+          labels: 'custom,${{ env.platform }}'
+
+      - name: Update Comment Begin
+        if: env.issues == 'true' && env.iscustom == 'true'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'update-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comment-id: ${{ steps.comment.outputs.comment-id }}
+          update-mode: replace
+          body: |
+            Hello ${{ env.issueauth }} .  
+            Your custom WSA build has started building. Please go to the URL below for details.
+            > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
+            ----
+          emoji: heart
+
+      - name: Update Comment Error
+        if: env.issues == 'true' && env.iscustom == 'false'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'update-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comment-id: ${{ steps.comment.outputs.comment-id }}
+          update-mode: replace
+          body: |
+            Hello ${{ env.issueauth }}.
+            Look like we have a problem with the workflow. We will take a look soon.
+            `Error Info:`  
+            `${{ env.errinfo }}`
+            > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
+            ----
+          emoji: eyes
+
+      - name: Update Comment Invalid
+        if: env.issues == 'false'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'update-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comment-id: ${{ steps.comment.outputs.comment-id }}
+          update-mode: replace
+          body: |
+            Hello ${{ env.issueauth }}.
+            Thanks for sending an issues. Now our admin is inactive, just waiting and he will reply soon.
+            Hope you have a nice day.
+            > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
+            ----
+          emoji: eyes
+
+      - name: Install Ubuntu Dependencies
+        if: env.iscustom == 'true' && success()
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils
+          version: 1.0
+
+      - name: Run Build
+        id: wsa
+        if: env.iscustom == 'true' && success()
+        shell: bash
+        run: ./scripts/build.sh ${{ env.body }}
+       
+      - name: File Checksum ✔️
+        working-directory: output
+        run: |
+          sha256sum '${{ steps.wsa.outputs.artifact }}${{ steps.wsa.outputs.file_ext }}' >> sha256-checksum.txt
+      
+      - name: Upload to Artifacts
+        if: env.iscustom == 'true' && success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.wsa.outputs.artifact }}
+          path: output
+          
+      - name: Update Comment Finish
+        if: env.issues == 'true' && env.iscustom == 'true' && success()
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'update-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comment-id: ${{ steps.comment.outputs.comment-id }}
+          update-mode: replace
+          body: |
+            Hello ${{ env.issueauth }}.
+            Your custom WSA build has been built. Please go to the URL below to download it.
+            > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
+            ----  
+          emoji: hooray
+
+      - name: Close Issues
+        if: env.issues == 'true' && env.iscustom == 'true' && success()
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'close-issue'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ env.issuenumber }}
+
+      - name: Update Comment Fail
+        if: env.issues == 'true' && env.iscustom == 'true' && failure()
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'update-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comment-id: ${{ steps.comment.outputs.comment-id }}
+          update-mode: replace
+          body: |
+            Hello ${{ env.issueauth }}.
+            Your custom WSA build failed to build. Please go to the URL below to view the details, make changes to the body and retrigger the build (Close & Reopen).
+            > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
+            ----  
+          emoji: confused
