@@ -96,12 +96,13 @@ jobs:
       - name: Update Package 👷
         run: |
           sudo apt-get update -y
+          sudo apt-get install -y lzip
           python3 -m pip install --upgrade -r scripts/requirements.txt
     
       - name: Install Ubuntu Dependencies 🧑‍🏭
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: ca-certificates lzip patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils
+          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils
           version: 1.0
 
       - name: Build WSA 🏗️
