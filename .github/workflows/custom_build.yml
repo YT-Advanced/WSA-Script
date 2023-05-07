@@ -119,7 +119,7 @@ jobs:
 
           if [[ ! "${{ github.event.inputs.user_code }}" == "" ]]; then
               mkdir -p download
-              echo -e "user_code=::add-mask::$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
+              echo -e "user_code=${{ github.event.inputs.user_code }}" > download/.ms_account
           fi
           
           ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --gapps-variant ${opts[GAPPS_VAR,${{ inputs.gapps_var }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
