@@ -64,9 +64,16 @@ function Finish {
     Start-Process "wsa://com.android.vending"
 }
 
+if (Test-CommandExists pwsh.exe) {
+    $pwsh = "pwsh.exe"
+}
+else {
+    $pwsh = "powershell.exe"
+}
+
 If (-Not (Test-Administrator)) {
     Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass -Force
-    $proc = Start-Process -PassThru -WindowStyle Hidden -Verb RunAs ConHost.exe -Args "powershell -ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath' EVAL"
+    $proc = Start-Process -PassThru -WindowStyle Hidden -NoNewWindow -Verb RunAs $pwsh -Args "-ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath' EVAL"
     $proc.WaitForExit()
     If ($proc.ExitCode -Ne 0) {
         Clear-Host
@@ -76,7 +83,7 @@ If (-Not (Test-Administrator)) {
     exit
 }
 ElseIf (($args.Count -Eq 1) -And ($args[0] -Eq "EVAL")) {
-    Start-Process ConHost.exe -Args "powershell -ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath'"
+    Start-Process $pwsh -NoNewWindow -Args "-ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath'"
     exit
 }
 
@@ -87,8 +94,8 @@ If (((Test-Path -Path $FileList) -Eq $false).Count) {
     exit 1
 }
 
-If ((Test-Path -Path "MakePri.ps1") -Eq $true) {
-    $ProcMakePri = Start-Process powershell.exe -PassThru -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory $PSScriptRoot
+If (((Test-Path -Path "MakePri.ps1") -And (Test-Path -Path "makepri.exe")) -Eq $true) {
+    $ProcMakePri = Start-Process $pwsh -PassThru -NoNewWindow -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory $PSScriptRoot
     $ProcMakePri.WaitForExit()
     If ($ProcMakePri.ExitCode -Ne 0) {
         Write-Warning "Failed to merge resources, WSA Seetings will always be in English`r`n"
@@ -96,6 +103,10 @@ If ((Test-Path -Path "MakePri.ps1") -Eq $true) {
 }
 
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
+
+if ($PSHOME.contains("8wekyb3d8bbwe")) {
+    Import-Module DISM -UseWindowsPowerShell
+}
 
 If ($(Get-WindowsOptionalFeature -Online -FeatureName 'VirtualMachinePlatform').State -Ne "Enabled") {
     Enable-WindowsOptionalFeature -Online -NoRestart -FeatureName 'VirtualMachinePlatform'
@@ -118,6 +129,12 @@ $Dependencies = $Xml.Package.Dependencies.PackageDependency;
 $Dependencies | ForEach-Object {
     $InstalledVersion = Get-InstalledDependencyVersion -Name $_.Name -ProcessorArchitecture $ProcessorArchitecture;
     If ( $InstalledVersion -Lt $_.MinVersion ) {
+        If ($env:WT_SESSION) {
+            $env:WT_SESSION = $null
+            Write-Host "Dependency should be installed but Windows Terminal is in use. Restarting to conhost.exe"
+            Start-Process conhost.exe -Args "powershell.exe -ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath'"
+            exit 1
+        }
         Write-Host "Dependency package $($_.Name) $ProcessorArchitecture required minimum version: $($_.MinVersion). Installing...."
         Add-AppxPackage -ForceApplicationShutdown -ForceUpdateFromAnyVersion -Path "$($_.Name)_$ProcessorArchitecture.appx"
     }
