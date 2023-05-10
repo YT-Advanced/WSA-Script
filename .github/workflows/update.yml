@@ -29,14 +29,15 @@ jobs:
           import os
           import json
           env_file = os.getenv('GITHUB_ENV')
-          status = "504";
-          while status == "504":
+          status = True
+          while status:
             res = requests.post("https://store.rg-adguard.net/api/GetFiles", f"type=CategoryId&url=858014f3-3934-4abe-8078-4aa193e74ca8&ring=Retail&lang=en-US", headers={
                 "content-type": "application/x-www-form-urlencoded"
             }, verify=False) # source site has expired cert
-            status = res.status_code
-            print(f"Status Code: {res.status_code}")
-            
+            if (res.status_code != 504):
+              status = False
+            else:
+              time.sleep(3)
           html = BeautifulSoup(res.content, "lxml")
           latestver = html.find("a", string=re.compile("MicrosoftCorporationII\.WindowsSubsystemForAndroid_.*\.msixbundle")).text
           latestver = latestver.replace('MicrosoftCorporationII.WindowsSubsystemForAndroid_', '')
