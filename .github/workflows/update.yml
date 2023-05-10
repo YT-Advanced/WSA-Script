@@ -16,12 +16,6 @@ jobs:
         run: |
           pip3 install beautifulsoup4 lxml
       
-      - name: Add package to cache if not exist 🧑‍🏭
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: ca-certificates lzip patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils
-          version: 1.0
-
       - name: Create branch if not found 🏗️
         run: |
           git checkout -f update || git switch --discard-changes --orphan update
@@ -35,9 +29,14 @@ jobs:
           import os
           import json
           env_file = os.getenv('GITHUB_ENV')
-          res = requests.post("https://store.rg-adguard.net/api/GetFiles", f"type=CategoryId&url=858014f3-3934-4abe-8078-4aa193e74ca8&ring=Retail&lang=en-US", headers={
-              "content-type": "application/x-www-form-urlencoded"
-          }, verify=False) # source site has expired cert
+          status = "504";
+          while status == "504":
+            res = requests.post("https://store.rg-adguard.net/api/GetFiles", f"type=CategoryId&url=858014f3-3934-4abe-8078-4aa193e74ca8&ring=Retail&lang=en-US", headers={
+                "content-type": "application/x-www-form-urlencoded"
+            }, verify=False) # source site has expired cert
+            status = res.status_code
+            print(f"Status Code: {res.status_code}")
+            
           html = BeautifulSoup(res.content, "lxml")
           latestver = html.find("a", string=re.compile("MicrosoftCorporationII\.WindowsSubsystemForAndroid_.*\.msixbundle")).text
           latestver = latestver.replace('MicrosoftCorporationII.WindowsSubsystemForAndroid_', '')
