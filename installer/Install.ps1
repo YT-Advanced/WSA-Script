@@ -19,33 +19,6 @@ function Get-InstalledDependencyVersion {
     }
 }
 
-function DownloadWinHttpDLL {
-        Invoke-WebRequest -Uri https://github.com/cinit/WSAPatch/blob/main/original.dll.win11.22h2/x86_64/winhttp.dll?raw=true -OutFile .\WSAClient\winhttp.dll
-        $hash = Get-FileHash ".\WSAClient\winhttp.dll" | Select-Object Hash
-        if ($hash -ne "373A742B37DCF3DD18E895F33816AEF1FC238D128B3BF2AA528F6838AB1DC304") 
-        {
-            DownloadWinHttpDLL
-        }
-}
-
-function DownloadWSAPatchDLL {
-        Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/WsaPatch.dll?raw=true -OutFile .\WSAClient\WsaPatch.dll
-        $hash = Get-FileHash ".\WSAClient\WsaPatch.dll" | Select-Object Hash
-        if ($hash -ne "f770062d5de3a8c1d65bc149dbc4b727aa773ba2f04a825f84c34051ee3c577f") 
-        {
-            DownloadWSAPatchDLL
-        }
-}
-
-function DownloadIcuDLL {
-        Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/icu.dll?raw=true -OutFile .\WSAClient\icu.dll
-        $hash = Get-FileHash ".\WSAClient\icu.dll" | Select-Object Hash
-        if ($hash -ne "46eae8b730995198d24f1bc9bbbac6d05be5829acddc056536c024ecc927bd03") 
-        {
-            DownloadIcuDLL
-        }
-}
-
 Function Test-CommandExists {
     Param ($command)
     $oldPreference = $ErrorActionPreference
@@ -179,9 +152,9 @@ if ($winver.Contains("10")) {
 
         Clear-Host
         Write-Host "Downloading modifided DLL file..."
-        DownloadWinHttpDLL
-        DownloadWsaPatchDLL
-        DownloadIcuDLL
+        Invoke-WebRequest -Uri https://github.com/cinit/WSAPatch/blob/main/original.dll.win11.22h2/x86_64/winhttp.dll?raw=true -OutFile .\WSAClient\winhttp.dll
+        Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/WsaPatch.dll?raw=true -OutFile .\WSAClient\WsaPatch.dll
+        Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/icu.dll?raw=true -OutFile .\WSAClient\icu.dll
     }
     else {
     Clear-Host
