@@ -116,12 +116,12 @@ jobs:
               ROOT_SOL="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
               MAGISK_VER="${opts[ROOT_SOL,Magisk Stable]}"
           fi
-
           if [[ -z "$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" ]]; then
               echo -e "\n:: Using default User code ::\n"
           else
               mkdir -p download
               echo -e "user_code=$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
+              echo "user_code=$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')"
               echo -e "\n:: Using MS Insiders User code ::\n"
           fi
           
