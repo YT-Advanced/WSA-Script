@@ -28,17 +28,27 @@ jobs:
           cache: 'pip'
           cache-dependency-path: scripts/
 
-      - name: Update Package 👷
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y lzip
-          python3 -m pip install --upgrade -r scripts/requirements.txt
-    
       - name: Install Ubuntu Dependencies 🧑‍🏭
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils
+          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv
           version: 1.0
+          
+      - name: Update Package 👷
+        working-directory: scripts
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y lzip
+          PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
+          echo "Creating Python3 Virtual Enviroment"
+          python3 -m venv "$PYTHON_VENV_DIR" || abort "Failed to create python3 virtual env"
+          # shellcheck disable=SC1091
+          source "$PYTHON_VENV_DIR/bin/activate" || abort "Failed to activate python3 virtual env"
+          python3 -c "import pkg_resources; pkg_resources.require(open('requirements.txt',mode='r'))" &>/dev/null || {
+              echo "Installing Python3 dependencies"
+              python3 -m pip install --upgrade -r requirements.txt || abort "Failed to install python3 dependencies"
+          }
+          deactivate 
 
       - name: Build WSA ${{ matrix.arch }} with GAPPS ${{ matrix.root }} 🏗️
         id: wsa
