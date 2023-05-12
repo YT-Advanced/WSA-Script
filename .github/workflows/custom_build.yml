@@ -103,19 +103,7 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y lzip
-          
-          PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
-          [ -f "$PYTHON_VENV_DIR/bin/activate" ] || {
-          echo "Creating Python3 Virtual Enviroment"
-          python3 -m venv "$PYTHON_VENV_DIR" || abort "Failed to create python3 virtual env"
-          }
-          # shellcheck disable=SC1091
-          source "$PYTHON_VENV_DIR"/bin/activate || abort "Failed to activate python3 virtual env"
-          python3 -c "import pkg_resources; pkg_resources.require(open('requirements.txt',mode='r'))" &>/dev/null || {
-              echo "Installing Python3 dependencies"
-              python3 -m pip install -r requirements.txt || abort "Failed to install python3 dependencies"
-          }
-          deactivate
+          ./scripts/install_deps.sh || exit 1
 
       - name: Build WSA 🏗️
         id: wsa
