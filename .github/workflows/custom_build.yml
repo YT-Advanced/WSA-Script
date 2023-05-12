@@ -52,6 +52,7 @@ on:
 
 jobs:
   matrix:
+    if: github.event.repository.fork == false
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
