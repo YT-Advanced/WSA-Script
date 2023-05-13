@@ -992,7 +992,6 @@ else
     fi
 fi
 artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}
-echo "artifact=$artifact_name" >> "$GITHUB_OUTPUT"
 if [ "$NOFIX_PROPS" = "yes" ]; then
     artifact_name+="-NoFixProps"
 fi
@@ -1000,6 +999,7 @@ if [ "$REMOVE_AMAZON" = "yes" ]; then
     artifact_name+="-RemovedAmazon"
 fi
 echo "$artifact_name"
+echo "artifact=$artifact_name" >> "$GITHUB_OUTPUT"
 echo -e "\nFinishing building...."
 if [ -f "$OUTPUT_DIR" ]; then
     sudo rm -rf ${OUTPUT_DIR:?}
