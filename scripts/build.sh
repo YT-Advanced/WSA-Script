@@ -225,6 +225,8 @@ MAGISK_VER_MAP=(
     "canary"
     "debug"
     "release"
+    "delta"
+    "alpha"
 )
 
 GAPPS_BRAND_MAP=(
@@ -254,6 +256,7 @@ ROOT_SOL_MAP=(
 COMPRESS_FORMAT_MAP=(
     "7z"
     "zip"
+    "xz"
 )
 
 ARR_TO_STR() {
@@ -840,6 +843,13 @@ find "../$ARCH/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs 
 find "../$ARCH/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/priv-app/placeholder" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
 echo -e "Add extra packages done\n"
 
+echo "Permissions management Netfree and Netspark security certificates"
+find "../$ARCH/system/etc/security/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/placeholder" -type d -exec chmod 0755 {} \;
+find "../$ARCH/system/etc/security/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/placeholder" -type f -exec chmod 0644 {} \;
+find "../$ARCH/system/etc/security/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/placeholder" -exec chown root:root {} \;
+find "../$ARCH/system/etc/security/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/placeholder" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
+echo -e "Permissions management Netfree and Netspark security certificates done\n"
+
 if [ "$GAPPS_BRAND" != 'none' ]; then
     echo "Integrate $GAPPS_BRAND"
     find "$WORK_DIR/gapps/" -mindepth 1 -type d -exec sudo chmod 0755 {} \;
@@ -980,6 +990,7 @@ else
     fi
 fi
 artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}
+echo "artifact=$artifact_name" >> "$GITHUB_OUTPUT"
 if [ "$NOFIX_PROPS" = "yes" ]; then
     artifact_name+="-NoFixProps"
 fi
@@ -1002,12 +1013,22 @@ if [ "$COMPRESS_OUTPUT" ] || [ -n "$COMPRESS_FORMAT" ]; then
     fi
     if [ -n "$COMPRESS_FORMAT" ]; then
         FILE_EXT=".$COMPRESS_FORMAT"
+        if [ "$FILE_EXT" = ".xz" ]; then
+            FILE_EXT=".tar$FILE_EXT"
+        fi
+        echo "file_ext=$FILE_EXT" >> "$GITHUB_OUTPUT"
         OUTPUT_PATH="$OUTPUT_PATH$FILE_EXT"
     fi
     rm -f "${OUTPUT_PATH:?}" || abort
     if [ "$COMPRESS_FORMAT" = "7z" ]; then
         echo "Compressing with 7z"
         7z a "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
+    elif [ "$COMPRESS_FORMAT" = "xz" ]; then
+        echo "Compressing with tar xz"
+        if ! (tar -cP -I 'xz -9 -T0' -f "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name"); then
+            echo "Out of memory? Trying again with single threads..."
+            tar -cPJvf "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name" || abort
+        fi
     elif [ "$COMPRESS_FORMAT" = "zip" ]; then
         echo "Compressing with zip"
         7z -tzip a "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name" || abort
