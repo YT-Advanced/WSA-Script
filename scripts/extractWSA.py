@@ -18,71 +18,87 @@
 # Copyright (C) 2023 LSPosed Contributors
 #
 
-import os
 import sys
-
 import zipfile
 from pathlib import Path
-import re
-import shutil
+import platform
+import os
+from typing import Any, OrderedDict
 
+
+class Prop(OrderedDict):
+    def __init__(self, props: str = ...) -> None:
+        super().__init__()
+        for i, line in enumerate(props.splitlines(False)):
+            if '=' in line:
+                k, v = line.split('=', 1)
+                self[k] = v
+            else:
+                self[f".{i}"] = line
+
+    def __setattr__(self, __name: str, __value: Any) -> None:
+        self[__name] = __value
+
+    def __repr__(self):
+        return '\n'.join(f'{item}={self[item]}' for item in self)
+
+
+is_x86_64 = platform.machine() in ("AMD64", "x86_64")
+host_abi = "x64" if is_x86_64 else "arm64"
 arch = sys.argv[1]
-
-zip_name = ""
-wsa_zip_path = Path(sys.argv[2])
-rootdir = Path(sys.argv[3])
-env_file = Path(sys.argv[4])
-
-workdir = rootdir / "wsa"
-archdir = Path(workdir / arch)
-pridir = workdir / archdir / 'pri'
-xmldir = workdir / archdir / 'xml'
-if not Path(rootdir).is_dir():
-    rootdir.mkdir()
-
-if Path(workdir).is_dir():
-    shutil.rmtree(workdir)
-else:
-    workdir.unlink(missing_ok=True)
-
+magisk_zip = sys.argv[2]
+workdir = Path(sys.argv[3]) / "magisk"
 if not Path(workdir).is_dir():
     workdir.mkdir()
 
-if not Path(archdir).is_dir():
-    archdir.mkdir()
-uid = os.getuid()
-workdir_rw = os.access(workdir, os.W_OK)
-with zipfile.ZipFile(wsa_zip_path) as zip:
-    for f in zip.filelist:
-        if arch in f.filename.lower():
-            zip_name = f.filename
-            if not Path(workdir / zip_name).is_file():
-                zip_path = zip.extract(f, workdir)
-                ver_no = zip_name.split("_")
-                long_ver = ver_no[1]
-                ver = long_ver.split(".")
-                main_ver = ver[0]
-                rel = ver_no[3].split(".")
-                rel_long = str(rel[0])
-                with open(env_file, 'a') as environ_file:
-                    environ_file.write(f'WSA_VER={long_ver}\n')
-                    environ_file.write(f'WSA_MAIN_VER={main_ver}\n')
-                    environ_file.write(f'WSA_REL={rel_long}\n')
-        filename_lower = f.filename.lower()
-        if 'language' in filename_lower or 'scale' in filename_lower:
-            name = f.filename.split("_")[2].split(".")[0]
-            zip.extract(f, workdir)
-            with zipfile.ZipFile(workdir / f.filename) as l:
-                for g in l.filelist:
-                    if g.filename == 'resources.pri':
-                        g.filename = f'resources.{name}.pri'
-                        l.extract(g, pridir)
-                    elif g.filename == 'AppxManifest.xml':
-                        g.filename = f'resources.{name}.xml'
-                        l.extract(g, xmldir)
-                    elif re.search(u'Images/.+\.png', g.filename):
-                        l.extract(g, archdir)
-with zipfile.ZipFile(zip_path) as zip:
-    stat = Path(zip_path).stat()
-    print(f"unzipping from {zip_path}", flush=True)
-    zip.extractall(archdir)
+abi_map = {"x64": ["x86_64", "x86"], "arm64": ["arm64-v8a", "armeabi-v7a"]}
+
+
+def extract_as(zip, name, as_name, dir):
+    info = zip.getinfo(name)
+    info.filename = as_name
+    zip.extract(info, workdir / dir)
+
+
+with zipfile.ZipFile(magisk_zip) as zip:
+    props = Prop(zip.comment.decode().replace('\000', '\n'))
+    versionName = props.get("version")
+    versionCode = props.get("versionCode")
+    print(f"Magisk version: {versionName} ({versionCode})", flush=True)
+    with open(os.environ['WSA_WORK_ENV'], 'r') as environ_file:
+        env = Prop(environ_file.read())
+        env.MAGISK_VERSION_NAME = versionName
+        env.MAGISK_VERSION_CODE = versionCode
+    with open(os.environ['WSA_WORK_ENV'], 'w') as environ_file:
+        environ_file.write(str(env))
+    extract_as(
+        zip, f"lib/{ abi_map[arch][0] }/libmagisk64.so", "magisk64", "magisk")
+    extract_as(
+        zip, f"lib/{ abi_map[arch][1] }/libmagisk32.so", "magisk32", "magisk")
+    standalone_policy = False
+    try:
+        zip.getinfo(f"lib/{ abi_map[arch][0] }/libmagiskpolicy.so")
+        standalone_policy = True
+    except:
+        pass
+    extract_as(
+        zip, f"lib/{ abi_map[arch][0] }/libmagiskinit.so", "magiskinit", "magisk")
+    if standalone_policy:
+        extract_as(
+            zip, f"lib/{ abi_map[arch][0] }/libmagiskpolicy.so", "magiskpolicy", "magisk")
+    else:
+        extract_as(
+            zip, f"lib/{ abi_map[arch][0] }/libmagiskinit.so", "magiskpolicy", "magisk")
+    extract_as(
+        zip, f"lib/{ abi_map[arch][0] }/libmagiskboot.so", "magiskboot", "magisk")
+    extract_as(
+        zip, f"lib/{ abi_map[arch][0] }/libbusybox.so", "busybox", "magisk")
+    if standalone_policy:
+        extract_as(
+            zip, f"lib/{ abi_map[host_abi][0] }/libmagiskpolicy.so", "magiskpolicy", ".")
+    else:
+        extract_as(
+            zip, f"lib/{ abi_map[host_abi][0] }/libmagiskinit.so", "magiskpolicy", ".")
+    extract_as(zip, f"assets/boot_patch.sh", "boot_patch.sh", "magisk")
+    extract_as(zip, f"assets/util_functions.sh",
+               "util_functions.sh", "magisk")
