@@ -109,7 +109,7 @@ Gen_Rand_Str() {
 
 default() {
     ARCH=x64
-    RELEASE_TYPE="Insider Fast"
+    RELEASE_TYPE=retail
     MAGISK_VER=stable
     GAPPS_BRAND=MindTheGapps
     ROOT_SOL=magisk
