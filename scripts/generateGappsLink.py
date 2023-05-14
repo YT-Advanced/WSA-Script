@@ -32,7 +32,7 @@ download_dir = Path.cwd().parent / "download" if arg4 == "" else Path(arg4)
 tempScript = sys.argv[2]
 android_api = sys.argv[3]
 file_name = sys.argv[4]
-print(f"Generating {brand} download link: arch={arch} variant={variant}", flush=True)
+print(f"Generating {brand} download link: arch={arch}", flush=True)
 abi_map = {"x64": "x86_64", "arm64": "arm64"}
 android_api_map = {"33": "13.0"}
 release = android_api_map[android_api]
