@@ -39,7 +39,7 @@ on:
         options: [".zip",".7z",".tar.xz"]
         default: ".7z"
       remove_amazon:
-        description: "Remove Amazon AppStore from the system"
+        description: "Remove Amazon Appstore from the system"
         required: true
         default: true
         type: boolean

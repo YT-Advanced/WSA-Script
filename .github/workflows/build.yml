@@ -1,7 +1,7 @@
 name: Auto Build
 on: [workflow_call]
 
-concurrency: 
+concurrency:
   group: ${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
@@ -33,11 +33,11 @@ jobs:
         with:
           packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv erofs-utils linux-modules-extra-azure
           version: 1.0
-          
+
       - name: Update Package 👷
         working-directory: scripts
         run: |
-          sudo apt-get update -y
+          sudo apt-get update
           sudo apt-get install -y lzip
           PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
           echo "Creating Python3 Virtual Enviroment"
@@ -48,7 +48,7 @@ jobs:
               echo "Installing Python3 dependencies"
               python3 -m pip install --upgrade -r requirements.txt || abort "Failed to install python3 dependencies"
           }
-          deactivate 
+          deactivate
 
       - name: Build WSA ${{ matrix.arch }} with GAPPS ${{ matrix.root }} 🏗️
         id: wsa

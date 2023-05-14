@@ -7,7 +7,7 @@ on:
 jobs:
   merge:
     name: Sync with upstream
-    env: 
+    env:
       super_secret: ${{ secrets.PAT }}
     runs-on: ubuntu-latest
     permissions:
@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT }}
-          
+
       - name: Setup git
         run: |
           git config --global user.email ${{ github.repository_owner_id }}+${{ github.repository_owner }}@users.noreply.github.com
@@ -41,13 +41,13 @@ jobs:
         id: compare
         run: |
           echo "changes=$(git diff --name-only HEAD origin/main | grep -v '.github/workflows/custom_build.yml' | grep -v '.github/workflows/build.yml' | grep -v '.github/workflows/lock-closed-issues.yml' | grep -v '.github/workflows/lock.yml' | grep -v '.github/workflows/merge_upstream.yml' | grep -v '.github/workflows/shellcheck.yml' | grep -v '.github/workflows/update.yml' | grep -v '.github/workflows/workflow.yml' | tr '\n' ' ')" >> $GITHUB_OUTPUT
-          
+
       - name: Restore workflow file
         if: ${{ env.super_secret == '' && steps.compare.outputs.changes != '' }}
         run: |
           git restore --source=HEAD~1 .github/workflows/build.yml .github/workflows/custom_build.yml .github/workflows/merge_upstream.yml .github/workflows/update.yml .github/workflows/workflow.yml .github/workflows/shellcheck.yml .github/workflows/lock.yml .github/workflows/lock-closed-issues.yml
           git commit -a -m "Revert changes"
-      
+
       - name: Push all changes
         if: ${{ steps.compare.outputs.changes != '' }}
         run: |

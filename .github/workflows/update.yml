@@ -3,7 +3,7 @@ on:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
-  
+
 jobs:
   check:
     if: ${{github.repository == 'YT-Advanced/WSA-Script'}}
@@ -11,15 +11,15 @@ jobs:
     steps:
       - name: Checkout ♻️
         uses: actions/checkout@v3
-        
+
       - name: Install Dependencies 🧑‍🏭
         run: |
           pip3 install beautifulsoup4 lxml
-      
+
       - name: Create branch if not found 🏗️
         run: |
           git checkout -f update || git switch --discard-changes --orphan update
-      
+
       - name: Get app version ✅
         shell: python
         run: |
@@ -80,7 +80,7 @@ jobs:
           else:
               with open(env_file, "a") as wr:
                   wr.write("SHOULD_BUILD=no")
-                  
+
       - name: Update App version 🔗
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
         if: ${{ env.SHOULD_BUILD == 'yes'}}
@@ -90,19 +90,19 @@ jobs:
           file_pattern: '*.appversion'
           commit_message: ${{ env.MSG }}
           create_branch: true
-          
+
       - name: Prepare release tag 🏷️
         if: ${{ env.SHOULD_BUILD == 'yes'}}
         id: date
         run: echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
-        
+
       - name: Add text format to release 📝
         if: ${{ env.SHOULD_BUILD == 'yes'}}
         uses: softprops/action-gh-release@v0.1.15
         with:
           tag_name: ${{ steps.date.outputs.date }}
           body: "# Changelog\n### ${{ env.MSG }}\n### SHA256 Checksum\n```"
-      
+
       - name: Delete old workflow run ❌
         uses: Mattraks/delete-workflow-runs@v2
         with:
@@ -111,7 +111,7 @@ jobs:
           retain_days: 0
           keep_minimum_runs: 0
           delete_workflow_pattern: "Check update"
-          
+
     outputs:
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
 
