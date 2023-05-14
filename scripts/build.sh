@@ -350,14 +350,10 @@ update_ksu_zip_name() {
 }
 update_gapps_zip_name
 update_ksu_zip_name
-if [ "$DOWN_WSA" != "no" ]; then
-    echo "Generate Download Links"
-    python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
-    # shellcheck disable=SC1090
-    source "$WSA_WORK_ENV" || abort
-else
-    WSA_MAIN_VER=$(python3 getWSAMainVersion.py "$ARCH" "$WSA_ZIP_PATH")
-fi
+echo "Generate Download Links"
+python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
+# shellcheck disable=SC1090
+source "$WSA_WORK_ENV" || abort
 if [[ "$WSA_MAIN_VER" -ge 2303 ]]; then
     update_ksu_zip_name
 fi
