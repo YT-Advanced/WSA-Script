@@ -117,7 +117,6 @@ default() {
 
 exit_with_message() {
     echo "ERROR: $1"
-    usage
     exit 1
 }
 
@@ -278,7 +277,6 @@ while [[ $# -gt 0 ]]; do
         --arch              ) ARCH="$2"; shift 2 ;;
         --release-type      ) RELEASE_TYPE="$2"; shift 2 ;;
         --gapps-brand       ) GAPPS_BRAND="$2"; shift 2 ;;
-        --gapps-variant     ) GAPPS_VARIANT="$2"; shift 2 ;;
         --nofix-props       ) NOFIX_PROPS="yes"; shift ;;
         --root-sol          ) ROOT_SOL="$2"; shift 2 ;;
         --compress-format   ) COMPRESS_FORMAT="$2"; shift 2 ;;
