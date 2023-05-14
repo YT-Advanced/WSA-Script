@@ -255,10 +255,7 @@ ARGUMENT_LIST=(
     "compress-format:"
     "remove-amazon"
     "compress"
-    "magisk-custom"
     "debug"
-    "help"
-    "skip-download-wsa"
 )
 
 default
@@ -284,7 +281,6 @@ while [[ $# -gt 0 ]]; do
         --compress          ) COMPRESS_OUTPUT="yes"; shift ;;
         --magisk-ver        ) MAGISK_VER="$2"; shift 2 ;;
         --debug             ) DEBUG="on"; shift ;;
-        --skip-download-wsa ) DOWN_WSA="no"; shift ;;
         --                  ) shift; break;;
    esac
 done
