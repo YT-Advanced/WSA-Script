@@ -30,14 +30,8 @@ on:
         type: choice
         description: Google Apps brand
         required: true
-        options: ["OpenGApps v11.0","MindTheGapps v13.0","No GApps"]
+        options: ["MindTheGapps v13.0","No GApps"]
         default: "MindTheGapps v13.0"
-      gapps_var:
-        type: choice
-        description: Google Apps variant.
-        required: true
-        options: ["Super","Stock","Full","Mini","Micro","Nano","Pico","TVStock","TVMini"]
-        default: "Pico"
       compression:
         type: choice
         description: Compression format.
@@ -85,7 +79,7 @@ jobs:
     steps:
       - name: Checkout ♻️
         uses: actions/checkout@v3
-      
+
       - name: Setup Python 🏭
         uses: actions/setup-python@v4
         with:
@@ -99,11 +93,11 @@ jobs:
         with:
           packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv erofs-utils linux-modules-extra-azure
           version: 1.0
-          
+
       - name: Update Package 👷
         working-directory: scripts
         run: |
-          sudo apt-get update -y
+          sudo apt-get update
           sudo apt-get install -y lzip
           PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
           echo "Creating Python3 Virtual Enviroment"
@@ -119,7 +113,7 @@ jobs:
       - name: Build WSA 🏗️
         id: wsa
         run: |
-          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF" ["ROOT_SOL,Magisk Stable"]="stable" ["ROOT_SOL,Magisk Beta"]="beta" ["ROOT_SOL,Magisk Canary"]="canary" ["ROOT_SOL,Magisk Debug"]="debug" ["ROOT_SOL,Magisk Delta (HuskyDG)"]="delta" ["ROOT_SOL,Magisk Alpha (vvb2060)"]="alpha" ["ROOT_SOL,KernelSU"]="kernelsu" ["ROOT_SOL,Non-root"]="none" ["GAPPS_BRAND,OpenGApps v11.0"]="OpenGApps" ["GAPPS_BRAND,MindTheGapps v13.0"]="MindTheGapps" ["GAPPS_BRAND,No GApps"]="none" ["GAPPS_VAR,Pico"]="pico" ["GAPPS_VAR,Nano"]="nano" ["GAPPS_VAR,Micro"]="micro" ["GAPPS_VAR,Mini"]="mini" ["GAPPS_VAR,Full"]="full" ["GAPPS_VAR,Stock"]="stock" ["GAPPS_VAR,Super"]="super" ["GAPPS_VAR,TVStock"]="tvstock" ["GAPPS_VAR,TVMini"]="tvmini" ["REMOVE_AMAZON,true"]="--remove-amazon" ["COMPRESSION,.zip"]="zip" ["COMPRESSION,.7z"]="7z" ["COMPRESSION,.tar.xz"]="xz" )
+          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF" ["ROOT_SOL,Magisk Stable"]="stable" ["ROOT_SOL,Magisk Beta"]="beta" ["ROOT_SOL,Magisk Canary"]="canary" ["ROOT_SOL,Magisk Debug"]="debug" ["ROOT_SOL,Magisk Delta (HuskyDG)"]="delta" ["ROOT_SOL,Magisk Alpha (vvb2060)"]="alpha" ["ROOT_SOL,KernelSU"]="kernelsu" ["ROOT_SOL,Non-root"]="none" ["GAPPS_BRAND,MindTheGapps v13.0"]="MindTheGapps" ["GAPPS_BRAND,No GApps"]="none" ["REMOVE_AMAZON,true"]="--remove-amazon" ["COMPRESSION,.zip"]="zip" ["COMPRESSION,.7z"]="7z" ["COMPRESSION,.tar.xz"]="xz" )
           if [[ "${{ inputs.root_sol }}" == *Magisk* ]]; then
               MAGISK_VER="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
               ROOT_SOL="magisk"
@@ -129,14 +123,14 @@ jobs:
           fi
           mkdir -p download
           echo -e "user_code=$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
-          
-          ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --gapps-variant ${opts[GAPPS_VAR,${{ inputs.gapps_var }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
-      
+
+          ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
+
       - name: File Checksum ✔️
         working-directory: output
         run: |
           sha256sum '${{ steps.wsa.outputs.artifact }}${{ inputs.compression }}' >> sha256-checksum.txt
-      
+
       - name: Upload Artifact 🤌
         uses: actions/upload-artifact@v3
         with:
