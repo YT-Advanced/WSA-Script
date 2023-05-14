@@ -18,15 +18,7 @@
 # Copyright (C) 2023 LSPosed Contributors
 #
 
-if [ ! "$BASH_VERSION" ]; then
-    echo "Please do not use sh to run this script, just execute it directly" 1>&2
-    exit 1
-fi
 HOST_ARCH=$(uname -m)
-if [ "$HOST_ARCH" != "x86_64" ] && [ "$HOST_ARCH" != "aarch64" ]; then
-    echo "Unsupported architectures: $HOST_ARCH"
-    exit 1
-fi
 cd "$(dirname "$0")" || exit 1
 # export TMPDIR=$(dirname "$PWD")/WORK_DIR_
 if [ "$TMPDIR" ] && [ ! -d "$TMPDIR" ]; then
@@ -117,10 +109,9 @@ Gen_Rand_Str() {
 
 default() {
     ARCH=x64
-    RELEASE_TYPE=retail
+    RELEASE_TYPE="Insider Fast"
     MAGISK_VER=stable
     GAPPS_BRAND=MindTheGapps
-    GAPPS_VARIANT=pico
     ROOT_SOL=magisk
 }
 
@@ -229,21 +220,8 @@ MAGISK_VER_MAP=(
 )
 
 GAPPS_BRAND_MAP=(
-    "OpenGApps"
     "MindTheGapps"
     "none"
-)
-
-GAPPS_VARIANT_MAP=(
-    "super"
-    "stock"
-    "full"
-    "mini"
-    "micro"
-    "nano"
-    "pico"
-    "tvstock"
-    "tvmini"
 )
 
 ROOT_SOL_MAP=(
@@ -267,82 +245,17 @@ ARR_TO_STR() {
 GAPPS_PROPS_MSG1="\033[0;31mWARNING: Services such as the Play Store may stop working properly."
 GAPPS_PROPS_MSG2="We are not responsible for any problems caused by this!\033[0m"
 GAPPS_PROPS_MSG3="Info: https://support.google.com/android/answer/10248227"
-usage() {
-    default
-    echo -e "
-Usage:
-    --arch              Architecture of WSA.
-
-                        Possible values: $(ARR_TO_STR "${ARCH_MAP[@]}")
-                        Default: $ARCH
-
-    --release-type      Release type of WSA.
-                        RP means Release Preview, WIS means Insider Slow, WIF means Insider Fast.
-
-                        Possible values: $(ARR_TO_STR "${RELEASE_TYPE_MAP[@]}")
-                        Default: $RELEASE_TYPE
-
-    --magisk-ver        Magisk version.
-
-                        Possible values: $(ARR_TO_STR "${MAGISK_VER_MAP[@]}")
-                        Default: $MAGISK_VER
-
-    --gapps-brand       GApps brand.
-                        \"none\" for no integration of GApps
-
-                        Possible values: $(ARR_TO_STR "${GAPPS_BRAND_MAP[@]}")
-                        Default: $GAPPS_BRAND
-
-    --gapps-variant     GApps variant.
-
-                        Possible values: $(ARR_TO_STR "${GAPPS_VARIANT_MAP[@]}")
-                        Default: $GAPPS_VARIANT
-
-    --root-sol          Root solution.
-                        \"none\" means no root.
-
-                        Possible values: $(ARR_TO_STR "${ROOT_SOL_MAP[@]}")
-                        Default: $ROOT_SOL
-
-    --compress-format
-                        Compress format of output file.
-                        If this option is not specified and --compress is not specified, the generated file will not be compressed
-
-                        Possible values: $(ARR_TO_STR "${COMPRESS_FORMAT_MAP[@]}")
-
-Additional Options:
-    --remove-amazon     Remove Amazon Appstore from the system
-    --compress          Compress the WSA, The default format is 7z, you can use the format specified by --compress-format
-    --offline           Build WSA offline
-    --magisk-custom     Install custom Magisk
-    --skip-download-wsa Skip download WSA
-    --debug             Debug build mode
-    --help              Show this help message and exit
-    --nofix-props       No fix \"build.prop\"
-                        $GAPPS_PROPS_MSG1
-                        $GAPPS_PROPS_MSG2
-                        $GAPPS_PROPS_MSG3
-
-Example:
-    ./build.sh --release-type RP --magisk-ver beta --gapps-variant pico --remove-amazon
-    ./build.sh --arch arm64 --release-type WIF --gapps-brand OpenGApps --nofix-props
-    ./build.sh --release-type WIS --gapps-brand none
-    ./build.sh --offline --gapps-variant pico --magisk-custom
-    "
-}
 
 ARGUMENT_LIST=(
     "arch:"
     "release-type:"
     "magisk-ver:"
     "gapps-brand:"
-    "gapps-variant:"
     "nofix-props"
     "root-sol:"
     "compress-format:"
     "remove-amazon"
     "compress"
-    "offline"
     "magisk-custom"
     "debug"
     "help"
@@ -371,21 +284,12 @@ while [[ $# -gt 0 ]]; do
         --compress-format   ) COMPRESS_FORMAT="$2"; shift 2 ;;
         --remove-amazon     ) REMOVE_AMAZON="yes"; shift ;;
         --compress          ) COMPRESS_OUTPUT="yes"; shift ;;
-        --offline           ) OFFLINE="on"; shift ;;
-        --magisk-custom     ) CUSTOM_MAGISK="debug"; shift ;;
         --magisk-ver        ) MAGISK_VER="$2"; shift 2 ;;
         --debug             ) DEBUG="on"; shift ;;
         --skip-download-wsa ) DOWN_WSA="no"; shift ;;
-        --help              ) usage; exit 0 ;;
         --                  ) shift; break;;
    esac
 done
-
-if [ "$CUSTOM_MAGISK" ]; then
-    if [ -z "$MAGISK_VER" ]; then
-        MAGISK_VER=$CUSTOM_MAGISK
-    fi
-fi
 
 check_list() {
     local input=$1
@@ -411,7 +315,6 @@ check_list "$ARCH" "Architecture" "${ARCH_MAP[@]}"
 check_list "$RELEASE_TYPE" "Release Type" "${RELEASE_TYPE_MAP[@]}"
 check_list "$MAGISK_VER" "Magisk Version" "${MAGISK_VER_MAP[@]}"
 check_list "$GAPPS_BRAND" "GApps Brand" "${GAPPS_BRAND_MAP[@]}"
-check_list "$GAPPS_VARIANT" "GApps Variant" "${GAPPS_VARIANT_MAP[@]}"
 check_list "$ROOT_SOL" "Root Solution" "${ROOT_SOL_MAP[@]}"
 check_list "$COMPRESS_FORMAT" "Compress Format" "${COMPRESS_FORMAT_MAP[@]}"
 
@@ -419,20 +322,12 @@ if [ "$DEBUG" ]; then
     set -x
 fi
 
-require_su() {
-    if test "$(id -u)" != "0"; then
-        if [ "$(sudo id -u)" != "0" ]; then
-            echo "ROOT/SUDO is required to run this script"
-            abort
-        fi
-    fi
-}
 # shellcheck disable=SC1091
 [ -f "$PYTHON_VENV_DIR/bin/activate" ] && {
     source "$PYTHON_VENV_DIR/bin/activate" || abort "Failed to activate virtual environment, please re-run install_deps.sh"
 }
 declare -A RELEASE_NAME_MAP=(["retail"]="Retail" ["RP"]="Release Preview" ["WIS"]="Insider Slow" ["WIF"]="Insider Fast")
-declare -A ANDROID_API_MAP=(["30"]="11.0" ["32"]="12.1" ["33"]="13.0")
+declare -A ANDROID_API_MAP=(["33"]="13.0")
 RELEASE_NAME=${RELEASE_NAME_MAP[$RELEASE_TYPE]} || abort
 
 echo -e "Build: RELEASE_TYPE=$RELEASE_NAME"
@@ -443,28 +338,9 @@ UWPVCLibs_PATH="$DOWNLOAD_DIR/Microsoft.VCLibs.140.00.UWPDesktop_$ARCH.appx"
 xaml_PATH="$DOWNLOAD_DIR/Microsoft.UI.Xaml.2.8_$ARCH.appx"
 MAGISK_ZIP=magisk-$MAGISK_VER.zip
 MAGISK_PATH=$DOWNLOAD_DIR/$MAGISK_ZIP
-if [ "$CUSTOM_MAGISK" ]; then
-    if [ ! -f "$MAGISK_PATH" ]; then
-        echo "Custom Magisk $MAGISK_ZIP not found"
-        MAGISK_ZIP=app-$MAGISK_VER.apk
-        echo "Fallback to $MAGISK_ZIP"
-        MAGISK_PATH=$DOWNLOAD_DIR/$MAGISK_ZIP
-        if [ ! -f "$MAGISK_PATH" ]; then
-            echo -e "Custom Magisk $MAGISK_ZIP not found\nPlease put custom Magisk in $DOWNLOAD_DIR"
-            abort
-        fi
-    fi
-fi
 ANDROID_API=33
-update_gapps_zip_name() {
-    if [ "$GAPPS_BRAND" = "OpenGApps" ]; then
-        ANDROID_API=30
-        GAPPS_ZIP_NAME=$GAPPS_BRAND-$ARCH-${ANDROID_API_MAP[$ANDROID_API]}-$GAPPS_VARIANT.zip
-    else
-        GAPPS_ZIP_NAME=$GAPPS_BRAND-$ARCH-${ANDROID_API_MAP[$ANDROID_API]}.zip
-    fi
-    GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
-}
+GAPPS_ZIP_NAME=$GAPPS_BRAND-$ARCH-${ANDROID_API_MAP[$ANDROID_API]}.zip
+GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 WSA_MAIN_VER=0
 update_ksu_zip_name() {
     if [ "$WSA_MAIN_VER" -lt "2303" ]; then
@@ -480,74 +356,34 @@ update_ksu_zip_name() {
 }
 update_gapps_zip_name
 update_ksu_zip_name
-if [ -z ${OFFLINE+x} ]; then
-    require_su
-    if [ "$DOWN_WSA" != "no" ]; then
-        echo "Generate Download Links"
-        python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
-        # shellcheck disable=SC1090
-        source "$WSA_WORK_ENV" || abort
-    else
-        WSA_MAIN_VER=$(python3 getWSAMainVersion.py "$ARCH" "$WSA_ZIP_PATH")
-    fi
-    if [[ "$WSA_MAIN_VER" -lt 2211 ]]; then
-        ANDROID_API=32
-        update_gapps_zip_name
-    fi
-    if [[ "$WSA_MAIN_VER" -ge 2303 ]]; then
-        update_ksu_zip_name
-    fi
-    if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
-        if [ -z ${CUSTOM_MAGISK+x} ]; then
-            python3 generateMagiskLink.py "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
-        fi
-    fi
-    if [ "$ROOT_SOL" = "kernelsu" ]; then
-        python3 generateKernelSULink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$KERNEL_VER" "$KERNELSU_ZIP_NAME" || abort
-        # shellcheck disable=SC1090
-        source "$WSA_WORK_ENV" || abort
-        # shellcheck disable=SC2153
-        echo "KERNELSU_VER=$KERNELSU_VER" >"$KERNELSU_INFO"
-    fi
-    if [ "$GAPPS_BRAND" != "none" ]; then
-        python3 generateGappsLink.py "$ARCH" "$GAPPS_BRAND" "$GAPPS_VARIANT" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$ANDROID_API" "$GAPPS_ZIP_NAME" || abort
-    fi
-
-    echo "Download Artifacts"
-    if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j5 -c -R -m0 --async-dns=false --check-integrity=true --continue=true --allow-overwrite=true --conditional-get=true -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"; then
-        echo "We have encountered an error while downloading files."
-        exit 1
-    fi
-else # Offline mode
+if [ "$DOWN_WSA" != "no" ]; then
+    echo "Generate Download Links"
+    python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
+    # shellcheck disable=SC1090
+    source "$WSA_WORK_ENV" || abort
+else
     WSA_MAIN_VER=$(python3 getWSAMainVersion.py "$ARCH" "$WSA_ZIP_PATH")
-    if [[ "$WSA_MAIN_VER" -lt 2211 ]]; then
-        ANDROID_API=32
-        update_gapps_zip_name
-    fi
-    if [[ "$WSA_MAIN_VER" -ge 2303 ]]; then
-        update_ksu_zip_name
-    fi
-    declare -A FILES_CHECK_LIST=([WSA_ZIP_PATH]="$WSA_ZIP_PATH" [xaml_PATH]="$xaml_PATH" [vclibs_PATH]="$vclibs_PATH" [UWPVCLibs_PATH]="$UWPVCLibs_PATH")
-    if [ "$GAPPS_BRAND" != "none" ] || [ "$ROOT_SOL" = "magisk" ]; then
-        FILES_CHECK_LIST+=(["MAGISK_PATH"]="$MAGISK_PATH")
-    fi
-    if [ "$ROOT_SOL" = "kernelsu" ]; then
-        FILES_CHECK_LIST+=(["KERNELSU_PATH"]="$KERNELSU_PATH")
-    fi
-    if [ "$GAPPS_BRAND" != 'none' ]; then
-        FILES_CHECK_LIST+=(["GAPPS_PATH"]="$GAPPS_PATH")
-    fi
-    for i in "${FILES_CHECK_LIST[@]}"; do
-        if [ ! -f "$i" ]; then
-            echo "Offline mode: missing [$i]."
-            OFFLINE_ERR="1"
-        fi
-    done
-    if [ "$OFFLINE_ERR" ]; then
-        echo "Offline mode: Some files are missing, please disable offline mode."
-        exit 1
-    fi
-    require_su
+fi
+if [[ "$WSA_MAIN_VER" -ge 2303 ]]; then
+    update_ksu_zip_name
+fi
+if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
+    python3 generateMagiskLink.py "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
+fi
+if [ "$ROOT_SOL" = "kernelsu" ]; then
+    python3 generateKernelSULink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$KERNEL_VER" "$KERNELSU_ZIP_NAME" || abort
+    # shellcheck disable=SC1090
+    source "$WSA_WORK_ENV" || abort
+    # shellcheck disable=SC2153
+    echo "KERNELSU_VER=$KERNELSU_VER" >"$KERNELSU_INFO"
+fi
+if [ "$GAPPS_BRAND" != "none" ]; then
+    python3 generateGappsLink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$ANDROID_API" "$GAPPS_ZIP_NAME" || abort
+fi
+ echo "Download Artifacts"
+if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j5 -c -R -m0 --async-dns=false --check-integrity=true --continue=true --allow-overwrite=true --conditional-get=true -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"; then
+    echo "We have encountered an error while downloading files."
+    exit 1
 fi
 
 echo "Extract WSA"
@@ -577,16 +413,13 @@ if [ "$GAPPS_BRAND" != "none" ] || [ "$ROOT_SOL" = "magisk" ]; then
         fi
         # shellcheck disable=SC1090
         source "$WSA_WORK_ENV" || abort
-        if [ "$MAGISK_VERSION_CODE" -lt 25211 ] && [ "$MAGISK_VER" != "delta" ] && [ -z ${CUSTOM_MAGISK+x} ]; then
+        if [ "$MAGISK_VERSION_CODE" -lt 25211 ] && [ "$MAGISK_VER" != "delta" ]; then
             echo "Please install Magisk 25211+"
             abort
         fi
         sudo chmod +x "../linker/$HOST_ARCH/linker64" || abort
         sudo patchelf --set-interpreter "../linker/$HOST_ARCH/linker64" "$WORK_DIR/magisk/magiskpolicy" || abort
         chmod +x "$WORK_DIR/magisk/magiskpolicy" || abort
-    elif [ -z "${CUSTOM_MAGISK+x}" ]; then
-        echo "The Magisk zip package does not exist, is the download incomplete?"
-        exit 1
     else
         echo "The Magisk zip package does not exist, rename it to magisk-debug.zip and put it in the download folder."
         exit 1
@@ -615,22 +448,15 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     echo "Extract $GAPPS_BRAND"
     mkdir -p "$WORK_DIR/gapps" || abort
     if [ -f "$GAPPS_PATH" ]; then
-        if [ "$GAPPS_BRAND" = "OpenGApps" ]; then
-            if ! unzip -p "$GAPPS_PATH" {Core,GApps}/'*.lz' | tar --lzip -C "$WORK_DIR/gapps" -xf - -i --strip-components=2 --exclude='setupwizardtablet-x86_64' --exclude='packageinstallergoogle-all' --exclude='speech-common' --exclude='markup-lib-arm' --exclude='markup-lib-arm64' --exclude='markup-all' --exclude='setupwizarddefault-x86_64' --exclude='pixellauncher-all' --exclude='pixellauncher-common'; then
-                echo "Unzip OpenGApps failed, is the download incomplete?"
-                CLEAN_DOWNLOAD_GAPPS=1
-                abort
-            fi
-        else
-            if ! unzip "$GAPPS_PATH" "system/*" -x "system/addon.d/*" "system/system_ext/priv-app/SetupWizard/*" -d "$WORK_DIR/gapps"; then
-                echo "Unzip MindTheGapps failed, package is corrupted?"
-                CLEAN_DOWNLOAD_GAPPS=1
-                abort
-            fi
-            mv "$WORK_DIR/gapps/system/"* "$WORK_DIR/gapps" || abort
-            rm -rf "${WORK_DIR:?}/gapps/system" || abort
+        if ! unzip "$GAPPS_PATH" "system/*" -x "system/addon.d/*" "system/system_ext/priv-app/SetupWizard/*" -d "$WORK_DIR/gapps"; then
+            echo "Unzip MindTheGapps failed, package is corrupted?"
+            CLEAN_DOWNLOAD_GAPPS=1
+            abort
         fi
-        cp -r "../$ARCH/gapps/"* "$WORK_DIR/gapps" || abort
+        mv "$WORK_DIR/gapps/system/"* "$WORK_DIR/gapps" || abort
+        rm -rf "${WORK_DIR:?}/gapps/system" || abort
+    fi
+    cp -r "../$ARCH/gapps/"* "$WORK_DIR/gapps" || abort
     else
         echo "The $GAPPS_BRAND zip package does not exist."
         abort
@@ -858,9 +684,7 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
         sudo chmod 0644 "$WORK_DIR/gapps/${file}"
     done
 
-    if [ "$GAPPS_BRAND" = "OpenGApps" ]; then
-        find "$WORK_DIR/gapps/" -maxdepth 1 -mindepth 1 -type d -exec sudo cp --preserve=all -r {} "$SYSTEM_MNT" \; || abort
-    elif [ "$GAPPS_BRAND" = "MindTheGapps" ]; then
+    if [ "$GAPPS_BRAND" = "MindTheGapps" ]; then
         sudo cp --preserve=all -r "$WORK_DIR/gapps/system_ext/"* "$SYSTEM_EXT_MNT/" || abort
         if [ -e "$SYSTEM_EXT_MNT/priv-app/SetupWizard" ]; then
             rm -rf "${SYSTEM_EXT_MNT:?}/priv-app/Provision"
@@ -872,16 +696,7 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     find "$WORK_DIR/gapps/product/etc/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$PRODUCT_MNT/etc/placeholder" -type d -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     find "$WORK_DIR/gapps/product/etc/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$PRODUCT_MNT/etc/placeholder" -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
 
-    if [ "$GAPPS_BRAND" = "OpenGApps" ]; then
-        find "$WORK_DIR/gapps/app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/app/placeholder" -type d -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
-        find "$WORK_DIR/gapps/framework/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/framework/placeholder" -type d -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
-        find "$WORK_DIR/gapps/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/priv-app/placeholder" -type d -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
-        find "$WORK_DIR/gapps/app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/app/placeholder" -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
-        find "$WORK_DIR/gapps/framework/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/framework/placeholder" -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
-        find "$WORK_DIR/gapps/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/priv-app/placeholder" -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
-        find "$WORK_DIR/gapps/etc/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/placeholder" -type d -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
-        find "$WORK_DIR/gapps/etc/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/placeholder" -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
-    else
+    if [ "$GAPPS_BRAND" = "MindTheGapps" ]; then
         find "$WORK_DIR/gapps/product/app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$PRODUCT_MNT/app/placeholder" -type d -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
         find "$WORK_DIR/gapps/product/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$PRODUCT_MNT/priv-app/placeholder" -type d -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
         find "$WORK_DIR/gapps/product/framework/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$PRODUCT_MNT/framework/placeholder" -type d -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
@@ -976,16 +791,7 @@ fi
 if [ "$GAPPS_BRAND" = "none" ]; then
     name2="-NoGApps"
 else
-    if [ "$GAPPS_BRAND" = "OpenGApps" ]; then
-        name2=-$GAPPS_BRAND-${ANDROID_API_MAP[$ANDROID_API]}-${GAPPS_VARIANT}
-    else
-        name2=-$GAPPS_BRAND-${ANDROID_API_MAP[$ANDROID_API]}
-    fi
-    if [ "$GAPPS_BRAND" = "OpenGApps" ]; then
-        echo -e "\033[0;31m:warning: Since $GAPPS_BRAND doesn't officially support Android 12.1 and 13 yet, lock the variant to pico!
-          $GAPPS_BRAND may cause startup failure
-        \033[0m"
-    fi
+    name2=-$GAPPS_BRAND-${ANDROID_API_MAP[$ANDROID_API]}
 fi
 artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}
 if [ "$NOFIX_PROPS" = "yes" ]; then
