@@ -93,20 +93,23 @@ jobs:
           python-version: '3.x'
           cache: 'pip'
           cache-dependency-path: scripts/
-
-      - name: Install Ubuntu Dependencies 🧑‍🏭
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv erofs-utils linux-modules-extra-azure
-          version: 1.0
           
       - name: Update Package 👷
-        working-directory: scripts
         run: |
           sudo apt-get update -y
           sudo apt-get install -y lzip
+          sudo apt-get install -y linux-modules-extra-$(uname -r)
+          
+      - name: Install Ubuntu Dependencies 🧑‍🏭
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv erofs-utils
+          version: 1.0
+          
+      - name: Setup Python3 Virtual Enviroment 🍃
+        working-directory: scripts
+        run: |
           PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
-          echo "Creating Python3 Virtual Enviroment"
           python3 -m venv "$PYTHON_VENV_DIR" || abort "Failed to create python3 virtual env"
           # shellcheck disable=SC1091
           source "$PYTHON_VENV_DIR/bin/activate" || abort "Failed to activate python3 virtual env"
