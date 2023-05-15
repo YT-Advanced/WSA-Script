@@ -95,7 +95,7 @@ jobs:
           import json
           import sys
           env_file = os.getenv('GITHUB_ENV')
-          res = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latestn").content)['assets']['browser_download_url']
+          res = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest").content)['assets']['browser_download_url']
           print(res)
           with open(env_file, "a") as wr:
               wr.write("LINK=" + res)
