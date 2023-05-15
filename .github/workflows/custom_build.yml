@@ -13,7 +13,7 @@ on:
         type: choice
         description: WSA Release Channel
         required: true
-        options: ["Retail","Release Preview","Insider Slow","Insider Fast"]
+        options: ["Retail","Release Preview","Insider Slow","Insider Fast","Insider Private"]
         default: "Retail"
       user_code:
         type: string
@@ -86,6 +86,20 @@ jobs:
       - name: Checkout ♻️
         uses: actions/checkout@v3
       
+      - name: Get WSA Preview build
+        if: ${{ inputs.release_type == 'Insider Private'}}
+        shell: python
+        run: |
+          import requests
+          import os
+          import json
+          import sys
+          env_file = os.getenv('GITHUB_ENV')
+          res = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest").content)['assets']
+          for str in res:
+              with open(env_file, "a") as wr:
+                  wr.write("LINK=" + str['browser_download_url'])
+              
       - name: Setup Python 🏭
         uses: actions/setup-python@v4
         with:
@@ -93,20 +107,14 @@ jobs:
           python-version: '3.x'
           cache: 'pip'
           cache-dependency-path: scripts/
-
-      - name: Install Ubuntu Dependencies 🧑‍🏭
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv erofs-utils linux-modules-extra-azure
-          version: 1.0
           
-      - name: Update Package 👷
+      - name: Update Package and Setup Python3 Virtual Enviroment 👷
         working-directory: scripts
         run: |
           sudo apt-get update -y
           sudo apt-get install -y lzip
+          sudo apt-get install -y linux-modules-extra-$(uname -r)
           PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
-          echo "Creating Python3 Virtual Enviroment"
           python3 -m venv "$PYTHON_VENV_DIR" || abort "Failed to create python3 virtual env"
           # shellcheck disable=SC1091
           source "$PYTHON_VENV_DIR/bin/activate" || abort "Failed to activate python3 virtual env"
@@ -115,6 +123,27 @@ jobs:
               python3 -m pip install --upgrade -r requirements.txt || abort "Failed to install python3 dependencies"
           }
           deactivate
+          
+      - name: Install Ubuntu Dependencies 🧑‍🏭
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv erofs-utils linux-modules-extra-azure-lts-22.04
+          version: 1.0
+      
+      - name: Download WSA Preview build + VCLibs 14 + UI XAML manually 🧙🏻‍♂️
+        if: ${{ inputs.release_type == 'Insider Private'}}
+        run: |
+          wget -P ./download/wsa ${{ env.LINK }}
+          mv ./download/wsa/*.Msixbundle ./download/wsa-WIF.zip
+          rm -rf ./download/wsa
+          wget -P ./download/ https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx
+          mv ./download/Microsoft.VCLibs.x64.14.00.Desktop.appx ./download/Microsoft.VCLibs.140.00.UWPDesktop_x64.appx
+          wget -P ./download/ https://raw.githubusercontent.com/M1k3G0/Win10_LTSC_VP9_Installer/master/Microsoft.VCLibs.140.00_14.0.30704.0_x64__8wekyb3d8bbwe.appx
+          mv ./download/Microsoft.VCLibs.140.00_14.0.30704.0_x64__8wekyb3d8bbwe.appx ./download/Microsoft.VCLibs.140.00_x64.appx
+          wget -P ./download/xaml https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.8.3.nupkg
+          7z x ./download/xaml/*.nupkg -o./download/xaml/
+          mv ./download/xaml/tools/AppX/x64/Release/*.appx ./download/Microsoft.UI.Xaml.2.8_x64.appx
+          rm -rf ./download/xaml
 
       - name: Build WSA 🏗️
         id: wsa
@@ -130,8 +159,12 @@ jobs:
           mkdir -p download
           echo -e "user_code=$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
           
-          ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --gapps-variant ${opts[GAPPS_VAR,${{ inputs.gapps_var }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
-      
+          if [[ "${{ inputs.release_type }}" == *Private* ]]; then
+              ./scripts/build.sh --arch ${{ matrix.arch }} --release-type WIF --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --skip-download-wsa --gapps-variant ${opts[GAPPS_VAR,${{ inputs.gapps_var }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
+          else
+              ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --gapps-variant ${opts[GAPPS_VAR,${{ inputs.gapps_var }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
+          fi
+          
       - name: File Checksum ✔️
         working-directory: output
         run: |
