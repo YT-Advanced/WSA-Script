@@ -86,6 +86,20 @@ jobs:
       - name: Checkout ♻️
         uses: actions/checkout@v3
       
+      - name: Get WSA Preview build
+        if: ${{ inputs.release_type == 'Insider Private'}}
+        shell: python
+        run: |
+          import requests
+          import os
+          import json
+          import sys
+          env_file = os.getenv('GITHUB_ENV')
+          res = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latestn").content)['assets']['browser_download_url']
+          print(res)
+          with open(env_file, "a") as wr:
+              wr.write("LINK=" + res)
+              
       - name: Setup Python 🏭
         uses: actions/setup-python@v4
         with:
@@ -114,20 +128,6 @@ jobs:
         with:
           packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv erofs-utils linux-modules-extra-azure-lts-22.04
           version: 1.0
-          
-      - name: Get WSA Preview build
-        if: ${{ inputs.release_type == 'Insider Private'}}
-        shell: python
-        run: |
-          import requests
-          import os
-          import json
-          import sys
-          env_file = os.getenv('GITHUB_ENV')
-          res = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latestn").content)['assets']['browser_download_url']
-          print(res)
-          with open(env_file, "a") as wr:
-              wr.write("LINK=" + res)
       
       - name: Download WSA Preview build + VCLibs 14 + UI XAML manually 🧙🏻‍♂️
         if: ${{ inputs.release_type == 'Insider Private'}}
