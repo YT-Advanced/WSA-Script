@@ -176,12 +176,14 @@ jobs:
           emoji: eyes
 
       - name: Install Ubuntu Dependencies
+        if: env.iscustom == 'true' && success()
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv erofs-utils
+          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv erofs-utils linux-modules-extra-azure-lts-22.04
           version: 1.0
           
       - name: Setup Python3 Virtual Enviroment
+        if: env.iscustom == 'true' && success()
         working-directory: scripts
         run: |
           PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
