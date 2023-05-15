@@ -118,12 +118,24 @@ jobs:
               python3 -m pip install --upgrade -r requirements.txt || abort "Failed to install python3 dependencies"
           }
           deactivate
-
+          
+      - name: Get WSA Preview build
+        if: ${{ inputs.release_type == 'Insider Private'}}
+        shell: python
+        run: |
+          import requests
+          import os
+          import json
+          import sys
+          env_file = os.getenv('GITHUB_ENV')
+          res = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latestn").content)['assets']['browser_download_url']
+          print(res)
+          with open(env_file, "a") as wr:
+              wr.write("LINK=" + res)
+      
       - name: Download WSA Preview build + VCLibs 14 + UI XAML manually 🧙🏻‍♂️
         if: ${{ inputs.release_type == 'Insider Private'}}
         run: |
-          curl -s https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | \
-          python -c "import json,sys;obj=json.load(sys.stdin);print("LINK=");print(obj['assets']['browser_download_url']);"
           wget -P ${{ env.LINK }} ./download/wsa 
           mv ./download/*.Msixbundle ./download/wsa-WIF.zip
           rm -rf ./download/wsa
