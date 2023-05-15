@@ -29,9 +29,9 @@ from pathlib import Path
 arch = sys.argv[1]
 arg4 = sys.argv[2]
 download_dir = Path.cwd().parent / "download" if arg4 == "" else Path(arg4)
-tempScript = sys.argv[2]
-android_api = sys.argv[3]
-file_name = sys.argv[4]
+tempScript = sys.argv[3]
+android_api = sys.argv[4]
+file_name = sys.argv[5]
 print(f"Generating MindTheGapps download link: arch={arch}", flush=True)
 abi_map = {"x64": "x86_64", "arm64": "arm64"}
 android_api_map = {"33": "13.0"}
