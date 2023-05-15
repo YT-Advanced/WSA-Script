@@ -256,6 +256,7 @@ ARGUMENT_LIST=(
     "remove-amazon"
     "compress"
     "debug"
+    "skip-download-wsa"
 )
 
 default
@@ -281,6 +282,7 @@ while [[ $# -gt 0 ]]; do
         --compress          ) COMPRESS_OUTPUT="yes"; shift ;;
         --magisk-ver        ) MAGISK_VER="$2"; shift 2 ;;
         --debug             ) DEBUG="on"; shift ;;
+        --skip-download-wsa ) DOWN_WSA="no"; shift ;;
         --                  ) shift; break;;
    esac
 done
@@ -350,10 +352,14 @@ update_ksu_zip_name() {
 }
 update_gapps_zip_name
 update_ksu_zip_name
-echo "Generate Download Links"
-python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
-# shellcheck disable=SC1090
-source "$WSA_WORK_ENV" || abort
+if [ "$DOWN_WSA" != "no" ]; then
+    echo "Generate Download Links"
+    python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
+    # shellcheck disable=SC1090
+    source "$WSA_WORK_ENV" || abort
+else
+    WSA_MAIN_VER=$(python3 getWSAMainVersion.py "$ARCH" "$WSA_ZIP_PATH")
+fi
 if [[ "$WSA_MAIN_VER" -ge 2303 ]]; then
     update_ksu_zip_name
 fi
@@ -716,7 +722,7 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
         find "$WORK_DIR/gapps/system_ext/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_EXT_MNT/priv-app/placeholder" -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     fi
 
-    sudo LD_LIBRARY_PATH="../linker/$HOST_ARCH" "$WORK_DIR/magisk/magiskpolicy" --load "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --save "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" "allow gmscore_app gmscore_app vsock_socket { create connect write read }" "allow gmscore_app device_config_runtime_native_boot_prop file read" "allow gmscore_app system_server_tmpfs dir search" "allow gmscore_app system_server_tmpfs file open" "allow gmscore_app system_server_tmpfs filesystem getattr" "allow gmscore_app gpu_device dir search" "allow gmscore_app media_rw_data_file filesystem getattr" || abort
+    sudo LD_LIBRARY_PATH="../linker/$HOST_ARCH" "$WORK_DIR/magisk/magiskpolicy" --load "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --save "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" "allow gmscore_app gmscore_app vsock_socket { create connect write read }" "allow gmscore_app device_config_runtime_native_boot_prop file read" "allow gmscore_app system_server_tmpfs dir search" "allow gmscore_app system_server_tmpfs file open" "allow gmscore_app system_server_tmpfs filesystem getattr" "allow gmscore_app gpu_device dir search" "allow gmscore_app media_rw_data_file filesystem getattr" "allow gmscore_app media_rw_data_file filesystem getattr" || abort
     echo -e "Integrate $GAPPS_BRAND done\n"
 fi
 
