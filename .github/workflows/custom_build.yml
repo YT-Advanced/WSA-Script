@@ -132,7 +132,7 @@ jobs:
       - name: Download WSA Preview build + VCLibs 14 + UI XAML manually 🧙🏻‍♂️
         if: ${{ inputs.release_type == 'Insider Private'}}
         run: |
-          wget -P ${{ env.LINK }} ./download/wsa 
+          wget -P ./download/wsa ${{ env.LINK }}
           mv ./download/*.Msixbundle ./download/wsa-WIF.zip
           rm -rf ./download/wsa
           wget -P ./download/ https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx
