@@ -133,7 +133,7 @@ jobs:
         if: ${{ inputs.release_type == 'Insider Private'}}
         run: |
           wget -P ./download/wsa ${{ env.LINK }}
-          mv ./download/*.Msixbundle ./download/wsa-WIF.zip
+          mv ./download/wsa/*.Msixbundle ./download/wsa-WIF.zip
           rm -rf ./download/wsa
           wget -P ./download/ https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx
           mv ./download/Microsoft.VCLibs.x64.14.00.Desktop.appx ./download/Microsoft.VCLibs.140.00.UWPDesktop_x64.appx
