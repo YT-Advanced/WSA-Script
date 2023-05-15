@@ -98,7 +98,7 @@ jobs:
           res = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest").content)['assets']
           for str in res:
               with open(env_file, "a") as wr:
-                  wr.write("LINK=" + str)
+                  wr.write("LINK=" + str['browser_download_url'])
               
       - name: Setup Python 🏭
         uses: actions/setup-python@v4
