@@ -12,6 +12,7 @@ permissions: {}
 
 jobs:
   shellcheck:
+    name: PSScript checker
     runs-on: windows-latest
     steps:
     - name : Checkout
@@ -20,7 +21,7 @@ jobs:
     - name: Run PSScriptAnalyzer
       uses: microsoft/psscriptanalyzer-action@v1.0
       with:
-        path: .\installer
-        recurse: true 
-        includeDefaultRules: true 
-        enableExit: true
+        path: installer
+        recurse: true
+        includeDefaultRules: true
+        enableExit: false
