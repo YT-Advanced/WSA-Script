@@ -93,6 +93,7 @@ clean_download() {
     fi
 }
 abort() {
+    [ "$1" ] && echo -e "ERROR: $1"
     echo "Build: an error has occurred, exit"
     if [ -d "$WORK_DIR" ]; then
         echo -e "\nCleanup Work Directory"
@@ -339,19 +340,17 @@ GAPPS_ZIP_NAME=$GAPPS_BRAND-$ARCH-${ANDROID_API_MAP[$ANDROID_API]}.zip
 GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 WSA_MAIN_VER=0
 update_ksu_zip_name() {
-    if [ "$WSA_MAIN_VER" -lt "2303" ]; then
-        KERNEL_VER="5.10.117.2"
-    elif [ "$WSA_MAIN_VER" -lt "2304" ]; then
+    KERNEL_VER="5.10.117.2"
+    if [ "$WSA_MAIN_VER" -ge "2303" ]; then
         KERNEL_VER="5.15.78.1"
-    else
+    fi
+    if [ "$WSA_MAIN_VER" -ge "2304" ]; then
         KERNEL_VER="5.15.94.1"
     fi
     KERNELSU_ZIP_NAME=kernelsu-$ARCH-$KERNEL_VER.zip
     KERNELSU_PATH=$DOWNLOAD_DIR/$KERNELSU_ZIP_NAME
     KERNELSU_INFO="$KERNELSU_PATH.info"
 }
-update_gapps_zip_name
-update_ksu_zip_name
 if [ "$DOWN_WSA" != "no" ]; then
     echo "Generate Download Links"
     python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
@@ -360,13 +359,11 @@ if [ "$DOWN_WSA" != "no" ]; then
 else
     WSA_MAIN_VER=$(python3 getWSAMainVersion.py "$ARCH" "$WSA_ZIP_PATH")
 fi
-if [[ "$WSA_MAIN_VER" -ge 2303 ]]; then
-    update_ksu_zip_name
-fi
 if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
     python3 generateMagiskLink.py "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
 fi
 if [ "$ROOT_SOL" = "kernelsu" ]; then
+    update_ksu_zip_name
     python3 generateKernelSULink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$KERNEL_VER" "$KERNELSU_ZIP_NAME" || abort
     # shellcheck disable=SC1090
     source "$WSA_WORK_ENV" || abort
@@ -374,6 +371,7 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     echo "KERNELSU_VER=$KERNELSU_VER" >"$KERNELSU_INFO"
 fi
 if [ "$GAPPS_BRAND" != "none" ]; then
+    update_gapps_zip_name
     python3 generateGappsLink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$ANDROID_API" "$GAPPS_ZIP_NAME" || abort
 fi
  echo "Download Artifacts"
@@ -385,9 +383,8 @@ fi
 echo "Extract WSA"
 if [ -f "$WSA_ZIP_PATH" ]; then
     if ! python3 extractWSA.py "$ARCH" "$WSA_ZIP_PATH" "$WORK_DIR" "$WSA_WORK_ENV"; then
-        echo "Unzip WSA failed, is the download incomplete?"
         CLEAN_DOWNLOAD_WSA=1
-        abort
+        abort "Unzip WSA failed, is the download incomplete?"
     fi
     echo -e "Extract done\n"
     # shellcheck disable=SC1090
@@ -403,15 +400,13 @@ if [ "$GAPPS_BRAND" != "none" ] || [ "$ROOT_SOL" = "magisk" ]; then
         MAGISK_VERSION_NAME=""
         MAGISK_VERSION_CODE=0
         if ! python3 extractMagisk.py "$ARCH" "$MAGISK_PATH" "$WORK_DIR"; then
-            echo "Unzip Magisk failed, is the download incomplete?"
             CLEAN_DOWNLOAD_MAGISK=1
-            abort
+            abort "Unzip Magisk failed, is the download incomplete?"
         fi
         # shellcheck disable=SC1090
         source "$WSA_WORK_ENV" || abort
         if [ "$MAGISK_VERSION_CODE" -lt 26000 ] && [ "$MAGISK_VER" != "delta" ]; then
-            echo "Please install Magisk 26.0+"
-            abort
+            abort "Please install Magisk 26.0+"
         fi
         sudo chmod +x "../linker/$HOST_ARCH/linker64" || abort
         sudo patchelf --set-interpreter "../linker/$HOST_ARCH/linker64" "$WORK_DIR/magisk/magiskpolicy" || abort
@@ -424,13 +419,13 @@ if [ "$GAPPS_BRAND" != "none" ] || [ "$ROOT_SOL" = "magisk" ]; then
 fi
 
 if [ "$ROOT_SOL" = "kernelsu" ]; then
+    update_ksu_zip_name
     echo "Extract KernelSU"
     # shellcheck disable=SC1090
     source "${KERNELSU_INFO:?}" || abort
     if ! unzip "$KERNELSU_PATH" -d "$WORK_DIR/kernelsu"; then
-        echo "Unzip KernelSU failed, package is corrupted?"
         CLEAN_DOWNLOAD_KERNELSU=1
-        abort
+        abort "Unzip KernelSU failed, package is corrupted?"
     fi
     if [ "$ARCH" = "x64" ]; then
         mv "$WORK_DIR/kernelsu/bzImage" "$WORK_DIR/kernelsu/kernel"
@@ -441,20 +436,19 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
 fi
 
 if [ "$GAPPS_BRAND" != 'none' ]; then
+    update_gapps_zip_name
     echo "Extract $GAPPS_BRAND"
     mkdir -p "$WORK_DIR/gapps" || abort
     if [ -f "$GAPPS_PATH" ]; then
         if ! unzip "$GAPPS_PATH" "system/*" -x "system/addon.d/*" "system/system_ext/priv-app/SetupWizard/*" -d "$WORK_DIR/gapps"; then
-            echo "Unzip MindTheGapps failed, package is corrupted?"
-            CLEAN_DOWNLOAD_GAPPS=1
-            abort
+             CLEAN_DOWNLOAD_GAPPS=1
+            abort "Unzip MindTheGapps failed, package is corrupted?"
         fi
         mv "$WORK_DIR/gapps/system/"* "$WORK_DIR/gapps" || abort
         rm -rf "${WORK_DIR:?}/gapps/system" || abort
         cp -r "../$ARCH/gapps/"* "$WORK_DIR/gapps" || abort
     else
-        echo "The $GAPPS_BRAND zip package does not exist."
-        abort
+        abort "The $GAPPS_BRAND zip package does not exist."
     fi
     echo -e "Extract done\n"
 fi
@@ -566,25 +560,22 @@ if [ "$ROOT_SOL" = 'magisk' ]; then
     echo "Integrate Magisk"
     sudo cp "$WORK_DIR/magisk/magisk/"* "$ROOT_MNT/debug_ramdisk/"
     sudo cp "$MAGISK_PATH" "$ROOT_MNT/debug_ramdisk/stub.apk" || abort
-    sudo tee -a "$ROOT_MNT/debug_ramdisk/preparebin.sh" <<EOF >/dev/null || abort
-#!/system/bin/sh
-mkdir -p /data/adb/magisk
-cp /debug_ramdisk/* /data/adb/magisk/
-sync
-chmod -R 755 /data/adb/magisk
-restorecon -R /data/adb/magisk
-EOF
-    sudo tee -a "$ROOT_MNT/debug_ramdisk/mkpreinit.sh" <<EOF >/dev/null || abort
+    sudo tee -a "$ROOT_MNT/debug_ramdisk/loadpolicy.sh" <<EOF >/dev/null || abort
 #!/system/bin/sh
 MAGISKTMP=/debug_ramdisk
 export MAGISKTMP
+mkdir -p /data/adb/magisk
+cp \$MAGISKTMP/* /data/adb/magisk/
+sync
+chmod -R 755 /data/adb/magisk
+restorecon -R /data/adb/magisk
 MAKEDEV=1 \$MAGISKTMP/magisk --preinit-device 2>&1
 RULESCMD=""
 for r in \$MAGISKTMP/.magisk/preinit/*/sepolicy.rule; do
   [ -f "\$r" ] || continue
   RULESCMD="\$RULESCMD --apply \$r"
 done
-/debug_ramdisk/magiskpolicy --live \$RULESCMD 2>&1
+\$MAGISKTMP/magiskpolicy --live \$RULESCMD 2>&1
 EOF
     sudo find "$ROOT_MNT/debug_ramdisk" -type f -exec chmod 0711 {} \;
     sudo find "$ROOT_MNT/debug_ramdisk" -type f -exec chown root:root {} \;
@@ -592,49 +583,38 @@ EOF
     echo "/debug_ramdisk(/.*)?    u:object_r:magisk_file:s0" | sudo tee -a "$VENDOR_MNT/etc/selinux/vendor_file_contexts"
     echo '/data/adb/magisk(/.*)?   u:object_r:magisk_file:s0' | sudo tee -a "$VENDOR_MNT/etc/selinux/vendor_file_contexts"
     sudo LD_LIBRARY_PATH="../linker/$HOST_ARCH" "$WORK_DIR/magisk/magiskpolicy" --load "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --save "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --magisk || abort
-    COPY_BIN_SVC_NAME=$(Gen_Rand_Str 12)
     PFD_SVC_NAME=$(Gen_Rand_Str 12)
     LS_SVC_NAME=$(Gen_Rand_Str 12)
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
 on post-fs-data
-    mkdir /dev/tmp
-    mount none / /dev/tmp bind
-    mount none none /dev/tmp private
+    mkdir /dev/debug_ramdisk_mirror
+    mount none /debug_ramdisk /dev/debug_ramdisk_mirror bind
+    mount none none /dev/debug_ramdisk_mirror private
     mount tmpfs magisk /debug_ramdisk mode=0755
-    copy /dev/tmp/debug_ramdisk/magisk64 /debug_ramdisk/magisk64
+    copy /dev/debug_ramdisk_mirror/magisk64 /debug_ramdisk/magisk64
     chmod 0711 /debug_ramdisk/magisk64
     symlink ./magisk64 /debug_ramdisk/magisk
     symlink ./magisk64 /debug_ramdisk/su
     symlink ./magisk64 /debug_ramdisk/resetprop
-    copy /dev/tmp/debug_ramdisk/magisk32 /debug_ramdisk/magisk32
+    start adbd
+    copy /dev/debug_ramdisk_mirror/magisk32 /debug_ramdisk/magisk32
     chmod 0711 /debug_ramdisk/magisk32
-    copy /dev/tmp/debug_ramdisk/magiskinit /debug_ramdisk/magiskinit
+    copy /dev/debug_ramdisk_mirror/magiskinit /debug_ramdisk/magiskinit
     chmod 0711 /debug_ramdisk/magiskinit
-    copy /dev/tmp/debug_ramdisk/magiskpolicy /debug_ramdisk/magiskpolicy
+    copy /dev/debug_ramdisk_mirror/magiskpolicy /debug_ramdisk/magiskpolicy
     chmod 0711 /debug_ramdisk/magiskpolicy
-    mkdir /debug_ramdisk/.magisk 755
+    mkdir /debug_ramdisk/.magisk
     mkdir /debug_ramdisk/.magisk/mirror 0
     mkdir /debug_ramdisk/.magisk/block 0
     mkdir /debug_ramdisk/.magisk/worker 0
-    copy /dev/tmp/debug_ramdisk/stub.apk /debug_ramdisk/stub.apk
+    copy /dev/debug_ramdisk_mirror/stub.apk /debug_ramdisk/stub.apk
     chmod 0644 /debug_ramdisk/stub.apk
-    copy /dev/tmp/debug_ramdisk/preparebin.sh /debug_ramdisk/preparebin.sh
-    chmod 0711 /debug_ramdisk/preparebin.sh
-    copy /dev/tmp/debug_ramdisk/mkpreinit.sh /debug_ramdisk/mkpreinit.sh
-    chmod 0711 /debug_ramdisk/mkpreinit.sh
-    umount /dev/tmp
-    rmdir /dev/tmp
-    rm /dev/.magisk_unblock
-    exec u:r:magisk:s0 0 0 -- /system/bin/sh /debug_ramdisk/mkpreinit.sh
-    exec_start $COPY_BIN_SVC_NAME
+    copy /dev/debug_ramdisk_mirror/loadpolicy.sh /debug_ramdisk/loadpolicy.sh
+    chmod 0711 /debug_ramdisk/loadpolicy.sh
+    umount /dev/debug_ramdisk_mirror
+    rmdir /dev/debug_ramdisk_mirror
+    exec u:r:magisk:s0 0 0 -- /system/bin/sh /debug_ramdisk/loadpolicy.sh
     start $PFD_SVC_NAME
-    wait /dev/.magisk_unblock 40
-    rm /dev/.magisk_unblock
-
-service $COPY_BIN_SVC_NAME /system/bin/sh /debug_ramdisk/preparebin.sh
-    user root
-    seclabel u:r:magisk:s0
-    oneshot
 
 service $PFD_SVC_NAME /debug_ramdisk/magisk --post-fs-data
     user root
@@ -648,8 +628,6 @@ service $LS_SVC_NAME /debug_ramdisk/magisk --service
     oneshot
 
 on property:sys.boot_completed=1
-    mkdir /data/adb/magisk 755
-    copy /debug_ramdisk/stub.apk /data/adb/magisk/magisk.apk
     exec /debug_ramdisk/magisk --boot-complete
 
 on property:init.svc.zygote=restarting
