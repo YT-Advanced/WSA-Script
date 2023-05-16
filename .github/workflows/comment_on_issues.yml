@@ -5,7 +5,7 @@ on:
     types: [opened, reopened]
   workflow_dispatch:
     inputs:
-      body: 
+      body:
         description: 'Issues Body'
         required: true
         default: ''
@@ -27,7 +27,7 @@ jobs:
           actions: 'create-comment'
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
-          body: | 
+          body: |
             We are checking your Issues body and head ...  
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
             ----
@@ -45,7 +45,7 @@ jobs:
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          sudo apt-get update -y
+          sudo apt-get update
           sudo apt-get install -y lzip
           python3 -m pip install --upgrade pip setuptools
 
@@ -63,7 +63,7 @@ jobs:
             if (issuetitle != null) {
               issuetitle = issuetitle.replace(/\u000A|\u000D/g, ""); //Replace newline letter
             }
-            
+
             if (issuebody != null) {
               issuebody = issuebody.replace(/\u0008|\u0009|\u000A|\u000B|\u000C|\u000D|\u00A0|\u2028|\u2029|\uFEFF/g, "");
               issuebody = issuebody.replace(/—/g, "-");
@@ -77,7 +77,7 @@ jobs:
             else {
                core.setOutput("issuebody", "It is a null variable");
             }
-            
+
       - name: Set Issues Info
         if: github.event_name == 'issues' && success()
         run: |
@@ -85,7 +85,7 @@ jobs:
           echo "issueauth="${{ steps.get-issues.outputs.issueauth }}"" >> $GITHUB_ENV
           echo "issuetitle="${{ steps.get-issues.outputs.issuetitle }}"" >> $GITHUB_ENV
           echo "issuebody="${{ steps.get-issues.outputs.issuebody }}"" >> $GITHUB_ENV
-          
+
       - name: Get Build Info
         shell: python
         run: |
@@ -117,7 +117,7 @@ jobs:
               set_output('iscustom', iscustom)
               set_output('errinfo', errinfo)
               set_output('body', body)
-              
+
       - name: Add Issues labels
         if: env.issues == 'true' && env.iscustom == 'true'
         uses: actions-cool/issues-helper@v3
@@ -137,7 +137,7 @@ jobs:
           update-mode: replace
           body: |
             Hello ${{ env.issueauth }} .  
-            Your custom WSA build has started building. Please go to the URL below for details.
+            Your custom WSA build has started building. Please go to the URL below for details.  
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
             ----
           emoji: heart
@@ -151,10 +151,10 @@ jobs:
           comment-id: ${{ steps.comment.outputs.comment-id }}
           update-mode: replace
           body: |
-            Hello ${{ env.issueauth }}.
-            Look like we have a problem with the workflow. We will take a look soon.
+            Hello ${{ env.issueauth }}.  
+            Look like we have a problem with the workflow. We will take a look soon.  
             `Error Info:`  
-            `${{ env.errinfo }}`
+            `${{ env.errinfo }}`  
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
             ----
           emoji: eyes
@@ -168,9 +168,9 @@ jobs:
           comment-id: ${{ steps.comment.outputs.comment-id }}
           update-mode: replace
           body: |
-            Hello ${{ env.issueauth }}.
-            Thanks for sending an issues. Now our admin is inactive, just waiting and he will reply soon.
-            Hope you have a nice day.
+            Hello ${{ env.issueauth }}.  
+            Thanks for sending an issues. Now our admin is inactive, just waiting and he will reply soon.  
+            Hope you have a nice day.  
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
             ----
           emoji: eyes
@@ -202,19 +202,19 @@ jobs:
         if: env.iscustom == 'true' && success()
         shell: bash
         run: ./scripts/build.sh ${{ env.body }}
-       
+
       - name: File Checksum ✔️
         working-directory: output
         run: |
           sha256sum '${{ steps.wsa.outputs.artifact }}${{ steps.wsa.outputs.file_ext }}' >> sha256-checksum.txt
-      
+
       - name: Upload to Artifacts
         if: env.iscustom == 'true' && success()
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.wsa.outputs.artifact }}
           path: output
-          
+
       - name: Update Comment Finish
         if: env.issues == 'true' && env.iscustom == 'true' && success()
         uses: actions-cool/issues-helper@v3
@@ -224,10 +224,10 @@ jobs:
           comment-id: ${{ steps.comment.outputs.comment-id }}
           update-mode: replace
           body: |
-            Hello ${{ env.issueauth }}.
-            Your custom WSA build has been built. Please go to the URL below to download it.
+            Hello ${{ env.issueauth }}.  
+            Your custom WSA build has been built. Please go to the URL below to download it.  
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
-            ----  
+            ----
           emoji: hooray
 
       - name: Close Issues
@@ -247,8 +247,8 @@ jobs:
           comment-id: ${{ steps.comment.outputs.comment-id }}
           update-mode: replace
           body: |
-            Hello ${{ env.issueauth }}.
-            Your custom WSA build failed to build. Please go to the URL below to view the details, make changes to the body and retrigger the build (Close & Reopen).
+            Hello ${{ env.issueauth }}.  
+            Your custom WSA build failed to build. Please go to the URL below to view the details, make changes to the body and retrigger the build (Close & Reopen).  
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
-            ----  
+            ----
           emoji: confused

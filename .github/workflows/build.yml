@@ -1,7 +1,7 @@
 name: Auto Build
 on: [workflow_call]
 
-concurrency: 
+concurrency:
   group: ${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
@@ -31,7 +31,7 @@ jobs:
       - name: Update Package and Setup Python3 Virtual Enviroment 👷
         working-directory: scripts
         run: |
-          sudo apt-get update -y
+          sudo apt-get update
           sudo apt-get install -y lzip
           sudo apt-get install -y linux-modules-extra-$(uname -r)
           PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"

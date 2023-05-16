@@ -4,48 +4,53 @@
   data-color-mode="auto"
   data-light-theme="light"
   data-dark-theme="dark"
-  data-a11y-animated-images="system"
->
+  data-a11y-animated-images="system">
   <head>
     <meta charset="utf-8" />
-    <link rel="dns-prefetch" href="https://github.githubassets.com" />
-    <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
-    <link rel="dns-prefetch" href="https://github-cloud.s3.amazonaws.com" />
     <link
       rel="dns-prefetch"
-      href="https://user-images.githubusercontent.com/"
-    />
-    <link rel="preconnect" href="https://github.githubassets.com" crossorigin />
-    <link rel="preconnect" href="https://avatars.githubusercontent.com" />
+      href="https://github.githubassets.com" />
+    <link
+      rel="dns-prefetch"
+      href="https://avatars.githubusercontent.com" />
+    <link
+      rel="dns-prefetch"
+      href="https://github-cloud.s3.amazonaws.com" />
+    <link
+      rel="dns-prefetch"
+      href="https://user-images.githubusercontent.com/" />
+    <link
+      rel="preconnect"
+      href="https://github.githubassets.com"
+      crossorigin />
+    <link
+      rel="preconnect"
+      href="https://avatars.githubusercontent.com" />
 
     <link
       crossorigin="anonymous"
       media="all"
       rel="stylesheet"
-      href="https://github.githubassets.com/assets/light-92c7d381038e.css"
-    />
+      href="https://github.githubassets.com/assets/light-92c7d381038e.css" />
     <link
       crossorigin="anonymous"
       media="all"
       rel="stylesheet"
-      href="https://github.githubassets.com/assets/dark-d4a90c367f0c.css"
-    />
+      href="https://github.githubassets.com/assets/dark-d4a90c367f0c.css" />
 
     <link
       crossorigin="anonymous"
       media="all"
       rel="stylesheet"
-      href="https://github.githubassets.com/assets/primer-665d09058d18.css"
-    />
+      href="https://github.githubassets.com/assets/primer-665d09058d18.css" />
     <link
       crossorigin="anonymous"
       media="all"
       rel="stylesheet"
-      href="https://github.githubassets.com/assets/global-ef47aa3710b2.css"
-    />
+      href="https://github.githubassets.com/assets/global-ef47aa3710b2.css" />
 
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://cdn.polyfill.io/v1/polyfill.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" />
+    <script src="https://cdn.polyfill.io/v1/polyfill.min.js" />
     <!-- <script src="https://fastly.jsdelivr.net/npm/marked/marked.min.js"></script> -->
     <script type="application/javascript">
 
@@ -114,28 +119,8 @@
               "default": "MindTheGapps",
               "type": "choice",
               "options": [
-                  "OpenGApps",
                   "MindTheGapps",
                   "none"
-              ]
-          },
-          "--gapps-variant": {
-              "name": "--gapps-variant",
-              "description": "GApps variant.",
-              "detailedinfo": "",
-              "required": true,
-              "default": "pico",
-              "type": "choice",
-              "options": [
-                  "super",
-                  "stock",
-                  "full",
-                  "mini",
-                  "micro",
-                  "nano",
-                  "pico",
-                  "tvstock",
-                  "tvmini"
               ]
           },
           "--root-sol": {
@@ -178,22 +163,6 @@
               "detailedinfo": "",
               "required": true,
               "default": true,
-              "type": "boolean"
-          },
-          "--offline": {
-              "name": "--offline",
-              "description": "Build WSA offline.",
-              "detailedinfo": "",
-              "required": true,
-              "default": false,
-              "type": "boolean"
-          },
-          "--magisk-custom": {
-              "name": "--magisk-custom",
-              "description": "Install custom Magisk.",
-              "detailedinfo": "",
-              "required": true,
-              "default": false,
               "type": "boolean"
           },
           "--skip-download-wsa": {
@@ -396,16 +365,13 @@
       }
     </script>
 
-    <title></title>
+    <title />
   </head>
 
   <body
     class="logged-in env-production page-responsive"
-    style="word-wrap: break-word"
-  >
-    <div
-      class="application-main left-0 text-left p-3 mx-auto container-xl px-3 px-md-4 px-lg-5 mt-4"
-    >
+    style="word-wrap: break-word">
+    <div class="application-main left-0 text-left p-3 mx-auto container-xl px-3 px-md-4 px-lg-5 mt-4">
       <pre
         id="logoP"
         style="
@@ -416,8 +382,8 @@
           line-height: 12px !important;
           margin: 15px 10px;
           color: red;
-        "
-      >
+        ">
+
       ██╗    ██╗███████╗ █████╗     ██████╗ ██╗   ██╗██╗██╗     ██████╗ 
       ██║    ██║██╔════╝██╔══██╗    ██╔══██╗██║   ██║██║██║     ██╔══██╗
       ██║ █╗ ██║███████╗███████║    ██████╔╝██║   ██║██║██║     ██║  ██║
@@ -429,9 +395,7 @@
  
       </pre>
       <div class="flex-auto min-width-0 width-fit mr-3">
-        <div
-          class="d-flex flex-wrap flex-items-center wb-break-word f3 text-normal"
-        >
+        <div class="d-flex flex-wrap flex-items-center wb-break-word f3 text-normal">
           <svg
             aria-hidden="true"
             height="16"
@@ -439,54 +403,50 @@
             version="1.1"
             width="16"
             data-view-component="true"
-            class="octicon octicon-repo color-fg-muted mr-2"
-          >
+            class="octicon octicon-repo color-fg-muted mr-2" />
             <path
               fill-rule="evenodd"
-              d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"
-            ></path>
+              d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z" />
           </svg>
-          <strong itemprop="name" class="mr-2 flex-self-stretch">
+          <strong
+            itemprop="name"
+            class="mr-2 flex-self-stretch">
             <a
               id="titleA"
               data-pjax="#repo-content-pjax-container"
               data-turbo-frame="repo-content-turbo-frame"
-              href="#"
-            ></a>
+              href="#" />
           </strong>
         </div>
       </div>
-      <div data-replace-remote-form-target="" class="workflow-dispatch">
+      <div
+        data-replace-remote-form-target=""
+        class="workflow-dispatch">
         <form id="inputs">
           <button
             type="button"
             class="btn State--merged"
             onclick="return createIssues()"
-            autofocus=""
-          >
-          Create Issue
+            autofocus="">
+            Create Issue
           </button>
         </form>
       </div>
     </div>
-    <footer
-      class="footer width-full container-xl mt-3 text-center color-fg-muted"
-    >
+    <footer class="footer width-full container-xl mt-3 text-center color-fg-muted">
       <a
         aria-label="Homepage"
         title="GitHub"
         class="footer-octicon mr-2"
-        href="https://github.com/YT-Advanced"
-      >
+        href="https://github.com/YT-Advanced">
         <img
           class="avatar rounded-2 avatar-user"
           src="https://avatars.githubusercontent.com/u/70064328?v=4"
           width="40"
           height="40"
-          alt="@wjz304"
-        />
+          alt="@wjz304" />
       </a>
-      <span> © 2023 Inc. </span>
+      <span> &copy; 2023 YT-Advanced and Repository contributors. </span>
     </footer>
   </body>
 </html>
