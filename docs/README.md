@@ -1,6 +1,10 @@
 # WSA-Script
 ### MagiskOnWSA (For Windows™ 10 and 11) by [@YT-Advanced](https://github.com/YT-Advanced/)
 #### Windows Subsystem For Android™ (WSA) with Google Play Services and Magisk 
+
+# NOTE: Now our tool doesn't support WSA v2304 and v2305 until this issues is solved (So if you can please comment something like "Please add it"):
+> https://github.com/actions/runner-images/issues/7587
+
 <details>     
    <summary><h3> &nbsp; ❓Want to build your custom build❓ <h3></summary>
       
