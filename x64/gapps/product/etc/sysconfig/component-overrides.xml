@@ -19,7 +19,5 @@
 <config>
     <component-override package="com.android.vending">
         <component class="com.google.android.finsky.verifier.impl.PackageVerificationReceiver" enabled="false" />
-        <component class="com.google.android.finsky.verifier.impl.api.safetynet.PackageVerificationApiService" enabled="false" />
-        <component class="com.google.android.finsky.verifier.impl.PackageVerificationService" enabled="false" />
     </component-override>
 </config>
