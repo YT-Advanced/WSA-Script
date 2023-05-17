@@ -1,5 +1,22 @@
-# Automated Install script by Midonei
-$Host.UI.RawUI.WindowTitle = "Installing MagiskOnWSA..."
+# This file is part of MagiskOnWSALocal.
+#
+# MagiskOnWSALocal is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# MagiskOnWSALocal is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with MagiskOnWSALocal.  If not, see <https://www.gnu.org/licenses/>.
+#
+# Copyright (C) 2023 LSPosed Contributors
+#
+
+$Host.UI.RawUI.WindowTitle = "Installing MagiskOnWSA...."
 function Test-Administrator {
     [OutputType([bool])]
     param()
@@ -25,13 +42,12 @@ Function Test-CommandExist {
     Param ($Command)
     $OldPreference = $ErrorActionPreference
     $ErrorActionPreference = 'stop'
-    Try { if (Get-Command $Command) { RETURN $true } }
-    Catch { Write-Output "$Command does not exist"; RETURN $false }
+    try { if (Get-Command $Command) { RETURN $true } }
+    Catch { RETURN $false }
     Finally { $ErrorActionPreference = $OldPreference }
 } #end function Test-CommandExist
+
 function Finish {
-    Write-Output "Optimizing VHDX size...."
-    If (Test-CommandExist Optimize-VHD) { Optimize-VHD ".\*.vhdx" -Mode Full }
     Clear-Host
     If (Test-CommandExist Optimize-VHD) {
         Write-Output "Optimizing VHDX size...."
@@ -51,10 +67,6 @@ Else {
 
 If (-Not (Test-Administrator)) {
     Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass -Force
-    $Proc = Start-Process -PassThru -WindowStyle Hidden -Verb RunAs ConHost.exe -Args "powershell -ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath' EVAL"
-    $Proc.WaitForExit()
-    If ($Proc.ExitCode -Ne 0) {
-        Clear-Host
     $Proc = Start-Process -PassThru -Verb RunAs $pwsh -Args "-ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath' EVAL"
     If ($null -Ne $Proc) {
         $Proc.WaitForExit()
@@ -66,27 +78,22 @@ If (-Not (Test-Administrator)) {
     exit
 }
 ElseIf (($args.Count -Eq 1) -And ($args[0] -Eq "EVAL")) {
-    Start-Process ConHost.exe -Args "powershell -ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath'"
     Start-Process $pwsh -NoNewWindow -Args "-ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath'"
     exit
 }
 
 $FileList = Get-Content -Path .\filelist.txt
 If (((Test-Path -Path $FileList) -Eq $false).Count) {
-    Write-Error "Some files are missing in the folder. Please try to build again. Press any key to exist"
     Write-Error "Some files are missing in the folder. Please try to build again. Press any key to exit"
     $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     exit 1
 }
 
-If ((Test-Path -Path "MakePri.ps1") -Eq $true) {
-    $ProcMakePri = Start-Process powershell.exe -PassThru -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory $PSScriptRoot
 If (((Test-Path -Path "MakePri.ps1") -And (Test-Path -Path "makepri.exe")) -Eq $true) {
     $ProcMakePri = Start-Process $pwsh -PassThru -NoNewWindow -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory $PSScriptRoot
     $null = $ProcMakePri.Handle
     $ProcMakePri.WaitForExit()
     If ($ProcMakePri.ExitCode -Ne 0) {
-        Write-Warning "Failed to merge resources, WSA Seetings will always be in English`r`n"
         Write-Warning "Failed to merge resources, WSA Seetings will always be in English`r`nPress any key to continue"
         $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     }
@@ -104,7 +111,6 @@ if ($PSHOME.contains("8wekyb3d8bbwe")) {
 
 If ($(Get-WindowsOptionalFeature -Online -FeatureName 'VirtualMachinePlatform').State -Ne "Enabled") {
     Enable-WindowsOptionalFeature -Online -NoRestart -FeatureName 'VirtualMachinePlatform'
-    Clear-Host
     Write-Warning "Need restart to enable virtual machine platform`r`nPress y to restart or press any key to exit"
     $Key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     If ("y" -Eq $Key.Character) {
@@ -149,38 +155,6 @@ If (($null -Ne $Installed) -And (-Not ($Installed.IsDevelopmentMode))) {
     }
     Else {
         exit 1
-    }
-}
-
-Stop-Process -Name "WsaClient" -ErrorAction SilentlyContinue
-$winver = (Get-WmiObject -class Win32_OperatingSystem).Caption
-if ($winver.Contains("10")) {
-    if ((Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").DisplayVersion -eq "22H2")
-    {
-        Clear-Host
-        Write-Output "Patching Windows 10 AppxManifest file..."
-        $xml = [xml](Get-Content '.\AppxManifest.xml')
-        $nsm = New-Object Xml.XmlNamespaceManager($xml.NameTable)
-        $nsm.AddNamespace('rescap', "http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities")
-        $nsm.AddNamespace('desktop6', "http://schemas.microsoft.com/appx/manifest/desktop/windows10/6")
-        $node = $xml.Package.Capabilities.SelectSingleNode("rescap:Capability[@Name='customInstallActions']", $nsm)
-        $xml.Package.Capabilities.RemoveChild($node) | Out-Null
-        $node = $xml.Package.Extensions.SelectSingleNode("desktop6:Extension[@Category='windows.customInstall']", $nsm)
-        $xml.Package.Extensions.RemoveChild($node) | Out-Null
-        $xml.Package.Dependencies.TargetDeviceFamily.MinVersion = "10.0.19041.264"
-        $xml.Save(".\AppxManifest.xml")
-
-        Clear-Host
-        Write-Output "Downloading modifided DLL file..."
-        Invoke-WebRequest -Uri https://github.com/cinit/WSAPatch/blob/main/original.dll.win11.22h2/x86_64/winhttp.dll?raw=true -OutFile .\WSAClient\winhttp.dll
-        Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/WsaPatch.dll?raw=true -OutFile .\WSAClient\WsaPatch.dll
-        Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/icu.dll?raw=true -OutFile .\WSAClient\icu.dll
-    }
-    else {
-    Clear-Host
-    Write-Warning "Your Windows Version is lower than 10.0.19045.2311, install KB5014032 and KB5022282 then run again."
-    $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-    exit 1
     }
 }
 
