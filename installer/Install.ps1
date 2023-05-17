@@ -29,35 +29,44 @@ Function Test-CommandExist {
     Catch { Write-Output "$Command does not exist"; RETURN $false }
     Finally { $ErrorActionPreference = $OldPreference }
 } #end function Test-CommandExist
-
 function Finish {
     Write-Output "Optimizing VHDX size...."
     If (Test-CommandExist Optimize-VHD) { Optimize-VHD ".\*.vhdx" -Mode Full }
     Clear-Host
+    If (Test-CommandExist Optimize-VHD) {
+        Write-Output "Optimizing VHDX size...."
+        Optimize-VHD ".\*.vhdx" -Mode Full
+    }
+    Clear-Host
     Start-Process "wsa://com.topjohnwu.magisk"
-    Start-Process "wsa://io.github.huskydg.magisk"
     Start-Process "wsa://com.android.vending"
 }
 
-if (Test-CommandExist pwsh.exe) {
+If (Test-CommandExist pwsh.exe) {
     $pwsh = "pwsh.exe"
 }
-else {
+Else {
     $pwsh = "powershell.exe"
 }
 
 If (-Not (Test-Administrator)) {
     Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass -Force
-    $Proc = Start-Process -PassThru -WindowStyle Hidden -NoNewWindow -Verb RunAs $pwsh -Args "-ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath' EVAL"
+    $Proc = Start-Process -PassThru -WindowStyle Hidden -Verb RunAs ConHost.exe -Args "powershell -ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath' EVAL"
     $Proc.WaitForExit()
     If ($Proc.ExitCode -Ne 0) {
         Clear-Host
+    $Proc = Start-Process -PassThru -Verb RunAs $pwsh -Args "-ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath' EVAL"
+    If ($null -Ne $Proc) {
+        $Proc.WaitForExit()
+    }
+    If ($null -Eq $Proc -Or $Proc.ExitCode -Ne 0) {
         Write-Warning "Failed to launch start as Administrator`r`nPress any key to exit"
         $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
     }
     exit
 }
 ElseIf (($args.Count -Eq 1) -And ($args[0] -Eq "EVAL")) {
+    Start-Process ConHost.exe -Args "powershell -ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath'"
     Start-Process $pwsh -NoNewWindow -Args "-ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath'"
     exit
 }
@@ -65,20 +74,30 @@ ElseIf (($args.Count -Eq 1) -And ($args[0] -Eq "EVAL")) {
 $FileList = Get-Content -Path .\filelist.txt
 If (((Test-Path -Path $FileList) -Eq $false).Count) {
     Write-Error "Some files are missing in the folder. Please try to build again. Press any key to exist"
+    Write-Error "Some files are missing in the folder. Please try to build again. Press any key to exit"
     $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     exit 1
 }
 
+If ((Test-Path -Path "MakePri.ps1") -Eq $true) {
+    $ProcMakePri = Start-Process powershell.exe -PassThru -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory $PSScriptRoot
 If (((Test-Path -Path "MakePri.ps1") -And (Test-Path -Path "makepri.exe")) -Eq $true) {
     $ProcMakePri = Start-Process $pwsh -PassThru -NoNewWindow -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory $PSScriptRoot
+    $null = $ProcMakePri.Handle
     $ProcMakePri.WaitForExit()
     If ($ProcMakePri.ExitCode -Ne 0) {
         Write-Warning "Failed to merge resources, WSA Seetings will always be in English`r`n"
+        Write-Warning "Failed to merge resources, WSA Seetings will always be in English`r`nPress any key to continue"
+        $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     }
+    $Host.UI.RawUI.WindowTitle = "Installing MagiskOnWSA...."
 }
 
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
 
+# When using PowerShell which is installed with MSIX
+# Get-WindowsOptionalFeature and Enable-WindowsOptionalFeature will fail
+# See https://github.com/PowerShell/PowerShell/issues/13866
 if ($PSHOME.contains("8wekyb3d8bbwe")) {
     Import-Module DISM -UseWindowsPowerShell
 }
@@ -122,7 +141,6 @@ $Installed = $null
 $Installed = Get-AppxPackage -Name $Name
 
 If (($null -Ne $Installed) -And (-Not ($Installed.IsDevelopmentMode))) {
-    Clear-Host
     Write-Warning "There is already one installed WSA. Please uninstall it first.`r`nPress y to uninstall existing WSA or press any key to exit"
     $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     If ("y" -Eq $key.Character) {
@@ -166,15 +184,17 @@ if ($winver.Contains("10")) {
     }
 }
 
-Clear-Host
-Write-Output "Installing MagiskOnWSA..."
-If (Test-CommandExist WsaClient) { Start-Process WsaClient -Wait -Args "/shutdown" }
+If (Test-CommandExist WsaClient) {
+    Write-Output "Shutting down WSA...."
+    Start-Process WsaClient -Wait -Args "/shutdown"
+}
+Stop-Process -Name "WsaClient" -ErrorAction SilentlyContinue
+Write-Output "Installing MagiskOnWSA...."
 Add-AppxPackage -ForceApplicationShutdown -ForceUpdateFromAnyVersion -Register .\AppxManifest.xml
 If ($?) {
     Finish
 }
 ElseIf ($null -Ne $Installed) {
-    Clear-Host
     Write-Error "Failed to update.`r`nPress any key to uninstall existing installation while preserving user data.`r`nTake in mind that this will remove the Android apps' icon from the start menu.`r`nIf you want to cancel, close this window now."
     $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     Clear-Host
