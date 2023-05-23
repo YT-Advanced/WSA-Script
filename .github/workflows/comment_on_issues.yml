@@ -186,7 +186,6 @@ jobs:
         if: env.iscustom == 'true' && success()
         working-directory: scripts
         run: |
-          sudo apt-get install -y linux-modules-extra-$(uname -r)
           PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
           python3 -m venv "$PYTHON_VENV_DIR" || abort "Failed to create python3 virtual env"
           # shellcheck disable=SC1091
