@@ -8,14 +8,13 @@ on:
 
 jobs:
   build:
-    if: github.event_name == 'issue'
+    if: github.event_name == 'issues'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@main
 
       - name: Create Issues comment
-        if: github.event_name == 'issues'
         id: comment
         uses: actions-cool/issues-helper@v3
         with:
@@ -45,7 +44,6 @@ jobs:
           python3 -m pip install --upgrade pip setuptools
 
       - name: Get Issues Info
-        if: github.event_name == 'issues'
         id: get-issues
         uses: actions/github-script@v6
         with:
@@ -74,7 +72,7 @@ jobs:
             }
 
       - name: Set Issues Info
-        if: github.event_name == 'issues' && success()
+        if: success()
         run: |
           echo "issuenumber="${{ steps.get-issues.outputs.issuenumber }}"" >> $GITHUB_ENV
           echo "issueauth="${{ steps.get-issues.outputs.issueauth }}"" >> $GITHUB_ENV
@@ -194,7 +192,8 @@ jobs:
         shell: bash
         run: ./scripts/build.sh ${{ env.body }}
 
-      - name: File Checksum ✔️
+      - name: File Checksum
+        if: env.iscustom == 'true' && success()
         working-directory: output
         run: |
           sha256sum '${{ steps.wsa.outputs.artifact }}${{ steps.wsa.outputs.file_ext }}' >> sha256-checksum.txt
