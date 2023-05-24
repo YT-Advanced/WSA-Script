@@ -92,11 +92,11 @@ jobs:
               body = ''
               try:
                   body = ''
-                    if '${{ env.issuetitle }}'.lower().startswith('custom wsa build'):
-                        issues = 'true'
-                        body = '${{ env.issuebody }}'
-                    else:
-                        iscustom = 'false'
+                  if '${{ env.issuetitle }}'.lower().startswith('custom wsa build'):
+                      issues = 'true'
+                      body = '${{ env.issuebody }}'
+                  else:
+                      iscustom = 'false'
                   if body == 'It is a null variable':
                       iscustom = 'false'
                       errinfo = 'Argument is null, please update the body of the Issues'
