@@ -3,17 +3,12 @@ name: Auto comment Issues
 on:
   issues:
     types: [opened, reopened]
-  workflow_dispatch:
-    inputs:
-      body:
-        description: 'Issues Body'
-        required: true
-        default: ''
-        type: string
+  issue_comment:
+    types: [created, edited, deleted]
 
 jobs:
   build:
-    if: ${{github.repository == 'YT-Advanced/WSA-Script'}}
+    if: github.event_name == 'issue'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -99,14 +94,11 @@ jobs:
               body = ''
               try:
                   body = ''
-                  if '${{ github.event_name }}' == 'issues':
-                      if '${{ env.issuetitle }}'.lower().startswith('custom wsa build'):
-                          issues = 'true'
-                          body = '${{ env.issuebody }}'
-                      else:
-                          iscustom = 'false'
-                  else:
-                      body = '${{ inputs.body }}'
+                    if '${{ env.issuetitle }}'.lower().startswith('custom wsa build'):
+                        issues = 'true'
+                        body = '${{ env.issuebody }}'
+                    else:
+                        iscustom = 'false'
                   if body == 'It is a null variable':
                       iscustom = 'false'
                       errinfo = 'Argument is null, please update the body of the Issues'
@@ -227,6 +219,11 @@ jobs:
             Your custom WSA build has been built. Please go to the URL below to download it.  
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
             ----
+            PS:  
+            When you downloaded your build, please comment "delete builds" to delete the build and log.
+            Thank you and hope you have a nice day !
+            >  
+            ----
           emoji: hooray
 
       - name: Close Issues
@@ -251,3 +248,114 @@ jobs:
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
             ----
           emoji: confused
+          
+  delete_builds:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issue_comment' && contains('delete builds', github.event.comment.body)
+    steps:
+      - name: Find bots comments
+        id: find-bots
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'find-comments'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          comment-auth: 'github-actions[bot]'
+
+      - name: Find runs comments
+        id: find-runs
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'find-comments'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          comment-auth: 'github-actions[bot]'
+          body-includes: '${{ github.server_url }}/${{ github.repository }}/actions/runs'
+
+      - name: Delete build Data
+        id: delete-build
+        uses: actions/github-script@v6
+        with:
+          script: |
+            async function main() {
+
+                var botscomments = ${{ steps.find-bots.outputs.comments }};
+                console.log("botscomments: " + botscomments);
+
+                var runscomments = ${{ steps.find-runs.outputs.comments }};
+                console.log("runscomments: " + runscomments);
+                
+                var botids = [];
+                for (i = 0; i < botscomments.length; i++) {
+                    botids.push(botscomments.at(i)["id"]);
+                }
+                console.log("botids: " + botids);
+
+                var runids = [];
+                for (i = 0; i < runscomments.length; i++) {
+                    bodylines = runscomments.at(i)["body"].split("\n")
+                    for (j = 0; j < bodylines.length; j++) {
+                        if (bodylines.at(j).indexOf("runs/") != -1) {
+                            let runid = bodylines.at(j).substring(bodylines.at(j).lastIndexOf('/') + 1).replace(/^\s+|\s+$/g, '');
+                            runids.push({"id": runscomments.at(i)["id"], "runid": runid});
+                        }
+                    }
+                }
+                console.log("runids: " + runids);
+                const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/");
+                if (runids.length > 0) {
+                    var deleted = [];
+                    for (index = 0; index < runids.length; index++) {
+                        try {
+                            if (false == deleted.includes(runids.at(index)["runid"])) {
+                                const dellogs = await github.rest.actions.deleteWorkflowRunLogs({
+                                    owner, 
+                                    repo,
+                                    run_id: runids.at(index)["runid"],
+                                });
+                                console.log("DELETE logs: %s", dellogs);
+
+                                const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+                                    owner, 
+                                    repo,
+                                    run_id: runids.at(index)["runid"],
+                                    per_page: 100,
+                                });
+                                console.log("artifacts: %s", artifacts.data);
+                            
+                                for (const artifact of artifacts.data.artifacts) {
+                                    console.log(`artifact id ${artifact.id} of ${artifact.name}`)
+                                    const delartifacts = await github.rest.actions.deleteArtifact({
+                                        owner, 
+                                        repo,
+                                        artifact_id: artifact.id,
+                                    });
+                                    console.log(`DELETE artifacts(${artifact.id}): ${delartifacts}`)
+                                }
+                                deleted.push(runids.at(index)["runid"]);
+                            }
+                        } catch (error) {
+                            core.setFailed(error.message);
+                        }
+                    }
+                }
+
+                if (botids.length > 0) {
+                    for (index = 0; index < botids.length; index++) {
+                        try {
+                            const retcomments = await github.rest.issues.updateComment({
+                                owner, 
+                                repo,
+                                comment_id: botids.at(index),
+                                body: '`delete`'
+                            })
+                            console.log("PATCH emoji: %s", retcomments);
+                        } catch (error) {
+                            core.setFailed(error.message);
+                        }
+                    }
+                }
+            }
+            main();
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
