@@ -347,7 +347,7 @@ jobs:
                                 owner, 
                                 repo,
                                 comment_id: botids.at(index),
-                                body: '`delete`'
+                                body: '`deleted`'
                             })
                             console.log("PATCH emoji: %s", retcomments);
                         } catch (error) {
