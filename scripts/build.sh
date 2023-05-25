@@ -631,7 +631,6 @@ if [ -n "$COMPRESS_FORMAT" ]; then
      echo "file_ext=$FILE_EXT" >> "$GITHUB_OUTPUT"
      OUTPUT_PATH="$OUTPUT_PATH$FILE_EXT"
 fi
-rm -f "${OUTPUT_PATH:?}" || abort
 if [ "$COMPRESS_FORMAT" = "7z" ]; then
     echo "Compressing with 7z"
     7z a "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
