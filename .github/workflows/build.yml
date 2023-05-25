@@ -1,5 +1,5 @@
 name: Auto Build (Use for call only)
-on: [workflow_dispatch, workflow_call]
+on: [workflow_call]
 
 concurrency:
   group: ${{ github.head_ref || github.ref }}
