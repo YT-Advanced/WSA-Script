@@ -163,7 +163,7 @@ jobs:
           sha256sum '${{ steps.wsa.outputs.artifact }}${{ inputs.compression }}' >> sha256-checksum.txt
 
       - name: Upload Artifact 🤌
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: ${{ steps.wsa.outputs.artifact }}
           path: output
