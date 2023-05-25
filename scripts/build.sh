@@ -192,14 +192,6 @@ ro_ext4_img_to_rw() {
     return 0
 }
 
-mount_erofs() {
-    if [ "$EROFS_USE_FUSE" ]; then
-        sudo "../bin/$HOST_ARCH/fuse.erofs" "$1" "$2" || return 1
-    else
-        sudo mount -v -t erofs -o ro,loop "$1" "$2" || return 1
-    fi
-}
-
 # workaround for Debian
 # In Debian /usr/sbin is not in PATH and some utilities in there are in use
 [ -d /usr/sbin ] && export PATH="/usr/sbin:$PATH"
@@ -348,11 +340,9 @@ ANDROID_API=33
 GAPPS_ZIP_NAME=$GAPPS_BRAND-$ARCH-${ANDROID_API_MAP[$ANDROID_API]}.zip
 GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 WSA_MAIN_VER=0
+
 update_ksu_zip_name() {
-    KERNEL_VER="5.10.117.2"
-    if [ "$WSA_MAIN_VER" -ge "2303" ]; then
-        KERNEL_VER="5.15.78.1"
-    fi
+    KERNEL_VER="5.15.78.1"
     if [ "$WSA_MAIN_VER" -ge "2304" ]; then
         KERNEL_VER="5.15.94.1"
     fi
@@ -475,10 +465,10 @@ if [[ "$WSA_MAIN_VER" -ge 2304 ]]; then
     sudo mkdir -p -m 755 "$ROOT_MNT_RO" || abort
     sudo chown "0:0" "$ROOT_MNT_RO" || abort
     sudo setfattr -n security.selinux -v "u:object_r:rootfs:s0" "$ROOT_MNT_RO" || abort
-    mount_erofs "$WORK_DIR/wsa/$ARCH/system.img" "$ROOT_MNT_RO" || abort
-    mount_erofs "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RO" || abort
-    mount_erofs "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_MNT_RO" || abort
-    mount_erofs "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_MNT_RO" || abort
+    sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/system.img" "$ROOT_MNT_RO" || abort 1
+    sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RO" || abort 1
+    sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_MNT_RO" || abort 1
+    sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_MNT_RO" || abort 1
     echo -e "done\n"
     echo "Create overlayfs for EROFS"
     mk_overlayfs "$ROOT_MNT_RO" system "$ROOT_MNT" || abort 
