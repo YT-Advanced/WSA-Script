@@ -617,7 +617,6 @@ fi
 echo "$artifact_name"
 echo "artifact=$artifact_name" >> "$GITHUB_OUTPUT"
 echo -e "\nFinishing building...."
-if [ -f "$OUTPUT_DIR" ]; then
 mkdir -p "$OUTPUT_DIR"
 OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name"
 mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
