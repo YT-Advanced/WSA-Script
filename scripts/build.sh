@@ -638,6 +638,6 @@ elif [ "$COMPRESS_FORMAT" = "xz" ]; then
     fi
 elif [ "$COMPRESS_FORMAT" = "zip" ]; then
     echo "Compressing with zip"
-    cp -r "$WORK_DIR/wsa/$ARCH" "$OUTPUT_PATH" || abort
+    cp -r "$WORK_DIR/wsa/$artifact_name" "$OUTPUT_PATH" || abort
 fi
 echo -e "Done\n"
