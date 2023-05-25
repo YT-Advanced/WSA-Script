@@ -121,16 +121,6 @@ exit_with_message() {
     exit 1
 }
 
-resize_img() {
-    sudo e2fsck -pf "$1" || return 1
-    if [ "$2" ]; then
-        sudo resize2fs "$1" "$2" || return 1
-    else
-        sudo resize2fs -M "$1" || return 1
-    fi
-    return 0
-}
-
 vhdx_to_raw_img() {
     qemu-img convert -q -f vhdx -O raw "$1" "$2" || return 1
     rm -f "$1" || return 1
@@ -182,13 +172,6 @@ mk_erofs_umount() {
     sudo umount -v "$1"
     sudo rm -f "$2"
     sudo mv "$2".erofs "$2"
-}
-
-ro_ext4_img_to_rw() {
-    resize_img "$1" "$(($(du --apparent-size -sB512 "$1" | cut -f1) * 2))"s || return 1
-    e2fsck -fp -E unshare_blocks "$1" || return 1
-    resize_img "$1" || return 1
-    return 0
 }
 
 # workaround for Debian
@@ -639,44 +622,25 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     fi
 fi
 
-if [[ "$WSA_MAIN_VER" -ge 2304 ]]; then
-    echo "Create EROFS images"
-    mk_erofs_umount "$VENDOR_MNT" "$WORK_DIR/wsa/$ARCH/vendor.img" || abort
-    mk_erofs_umount "$PRODUCT_MNT" "$WORK_DIR/wsa/$ARCH/product.img" || abort
-    mk_erofs_umount "$SYSTEM_EXT_MNT" "$WORK_DIR/wsa/$ARCH/system_ext.img" || abort
-    mk_erofs_umount "$ROOT_MNT" "$WORK_DIR/wsa/$ARCH/system.img" || abort
-    echo -e "Create EROFS images done\n"
-    echo "Umount images"
-    sudo umount -v "$VENDOR_MNT_RO"
-    sudo umount -v "$PRODUCT_MNT_RO"
-    sudo umount -v "$SYSTEM_EXT_MNT_RO"
-    sudo umount -v "$ROOT_MNT_RO"
-    echo -e "done\n"
-else
-    echo "Umount images"
-    sudo find "$ROOT_MNT" -exec touch -ht 200901010000.00 {} \;
-    sudo umount -v "$VENDOR_MNT"
-    sudo umount -v "$PRODUCT_MNT"
-    sudo umount -v "$SYSTEM_EXT_MNT"
-    sudo umount -v "$ROOT_MNT"
-    echo -e "done\n"
-    echo "Shrink images"
-    resize_img "$WORK_DIR/wsa/$ARCH/system.img" || abort
-    resize_img "$WORK_DIR/wsa/$ARCH/vendor.img" || abort
-    resize_img "$WORK_DIR/wsa/$ARCH/product.img" || abort
-    resize_img "$WORK_DIR/wsa/$ARCH/system_ext.img" || abort
-    echo -e "Shrink images done\n"
-fi
-
-if [[ "$WSA_MAIN_VER" -ge 2302 ]]; then
-    echo "Convert images to vhdx"
-    qemu-img convert -q -f raw -o subformat=fixed -O vhdx "$WORK_DIR/wsa/$ARCH/system_ext.img" "$WORK_DIR/wsa/$ARCH/system_ext.vhdx" || abort
-    qemu-img convert -q -f raw -o subformat=fixed -O vhdx "$WORK_DIR/wsa/$ARCH/product.img" "$WORK_DIR/wsa/$ARCH/product.vhdx" || abort
-    qemu-img convert -q -f raw -o subformat=fixed -O vhdx "$WORK_DIR/wsa/$ARCH/system.img" "$WORK_DIR/wsa/$ARCH/system.vhdx" || abort
-    qemu-img convert -q -f raw -o subformat=fixed -O vhdx "$WORK_DIR/wsa/$ARCH/vendor.img" "$WORK_DIR/wsa/$ARCH/vendor.vhdx" || abort
-    rm -f "$WORK_DIR/wsa/$ARCH/"*.img || abort
-    echo -e "Convert images to vhdx done\n"
-fi
+echo "Create EROFS images"
+mk_erofs_umount "$VENDOR_MNT" "$WORK_DIR/wsa/$ARCH/vendor.img" || abort
+mk_erofs_umount "$PRODUCT_MNT" "$WORK_DIR/wsa/$ARCH/product.img" || abort
+mk_erofs_umount "$SYSTEM_EXT_MNT" "$WORK_DIR/wsa/$ARCH/system_ext.img" || abort
+mk_erofs_umount "$ROOT_MNT" "$WORK_DIR/wsa/$ARCH/system.img" || abort
+echo -e "Create EROFS images done\n"
+echo "Umount images"
+sudo umount -v "$VENDOR_MNT_RO"
+sudo umount -v "$PRODUCT_MNT_RO"
+sudo umount -v "$SYSTEM_EXT_MNT_RO"
+sudo umount -v "$ROOT_MNT_RO"
+echo -e "done\n"
+echo "Convert images to vhdx"
+qemu-img convert -q -f raw -o subformat=fixed -O vhdx "$WORK_DIR/wsa/$ARCH/system_ext.img" "$WORK_DIR/wsa/$ARCH/system_ext.vhdx" || abort
+qemu-img convert -q -f raw -o subformat=fixed -O vhdx "$WORK_DIR/wsa/$ARCH/product.img" "$WORK_DIR/wsa/$ARCH/product.vhdx" || abort
+qemu-img convert -q -f raw -o subformat=fixed -O vhdx "$WORK_DIR/wsa/$ARCH/system.img" "$WORK_DIR/wsa/$ARCH/system.vhdx" || abort
+qemu-img convert -q -f raw -o subformat=fixed -O vhdx "$WORK_DIR/wsa/$ARCH/vendor.img" "$WORK_DIR/wsa/$ARCH/vendor.vhdx" || abort
+rm -f "$WORK_DIR/wsa/$ARCH/"*.img || abort
+echo -e "Convert images to vhdx done\n"
 
 echo "Remove signature and add scripts"
 sudo rm -rf "${WORK_DIR:?}"/wsa/"$ARCH"/\[Content_Types\].xml "$WORK_DIR/wsa/$ARCH/AppxBlockMap.xml" "$WORK_DIR/wsa/$ARCH/AppxSignature.p7x" "$WORK_DIR/wsa/$ARCH/AppxMetadata" || abort
