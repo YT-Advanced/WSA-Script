@@ -28,13 +28,7 @@ jobs:
           cache: 'pip'
           cache-dependency-path: scripts/
           
-      - name: Install Ubuntu Dependencies 🧑‍🏭
-        uses: sn-o-w/cache-apt-pkgs-action@master
-        with:
-          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv lzip
-          version: 1.0
-          
-      - name: Update Package and Setup Python3 Virtual Enviroment 👷
+      - name: Setup Python3 Virtual Enviroment 👷
         working-directory: scripts
         run: |
           sudo apt-get update
@@ -47,6 +41,12 @@ jobs:
               python3 -m pip install --upgrade -r requirements.txt || abort "Failed to install python3 dependencies"
           }
           deactivate
+          
+      - name: Install Ubuntu Dependencies 🧑‍🏭
+        uses: sn-o-w/cache-apt-pkgs-action@master
+        with:
+          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv lzip
+          version: 1.0
           
       - name: Build WSA ${{ matrix.arch }} with GAPPS ${{ matrix.root }} 🏗️
         id: wsa
