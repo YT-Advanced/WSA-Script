@@ -397,7 +397,9 @@ if [ "$REMOVE_AMAZON" ]; then
     echo "Remove Amazon Appstore"
     rm -f "$WORK_DIR/wsa/$ARCH/apex/mado_release.apex"
     # Prevents folders from being deleted
-    touch "$WORK_DIR/wsa/$ARCH/apex/.gitkeep"
+    if [[ "$COMPRESS_FORMAT" = "zip" ]]; then
+        touch "$WORK_DIR/wsa/$ARCH/apex/.gitkeep"
+    fi
     echo -e "done\n"
 fi
 
