@@ -349,7 +349,7 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     elif [ "$ARCH" = "arm64" ]; then
         mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
     fi
-    mkdir "../common/system/priv-app/KernelSU"
+    mkdir -p "../common/system/priv-app/KernelSU"
     cp -f "$KERNELSU_APK_PATH" "../common/system/priv-app/KernelSU/"
     echo -e "done\n"
 fi
