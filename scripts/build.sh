@@ -18,6 +18,7 @@
 # Copyright (C) 2023 LSPosed Contributors
 #
 
+# shellcheck disable=SC2034
 HOST_ARCH=$(uname -m)
 cd "$(dirname "$0")" || exit 1
 # export TMPDIR=$(dirname "$PWD")/WORK_DIR_
@@ -33,6 +34,7 @@ PRODUCT_MNT_RO="$ROOT_MNT_RO/product"
 SYSTEM_EXT_MNT_RO="$ROOT_MNT_RO/system_ext"
 
 # merged
+# shellcheck disable=SC2034
 ROOT_MNT="$WORK_DIR/system_root_merged"
 SYSTEM_MNT="$ROOT_MNT/system"
 VENDOR_MNT="$ROOT_MNT/vendor"
