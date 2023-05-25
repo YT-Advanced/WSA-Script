@@ -81,7 +81,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Get WSA Insider Preview build 🏭
-        if: ${{ inputs.release_type == 'Insider Private'}}
+        if: inputs.release_type == 'Insider Private'
         shell: python
         run: |
           import requests
