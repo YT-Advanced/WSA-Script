@@ -54,11 +54,7 @@ function Finish {
         Optimize-VHD ".\*.vhdx" -Mode Full
     }
     Clear-Host
-    # Magisk
     Start-Process "wsa://com.topjohnwu.magisk"
-    # KernelSU Manager
-    Start-Process "wsa://me.weishu.kernelsu"
-    # Play Store
     Start-Process "wsa://com.android.vending"
 }
 

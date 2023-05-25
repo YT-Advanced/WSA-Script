@@ -349,7 +349,7 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     elif [ "$ARCH" = "arm64" ]; then
         mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
     fi
-    mkdir -p "../common/system/priv-app/KernelSU"
+    mkdir "../common/system/priv-app/KernelSU"
     cp -f "$KERNELSU_APK_PATH" "../common/system/priv-app/KernelSU/"
     echo -e "done\n"
 fi
@@ -589,6 +589,21 @@ cp "$UWPVCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH" || abort
 cp "../bin/$ARCH/makepri.exe" "$WORK_DIR/wsa/$ARCH" || abort
 cp "../xml/priconfig.xml" "$WORK_DIR/wsa/$ARCH/xml/" || abort
 cp ../installer/MakePri.ps1 "$WORK_DIR/wsa/$ARCH" || abort
+if [[ "$ROOT_SOL" = "none" ]] && [[ "$GAPPS_BRAND" = "none" ]] && [[ "$REMOVE_AMAZON" == "yes" ]]; then
+    sed -i -e 's/Start-Process\ "wsa:\/\/com.topjohnwu.magisk"//g' ../installer/Install.ps1
+    sed -i -e 's/com.android.vending/com.android.settings/g' ../installer/Install.ps1
+else
+    if [[ "$ROOT_SOL" = "none" ]]; then
+        sed -i -e 's/Start-Process\ "wsa:\/\/com.topjohnwu.magisk"//g' ../installer/Install.ps1
+    elif [[ "$ROOT_SOL" = "kernelsu" ]]; then
+        sed -i -e 's/com.topjohnwu.magisk/me.weishu.kernelsu/g' ../installer/Install.ps1
+    fi
+    if [[ "$GAPPS_BRAND" = "none" ]] && [[ "$REMOVE_AMAZON" != "yes" ]]; then
+        sed -i -e 's/com.android.vending/com.amazon.venezia/g' ../installer/Install.ps1
+    elif [[ "$GAPPS_BRAND" = "none" ]]; then
+        sed -i -e 's/Start-Process\ "wsa:\/\/com.android.vending"//g' ../installer/Install.ps1
+    fi
+fi
 cp ../installer/Install.ps1 "$WORK_DIR/wsa/$ARCH" || abort
 cp ../installer/Run.bat "$WORK_DIR/wsa/$ARCH" || abort
 find "$WORK_DIR/wsa/$ARCH" -maxdepth 1 -mindepth 1 -printf "%P\n" >"$WORK_DIR/wsa/$ARCH/filelist.txt" || abort
