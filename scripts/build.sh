@@ -44,7 +44,6 @@ declare -A MERGED_PARTITION=(["zsystem"]="$ROOT_MNT" ["vendor"]="$VENDOR_MNT" ["
 DOWNLOAD_DIR=../download
 DOWNLOAD_CONF_NAME=download.list
 PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
-EROFS_USE_FUSE=1
 umount_clean() {
     if [ -d "$ROOT_MNT" ] || [ -d "$ROOT_MNT_RO" ]; then
         echo "Cleanup Mount Directory"
