@@ -22,6 +22,6 @@ jobs:
       uses: microsoft/psscriptanalyzer-action@v1.0
       with:
         path: .\installer
-        recurse: true 
-        includeDefaultRules: true 
+        recurse: true
+        includeDefaultRules: true
         enableExit: true

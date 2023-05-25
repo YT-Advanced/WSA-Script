@@ -7,7 +7,7 @@ concurrency:
 
 jobs:
   build:
-    if: ${{github.repository == 'YT-Advanced/WSA-Script'}}
+    if: github.repository == 'YT-Advanced/WSA-Script'
     name: Build WSA
     runs-on: ubuntu-latest
     strategy:
@@ -28,7 +28,7 @@ jobs:
           python-version: '3.x'
           cache: 'pip'
           cache-dependency-path: scripts/
-          
+
       - name: Setup Python3 Virtual Enviroment 🐍
         working-directory: scripts
         run: |
@@ -42,13 +42,13 @@ jobs:
               python3 -m pip install --upgrade -r requirements.txt || abort "Failed to install python3 dependencies"
           }
           deactivate
-          
+
       - name: Install Ubuntu Dependencies 🧑‍🏭
         uses: sn-o-w/cache-apt-pkgs-action@master
         with:
           packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv lzip
           version: 1.0
-          
+
       - name: Build WSA ${{ matrix.arch }} with GAPPS ${{ matrix.root }} 🏗️
         id: wsa
         run: ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${{ matrix.release }} --magisk-ver stable --gapps-brand ${{ matrix.gapps }} --root-sol ${{ matrix.root }} --remove-amazon --compress-format ${{ matrix.compress-format }}

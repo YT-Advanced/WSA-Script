@@ -170,7 +170,7 @@ jobs:
         with:
           packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv lzip
           version: 1.0
-          
+
       - name: Setup Python3 Virtual Enviroment
         if: env.iscustom == 'true' && success()
         working-directory: scripts
@@ -246,7 +246,7 @@ jobs:
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
             ----
           emoji: confused
-          
+
   delete_builds:
     runs-on: ubuntu-latest
     if: github.event_name == 'issue_comment' && contains('delete builds', github.event.comment.body)
@@ -282,7 +282,7 @@ jobs:
 
                 var runscomments = ${{ steps.find-runs.outputs.comments }};
                 console.log("runscomments: " + runscomments);
-                
+
                 var botids = [];
                 for (i = 0; i < botscomments.length; i++) {
                     botids.push(botscomments.at(i)["id"]);
@@ -307,24 +307,24 @@ jobs:
                         try {
                             if (false == deleted.includes(runids.at(index)["runid"])) {
                                 const dellogs = await github.rest.actions.deleteWorkflowRunLogs({
-                                    owner, 
+                                    owner,
                                     repo,
                                     run_id: runids.at(index)["runid"],
                                 });
                                 console.log("DELETE logs: %s", dellogs);
 
                                 const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-                                    owner, 
+                                    owner,
                                     repo,
                                     run_id: runids.at(index)["runid"],
                                     per_page: 100,
                                 });
                                 console.log("artifacts: %s", artifacts.data);
-                            
+
                                 for (const artifact of artifacts.data.artifacts) {
                                     console.log(`artifact id ${artifact.id} of ${artifact.name}`)
                                     const delartifacts = await github.rest.actions.deleteArtifact({
-                                        owner, 
+                                        owner,
                                         repo,
                                         artifact_id: artifact.id,
                                     });
@@ -342,7 +342,7 @@ jobs:
                     for (index = 0; index < botids.length; index++) {
                         try {
                             const retcomments = await github.rest.issues.updateComment({
-                                owner, 
+                                owner,
                                 repo,
                                 comment_id: botids.at(index),
                                 body: '`deleted`'

@@ -83,7 +83,7 @@ jobs:
 
       - name: Update App version 🔗
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
-        if: ${{ env.SHOULD_BUILD == 'yes'}}
+        if: env.SHOULD_BUILD == 'yes'
         with:
           branch: update
           push_options: '--force'
@@ -92,12 +92,12 @@ jobs:
           create_branch: true
 
       - name: Prepare release tag 🏷️
-        if: ${{ env.SHOULD_BUILD == 'yes'}}
+        if: env.SHOULD_BUILD == 'yes'
         id: date
         run: echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
 
       - name: Add text format to release 📝
-        if: ${{ env.SHOULD_BUILD == 'yes'}}
+        if: env.SHOULD_BUILD == 'yes'
         uses: softprops/action-gh-release@v0.1.15
         with:
           tag_name: ${{ steps.date.outputs.date }}
@@ -119,5 +119,5 @@ jobs:
     permissions: write-all
     needs: check
     uses: ./.github/workflows/build.yml
-    if: ${{ needs.check.outputs.SHOULD_BUILD == 'yes' }}
+    if: needs.check.outputs.SHOULD_BUILD == 'yes'
     secrets: inherit

@@ -79,7 +79,7 @@ jobs:
     steps:
       - name: Checkout ♻️
         uses: actions/checkout@v3
-      
+
       - name: Get WSA Insider Preview build 🏭
         if: ${{ inputs.release_type == 'Insider Private'}}
         shell: python
@@ -93,7 +93,7 @@ jobs:
           for str in res:
               with open(env_file, "a") as wr:
                   wr.write("LINK=" + str['browser_download_url'])
-              
+
       - name: Setup Python 👷
         uses: actions/setup-python@v4
         with:
@@ -115,15 +115,15 @@ jobs:
               python3 -m pip install --upgrade -r requirements.txt || abort "Failed to install python3 dependencies"
           }
           deactivate
-          
+
       - name: Install Ubuntu Dependencies 🧑‍🏭
         uses: sn-o-w/cache-apt-pkgs-action@master
         with:
           packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv lzip
           version: 1.0
-      
+
       - name: Download WSA Preview build + VCLibs 14 + UI XAML manually 🧙🏻‍♂️
-        if: ${{ inputs.release_type == 'Insider Private'}}
+        if: inputs.release_type == 'Insider Private'
         run: |
           wget -P ./download/wsa ${{ env.LINK }}
           mv ./download/wsa/*.Msixbundle ./download/wsa-WIF.zip
@@ -150,13 +150,13 @@ jobs:
           fi
           mkdir -p download
           echo -e "user_code=$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
-          
+
           if [[ "${{ inputs.release_type }}" == *Private* ]]; then
               ./scripts/build.sh --arch ${{ matrix.arch }} --release-type WIF --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --skip-download-wsa --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
           else
               ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
           fi
-          
+
       - name: File Checksum ✔️
         working-directory: output
         run: |
