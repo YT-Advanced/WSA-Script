@@ -341,10 +341,7 @@ GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 WSA_MAIN_VER=0
 
 update_ksu_zip_name() {
-    KERNEL_VER="5.15.78.1"
-    if [ "$WSA_MAIN_VER" -ge "2304" ]; then
-        KERNEL_VER="5.15.94.1"
-    fi
+    KERNEL_VER="5.15.94.1"
     KERNELSU_ZIP_NAME=kernelsu-$ARCH-$KERNEL_VER.zip
     KERNELSU_PATH=$DOWNLOAD_DIR/$KERNELSU_ZIP_NAME
     KERNELSU_INFO="$KERNELSU_PATH.info"
@@ -451,96 +448,28 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     echo -e "Extract done\n"
 fi
 
-if [[ "$WSA_MAIN_VER" -ge 2302 ]]; then
-    echo "Convert vhdx to RAW image"
-    vhdx_to_raw_img "$WORK_DIR/wsa/$ARCH/system_ext.vhdx" "$WORK_DIR/wsa/$ARCH/system_ext.img" || abort
-    vhdx_to_raw_img "$WORK_DIR/wsa/$ARCH/product.vhdx" "$WORK_DIR/wsa/$ARCH/product.img" || abort
-    vhdx_to_raw_img "$WORK_DIR/wsa/$ARCH/system.vhdx" "$WORK_DIR/wsa/$ARCH/system.img" || abort
-    vhdx_to_raw_img "$WORK_DIR/wsa/$ARCH/vendor.vhdx" "$WORK_DIR/wsa/$ARCH/vendor.img" || abort
-    echo -e "Convert vhdx to RAW image done\n"
-fi
-if [[ "$WSA_MAIN_VER" -ge 2304 ]]; then
-    echo "Mount images"
-    sudo mkdir -p -m 755 "$ROOT_MNT_RO" || abort
-    sudo chown "0:0" "$ROOT_MNT_RO" || abort
-    sudo setfattr -n security.selinux -v "u:object_r:rootfs:s0" "$ROOT_MNT_RO" || abort
-    sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/system.img" "$ROOT_MNT_RO" || abort 1
-    sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RO" || abort 1
-    sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_MNT_RO" || abort 1
-    sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_MNT_RO" || abort 1
-    echo -e "done\n"
-    echo "Create overlayfs for EROFS"
-    mk_overlayfs "$ROOT_MNT_RO" system "$ROOT_MNT" || abort 
-    mk_overlayfs "$VENDOR_MNT_RO" vendor "$VENDOR_MNT" || abort
-    mk_overlayfs "$PRODUCT_MNT_RO" product "$PRODUCT_MNT" || abort
-    mk_overlayfs "$SYSTEM_EXT_MNT_RO" system_ext "$SYSTEM_EXT_MNT" || abort
-    echo -e "Create overlayfs for EROFS done\n"
-elif [[ "$WSA_MAIN_VER" -ge 2302 ]]; then
-    echo "Remove read-only flag for read-only EXT4 image"
-    ro_ext4_img_to_rw "$WORK_DIR/wsa/$ARCH/system_ext.img" || abort
-    ro_ext4_img_to_rw "$WORK_DIR/wsa/$ARCH/product.img" || abort
-    ro_ext4_img_to_rw "$WORK_DIR/wsa/$ARCH/system.img" || abort
-    ro_ext4_img_to_rw "$WORK_DIR/wsa/$ARCH/vendor.img" || abort
-    echo -e "Remove read-only flag for read-only EXT4 image done\n"
-fi
-if [[ "$WSA_MAIN_VER" -lt 2304 ]]; then
-    echo "Calculate the required space"
-    EXTRA_SIZE=10240
+echo "Convert vhdx to RAW image"
+vhdx_to_raw_img "$WORK_DIR/wsa/$ARCH/system_ext.vhdx" "$WORK_DIR/wsa/$ARCH/system_ext.img" || abort
+vhdx_to_raw_img "$WORK_DIR/wsa/$ARCH/product.vhdx" "$WORK_DIR/wsa/$ARCH/product.img" || abort
+vhdx_to_raw_img "$WORK_DIR/wsa/$ARCH/system.vhdx" "$WORK_DIR/wsa/$ARCH/system.img" || abort
+vhdx_to_raw_img "$WORK_DIR/wsa/$ARCH/vendor.vhdx" "$WORK_DIR/wsa/$ARCH/vendor.img" || abort
+echo -e "Convert vhdx to RAW image done\n"
+echo "Mount images"
+sudo mkdir -p -m 755 "$ROOT_MNT_RO" || abort
+sudo chown "0:0" "$ROOT_MNT_RO" || abort
+sudo setfattr -n security.selinux -v "u:object_r:rootfs:s0" "$ROOT_MNT_RO" || abort
+sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/system.img" "$ROOT_MNT_RO" || abort 1
+sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RO" || abort 1
+sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_MNT_RO" || abort 1
+sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_MNT_RO" || abort 1
+echo -e "done\n"
+echo "Create overlayfs for EROFS"
+mk_overlayfs "$ROOT_MNT_RO" system "$ROOT_MNT" || abort 
+mk_overlayfs "$VENDOR_MNT_RO" vendor "$VENDOR_MNT" || abort
+mk_overlayfs "$PRODUCT_MNT_RO" product "$PRODUCT_MNT" || abort
+mk_overlayfs "$SYSTEM_EXT_MNT_RO" system_ext "$SYSTEM_EXT_MNT" || abort
+echo -e "Create overlayfs for EROFS done\n"
 
-    SYSTEM_EXT_NEED_SIZE=$EXTRA_SIZE
-    if [ -d "$WORK_DIR/gapps/system_ext" ]; then
-        SYSTEM_EXT_NEED_SIZE=$((SYSTEM_EXT_NEED_SIZE + $(du --apparent-size -sB512 "$WORK_DIR/gapps/system_ext" | cut -f1)))
-    fi
-
-    PRODUCT_NEED_SIZE=$EXTRA_SIZE
-    if [ -d "$WORK_DIR/gapps/product" ]; then
-        PRODUCT_NEED_SIZE=$((PRODUCT_NEED_SIZE + $(du --apparent-size -sB512 "$WORK_DIR/gapps/product" | cut -f1)))
-    fi
-
-    SYSTEM_NEED_SIZE=$EXTRA_SIZE
-    if [ -d "$WORK_DIR/gapps" ]; then
-        SYSTEM_NEED_SIZE=$((SYSTEM_NEED_SIZE + $(du --apparent-size -sB512 "$WORK_DIR/gapps" | cut -f1) - PRODUCT_NEED_SIZE - SYSTEM_EXT_NEED_SIZE))
-    fi
-    if [ "$ROOT_SOL" = "magisk" ]; then
-        if [ -d "$WORK_DIR/magisk" ]; then
-            MAGISK_SIZE=$(du --apparent-size -sB512 "$WORK_DIR/magisk/magisk" | cut -f1)
-            SYSTEM_NEED_SIZE=$((SYSTEM_NEED_SIZE + MAGISK_SIZE))
-        fi
-        if [ -f "$MAGISK_PATH" ]; then
-            MAGISK_APK_SIZE=$(du --apparent-size -sB512 "$MAGISK_PATH" | cut -f1)
-            SYSTEM_NEED_SIZE=$((SYSTEM_NEED_SIZE + MAGISK_APK_SIZE))
-        fi
-    fi
-    if [ -d "../$ARCH/system" ]; then
-        SYSTEM_NEED_SIZE=$((SYSTEM_NEED_SIZE + $(du --apparent-size -sB512 "../$ARCH/system" | cut -f1)))
-    fi
-    VENDOR_NEED_SIZE=$EXTRA_SIZE
-    echo -e "done\n"
-    echo "Expand images"
-    SYSTEM_EXT_IMG_SIZE=$(du --apparent-size -sB512 "$WORK_DIR/wsa/$ARCH/system_ext.img" | cut -f1)
-    PRODUCT_IMG_SIZE=$(du --apparent-size -sB512 "$WORK_DIR/wsa/$ARCH/product.img" | cut -f1)
-    SYSTEM_IMG_SIZE=$(du --apparent-size -sB512 "$WORK_DIR/wsa/$ARCH/system.img" | cut -f1)
-    VENDOR_IMG_SIZE=$(du --apparent-size -sB512 "$WORK_DIR/wsa/$ARCH/vendor.img" | cut -f1)
-    SYSTEM_EXT_TARGET_SIZE=$((SYSTEM_EXT_NEED_SIZE * 2 + SYSTEM_EXT_IMG_SIZE))
-    PRODUCT_TAGET_SIZE=$((PRODUCT_NEED_SIZE * 2 + PRODUCT_IMG_SIZE))
-    SYSTEM_TAGET_SIZE=$((SYSTEM_IMG_SIZE * 2))
-    VENDOR_TAGET_SIZE=$((VENDOR_NEED_SIZE * 2 + VENDOR_IMG_SIZE))
-
-    resize_img "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_TARGET_SIZE"s || abort
-    resize_img "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_TAGET_SIZE"s || abort
-    resize_img "$WORK_DIR/wsa/$ARCH/system.img" "$SYSTEM_TAGET_SIZE"s || abort
-    resize_img "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_TAGET_SIZE"s || abort
-
-    echo -e "Expand images done\n"
-
-    echo "Mount images"
-    sudo mkdir "$ROOT_MNT" || abort
-    sudo mount -vo loop "$WORK_DIR/wsa/$ARCH/system.img" "$ROOT_MNT" || abort
-    sudo mount -vo loop "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT" || abort
-    sudo mount -vo loop "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_MNT" || abort
-    sudo mount -vo loop "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_MNT" || abort
-    echo -e "done\n"
-fi
 if [ "$REMOVE_AMAZON" ]; then
     echo "Remove Amazon Appstore"
     find "${PRODUCT_MNT:?}"/{etc/permissions,etc/sysconfig,framework,priv-app} 2>/dev/null | grep -e amazon -e venezia | sudo xargs rm -rf
