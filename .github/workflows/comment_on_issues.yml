@@ -203,6 +203,7 @@ jobs:
         with:
           name: ${{ steps.wsa.outputs.artifact }}
           path: output
+          retention-days: 5
 
       - name: Update Comment Finish
         if: env.issues == 'true' && env.iscustom == 'true' && success()
