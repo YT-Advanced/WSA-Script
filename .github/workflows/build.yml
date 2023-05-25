@@ -28,7 +28,7 @@ jobs:
           cache: 'pip'
           cache-dependency-path: scripts/
           
-      - name: Setup Python3 Virtual Enviroment 👷
+      - name: Setup Python3 Virtual Enviroment 🐍
         working-directory: scripts
         run: |
           sudo apt-get update
