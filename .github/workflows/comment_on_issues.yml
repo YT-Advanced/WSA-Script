@@ -192,13 +192,13 @@ jobs:
         run: ./scripts/build.sh ${{ env.body }}
 
       - name: File Checksum
-        if: env.iscustom == 'true' && success()
+        if: env.iscustom == 'true' && success() && steps.wsa.outputs.file_ext != ".zip"
         working-directory: output
         run: |
           sha256sum '${{ steps.wsa.outputs.artifact }}${{ steps.wsa.outputs.file_ext }}' >> sha256-checksum.txt
 
       - name: Upload to Artifacts
-        if: env.iscustom == 'true' && success()
+        if: env.iscustom == 'true' && success() 
         uses: actions/upload-artifact@v3.1.2
         with:
           name: ${{ steps.wsa.outputs.artifact }}
