@@ -44,62 +44,14 @@ declare -A MERGED_PARTITION=(["zsystem"]="$ROOT_MNT" ["vendor"]="$VENDOR_MNT" ["
 DOWNLOAD_DIR=../download
 DOWNLOAD_CONF_NAME=download.list
 PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
-umount_clean() {
-    if [ -d "$ROOT_MNT" ] || [ -d "$ROOT_MNT_RO" ]; then
-        echo "Cleanup Mount Directory"
-        for PART in "${LOWER_PARTITION[@]}"; do
-            sudo umount -v "$PART"
-        done
-        for PART in "${MERGED_PARTITION[@]}"; do
-            sudo umount -v "$PART"
-        done
-        sudo rm -rf "${WORK_DIR:?}"
-    else
-        rm -rf "${WORK_DIR:?}"
-    fi
-    if [ "$TMPDIR" ] && [ -d "$TMPDIR" ]; then
-        echo "Cleanup Temp Directory"
-        rm -rf "${TMPDIR:?}"
-        unset TMPDIR
-    fi
-    rm -f "${DOWNLOAD_DIR:?}/$DOWNLOAD_CONF_NAME"
-    if [ "$(which python)" == "$PYTHON_VENV_DIR/bin/python" ]; then
-        echo "deactivate python3 venv"
-        deactivate
-    fi
-}
-trap umount_clean EXIT
 OUTPUT_DIR=../output
 WSA_WORK_ENV="${WORK_DIR:?}/ENV"
 if [ -f "$WSA_WORK_ENV" ]; then rm -f "${WSA_WORK_ENV:?}"; fi
 touch "$WSA_WORK_ENV"
 export WSA_WORK_ENV
-clean_download() {
-    if [ -d "$DOWNLOAD_DIR" ]; then
-        echo "Cleanup Download Directory"
-        if [ "$CLEAN_DOWNLOAD_WSA" ]; then
-            rm -f "${WSA_ZIP_PATH:?}"
-        fi
-        if [ "$CLEAN_DOWNLOAD_MAGISK" ]; then
-            rm -f "${MAGISK_PATH:?}"
-        fi
-        if [ "$CLEAN_DOWNLOAD_GAPPS" ]; then
-            rm -f "${GAPPS_PATH:?}"
-        fi
-        if [ "$CLEAN_DOWNLOAD_KERNELSU" ]; then
-            rm -f "${KERNELSU_PATH:?}"
-            rm -f "${KERNELSU_INFO:?}"
-        fi
-    fi
-}
 abort() {
     [ "$1" ] && echo -e "ERROR: $1"
     echo "Build: an error has occurred, exit"
-    if [ -d "$WORK_DIR" ]; then
-        echo -e "\nCleanup Work Directory"
-        umount_clean
-    fi
-    clean_download
     exit 1
 }
 trap abort INT TERM
@@ -358,7 +310,6 @@ fi
 echo "Extract WSA"
 if [ -f "$WSA_ZIP_PATH" ]; then
     if ! python3 extractWSA.py "$ARCH" "$WSA_ZIP_PATH" "$WORK_DIR" "$WSA_WORK_ENV"; then
-        CLEAN_DOWNLOAD_WSA=1
         abort "Unzip WSA failed, is the download incomplete?"
     fi
     echo -e "Extract done\n"
@@ -374,7 +325,6 @@ if [ "$GAPPS_BRAND" != "none" ] || [ "$ROOT_SOL" = "magisk" ]; then
     if [ -f "$MAGISK_PATH" ]; then
         MAGISK_VERSION_NAME=""
         if ! python3 extractMagisk.py "$ARCH" "$MAGISK_PATH" "$WORK_DIR"; then
-            CLEAN_DOWNLOAD_MAGISK=1
             abort "Unzip Magisk failed, is the download incomplete?"
         fi
         # shellcheck disable=SC1090
@@ -395,7 +345,6 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     # shellcheck disable=SC1090
     source "${KERNELSU_INFO:?}" || abort
     if ! unzip "$KERNELSU_PATH" -d "$WORK_DIR/kernelsu"; then
-        CLEAN_DOWNLOAD_KERNELSU=1
         abort "Unzip KernelSU failed, package is corrupted?"
     fi
     if [ "$ARCH" = "x64" ]; then
@@ -412,7 +361,6 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     mkdir -p "$WORK_DIR/gapps" || abort
     if [ -f "$GAPPS_PATH" ]; then
         if ! unzip "$GAPPS_PATH" "system/*" -x "system/addon.d/*" "system/system_ext/priv-app/SetupWizard/*" -d "$WORK_DIR/gapps"; then
-             CLEAN_DOWNLOAD_GAPPS=1
             abort "Unzip MindTheGapps failed, package is corrupted?"
         fi
         mv "$WORK_DIR/gapps/system/"* "$WORK_DIR/gapps" || abort
@@ -708,7 +656,3 @@ else
     cp -r "$WORK_DIR/wsa/$ARCH" "$OUTPUT_PATH" || abort
 fi
 echo -e "done\n"
-
-echo "Cleanup Work Directory"
-sudo rm -rf "${WORK_DIR:?}"
-echo "done"
