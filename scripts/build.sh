@@ -597,9 +597,9 @@ echo "Generate info"
 if [[ "$ROOT_SOL" = "none" ]]; then
     name1=""
 elif [ "$ROOT_SOL" = "magisk" ]; then
-    name1="-with-magisk-$MAGISK_VERSION_NAME-$MAGISK_VER"
+    name1="-with-Magisk-$MAGISK_VERSION_NAME-$MAGISK_VER"
 elif [ "$ROOT_SOL" = "kernelsu" ]; then
-    name1="-with-$ROOT_SOL-$KERNELSU_VER"
+    name1="-with-KernelSU-$KERNELSU_VER"
 fi
 if [ "$GAPPS_BRAND" = "none" ]; then
     name2="-NoGApps"
