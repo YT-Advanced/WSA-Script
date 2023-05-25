@@ -37,7 +37,7 @@ on:
         description: Compression format.
         required: true
         options: [".zip",".7z",".tar.xz"]
-        default: ".7z"
+        default: ".zip"
       remove_amazon:
         description: "Remove Amazon Appstore from the system"
         required: true
@@ -158,6 +158,7 @@ jobs:
           fi
 
       - name: File Checksum ✔️
+        if: inputs.compression == '.zip'
         working-directory: output
         run: |
           sha256sum '${{ steps.wsa.outputs.artifact }}${{ inputs.compression }}' >> sha256-checksum.txt
