@@ -302,10 +302,12 @@ In order to make a backup of your WSA data you must copy the Userdata.vhdx (whic
 
 ## Restoring Your Backup
 
-Before attempting to restore your backup, you must remove WSA if installed. Then before you run the "Run.bat" script (to reinstall WSA after removing it), you need to remove these two lines from Install.ps1: 
+Before attempting to restore your backup, you must remove WSA if installed. Then before you run the "Run.bat" script (to reinstall WSA after removing it), you need to remove these lines from Install.ps1: 
 ```powershell
 Start-Process "wsa://com.topjohnwu.magisk"
+Start-Process "wsa://me.weishu.kernelsu"
 Start-Process "wsa://com.android.vending"
+Start-Process "wsa://com.amazon.venezia"
 ``` 
 After running the script, do not run WSA at all, and go to %localappdata%\Packages and (if the folders do not exist, create them) in MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe\LocalCache\ paste the userdata.vhdx
 
