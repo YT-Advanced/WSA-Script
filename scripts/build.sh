@@ -452,9 +452,6 @@ echo -e "Create overlayfs for EROFS done\n"
 
 if [ "$REMOVE_AMAZON" ]; then
     echo "Remove Amazon Appstore"
-    # 2303
-    find "${SYSTEM_EXT_MNT:?}"/{etc/*permissions,framework,priv-app} 2>/dev/null | grep -e amazon -e venezia | sudo xargs rm -rf
-    # 2304 and above
     rm -f "$WORK_DIR/wsa/$ARCH/apex/mado_release.apex"
     echo -e "done\n"
 fi
