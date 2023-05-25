@@ -164,7 +164,8 @@ jobs:
             ----
           emoji: eyes
 
-      - name: Install Ubuntu Dependencies 🧑‍🏭
+      - name: Install Ubuntu Dependencies
+        if: env.iscustom == 'true' && success()
         uses: sn-o-w/cache-apt-pkgs-action@master
         with:
           packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv lzip
