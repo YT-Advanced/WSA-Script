@@ -80,7 +80,7 @@ jobs:
       - name: Checkout ♻️
         uses: actions/checkout@v3
       
-      - name: Get WSA Preview build
+      - name: Get WSA Insider Preview build 🏭
         if: ${{ inputs.release_type == 'Insider Private'}}
         shell: python
         run: |
@@ -94,7 +94,7 @@ jobs:
               with open(env_file, "a") as wr:
                   wr.write("LINK=" + str['browser_download_url'])
               
-      - name: Setup Python 🏭
+      - name: Setup Python 👷
         uses: actions/setup-python@v4
         with:
           check-latest: true
@@ -102,11 +102,10 @@ jobs:
           cache: 'pip'
           cache-dependency-path: scripts/
 
-      - name: Update Package and Setup Python3 Virtual Enviroment 👷
+      - name: Setup Python3 Virtual Enviroment 🐍
         working-directory: scripts
         run: |
           sudo apt-get update
-          sudo apt-get install -y lzip
           PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
           python3 -m venv "$PYTHON_VENV_DIR" || abort "Failed to create python3 virtual env"
           # shellcheck disable=SC1091
@@ -118,9 +117,9 @@ jobs:
           deactivate
           
       - name: Install Ubuntu Dependencies 🧑‍🏭
-        uses: awalsh128/cache-apt-pkgs-action@latest
+        uses: sn-o-w/cache-apt-pkgs-action@master
         with:
-          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv
+          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv lzip
           version: 1.0
       
       - name: Download WSA Preview build + VCLibs 14 + UI XAML manually 🧙🏻‍♂️

@@ -40,8 +40,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           sudo apt-get update
-          sudo apt-get install -y lzip
-          python3 -m pip install --upgrade pip setuptools
+          python3 -m pip install --upgrade setuptools
 
       - name: Get Issues Info
         id: get-issues
@@ -167,9 +166,9 @@ jobs:
 
       - name: Install Ubuntu Dependencies
         if: env.iscustom == 'true' && success()
-        uses: awalsh128/cache-apt-pkgs-action@latest
+        uses: sn-o-w/cache-apt-pkgs-action@master
         with:
-          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv
+          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv lzip
           version: 1.0
           
       - name: Setup Python3 Virtual Enviroment
