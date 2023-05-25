@@ -385,10 +385,6 @@ Now run WSA and your serdata should hopefully be restored
 **How do I uninstall Magisk?**
 
 - Request, using [Issues](https://github.com/YT-Advanced/WSA-Script/issues), a Windows Subsystem For Android™ version that doesn't include Magisk from the [Releases page](https://github.com/YT-Advanced/WSA-Script/releases/latest). Then follow the [Installation instructions](#installation)
-
-**Can I switch between OpenGApps and MindTheGapps?**
-
-- No. GApps will no longer function. Do a [complete uninstallation](#uninstallation) before switching
 </details>
 
 &nbsp;
@@ -454,7 +450,6 @@ Now run WSA and your serdata should hopefully be restored
 - [Cinit and the WSAPatch Guide](https://github.com/cinit/WSAPatch): Many thanks for the comprehensive guide, files and support provided by Cinit and the contributers at the WSAPatch repository. Windows™ 10 Builds in this repo rely on the hard work of this project and  hence credit is given where due
 - [StoreLib](https://github.com/StoreDev/StoreLib): API for downloading WSA
 - [Magisk](https://github.com/topjohnwu/Magisk): The Magic Mask for Android
-- [The Open Google Apps Project](https://opengapps.org): Script the automatic generation of up-to-date Google Apps packages
 - [WSA-Kernel-SU](https://github.com/LSPosed/WSA-Kernel-SU): A kernel module to provide /system/xbin/su to Android Kernel
 - [Kernel Assisted Superuser](https://git.zx2c4.com/kernel-assisted-superuser): Kernel assisted means of gaining a root shell for Android
 - [WSAGAScript](https://github.com/ADeltaX/WSAGAScript): The first GApps integration script for WSA
