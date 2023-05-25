@@ -321,7 +321,6 @@ MAGISK_PATH=$DOWNLOAD_DIR/$MAGISK_ZIP
 ANDROID_API=33
 GAPPS_ZIP_NAME=$GAPPS_BRAND-$ARCH-${ANDROID_API_MAP[$ANDROID_API]}.zip
 GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
-WSA_MAIN_VER=0
 
 update_ksu_zip_name() {
     KERNEL_VER="5.15.94.1"
@@ -334,8 +333,6 @@ if [ "$DOWN_WSA" != "no" ]; then
     python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
     # shellcheck disable=SC1090
     source "$WSA_WORK_ENV" || abort
-else
-    WSA_MAIN_VER=$(python3 getWSAMainVersion.py "$ARCH" "$WSA_ZIP_PATH")
 fi
 if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
     python3 generateMagiskLink.py "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
