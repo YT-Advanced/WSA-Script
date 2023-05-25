@@ -373,16 +373,12 @@ if [ "$GAPPS_BRAND" != "none" ] || [ "$ROOT_SOL" = "magisk" ]; then
     echo "Extract Magisk"
     if [ -f "$MAGISK_PATH" ]; then
         MAGISK_VERSION_NAME=""
-        MAGISK_VERSION_CODE=0
         if ! python3 extractMagisk.py "$ARCH" "$MAGISK_PATH" "$WORK_DIR"; then
             CLEAN_DOWNLOAD_MAGISK=1
             abort "Unzip Magisk failed, is the download incomplete?"
         fi
         # shellcheck disable=SC1090
         source "$WSA_WORK_ENV" || abort
-        if [ "$MAGISK_VERSION_CODE" -lt 26000 ] && [ "$MAGISK_VER" != "delta" ]; then
-            abort "Please install Magisk 26.0+"
-        fi
         sudo chmod +x "../linker/$HOST_ARCH/linker64" || abort
         sudo patchelf --set-interpreter "../linker/$HOST_ARCH/linker64" "$WORK_DIR/magisk/magiskpolicy" || abort
         chmod +x "$WORK_DIR/magisk/magiskpolicy" || abort
@@ -654,7 +650,7 @@ echo "Generate info"
 if [[ "$ROOT_SOL" = "none" ]]; then
     name1=""
 elif [ "$ROOT_SOL" = "magisk" ]; then
-    name1="-with-magisk-$MAGISK_VERSION_NAME($MAGISK_VERSION_CODE)-$MAGISK_VER"
+    name1="-with-magisk-$MAGISK_VERSION_NAME-$MAGISK_VER"
 elif [ "$ROOT_SOL" = "kernelsu" ]; then
     name1="-with-$ROOT_SOL-$KERNELSU_VER"
 fi
