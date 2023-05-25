@@ -1,5 +1,5 @@
-name: Auto Build
-on: [workflow_call]
+name: Auto Build (Use for call only)
+on: [workflow_dispatch, workflow_call]
 
 concurrency:
   group: ${{ github.head_ref || github.ref }}
@@ -7,6 +7,7 @@ concurrency:
 
 jobs:
   build:
+    if: ${{github.repository == 'YT-Advanced/WSA-Script'}}
     name: Build WSA
     runs-on: ubuntu-latest
     strategy:
