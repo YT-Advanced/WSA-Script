@@ -190,8 +190,6 @@ ARGUMENT_LIST=(
     "root-sol:"
     "compress-format:"
     "remove-amazon"
-    "compress"
-    "debug"
     "skip-download-wsa"
 )
 
@@ -215,9 +213,7 @@ while [[ $# -gt 0 ]]; do
         --root-sol          ) ROOT_SOL="$2"; shift 2 ;;
         --compress-format   ) COMPRESS_FORMAT="$2"; shift 2 ;;
         --remove-amazon     ) REMOVE_AMAZON="yes"; shift ;;
-        --compress          ) COMPRESS_OUTPUT="yes"; shift ;;
         --magisk-ver        ) MAGISK_VER="$2"; shift 2 ;;
-        --debug             ) DEBUG="on"; shift ;;
         --skip-download-wsa ) DOWN_WSA="no"; shift ;;
         --                  ) shift; break;;
    esac
@@ -249,10 +245,6 @@ check_list "$MAGISK_VER" "Magisk Version" "${MAGISK_VER_MAP[@]}"
 check_list "$GAPPS_BRAND" "GApps Brand" "${GAPPS_BRAND_MAP[@]}"
 check_list "$ROOT_SOL" "Root Solution" "${ROOT_SOL_MAP[@]}"
 check_list "$COMPRESS_FORMAT" "Compress Format" "${COMPRESS_FORMAT_MAP[@]}"
-
-if [ "$DEBUG" ]; then
-    set -x
-fi
 
 # shellcheck disable=SC1091
 [ -f "$PYTHON_VENV_DIR/bin/activate" ] && {
