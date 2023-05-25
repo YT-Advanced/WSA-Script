@@ -272,6 +272,10 @@ update_ksu_zip_name() {
     KERNELSU_PATH=$DOWNLOAD_DIR/$KERNELSU_ZIP_NAME
     KERNELSU_INFO="$KERNELSU_PATH.info"
 }
+udpate_gapps_zip_name() {
+    GAPPS_ZIP_NAME=$GAPPS_BRAND-$ARCH-${ANDROID_API_MAP[$ANDROID_API]}.zip
+    GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
+}
 if [ "$DOWN_WSA" != "no" ]; then
     echo "Generate Download Links"
     python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
