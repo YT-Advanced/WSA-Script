@@ -589,9 +589,9 @@ else
         sed -i -e 's/Start-Process\ "wsa:\/\/com.topjohnwu.magisk"//g' ../installer/Install.ps1
     elif [[ "$ROOT_SOL" = "kernelsu" ]]; then
         sed -i -e 's/com.topjohnwu.magisk/me.weishu.kernelsu/g' ../installer/Install.ps1
-    elif [[ "$MAGISK_VER" = "delta"]]; then
+    elif [[ "$MAGISK_VER" = "delta" ]]; then
         sed -i -e 's/com.topjohnwu.magisk/io.github.huskydg.magisk/g' ../installer/Install.ps1
-    elif [[ "$MAGISK_VER" = "alpha"]]; then
+    elif [[ "$MAGISK_VER" = "alpha" ]]; then
         sed -i -e 's/com.topjohnwu.magisk/io.github.vvb2060.magisk/g' ../installer/Install.ps1
     fi
     if [[ "$GAPPS_BRAND" = "none" ]] && [[ "$REMOVE_AMAZON" != "yes" ]]; then
