@@ -658,5 +658,8 @@ elif [ "$COMPRESS_FORMAT" = "xz" ]; then
         echo "Out of memory? Trying again with single threads..."
         tar -cPJvf "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name" || abort
     fi
+elif [ "$COMPRESS_FORMAT" = "zip" ]; then
+    echo "Compressing with zip later..."
+    cp -r "$WORK_DIR/wsa/$artifact_name" "$OUTPUT_PATH" || abort
 fi
 echo -e "Done\n"
