@@ -247,6 +247,8 @@ check_list "$COMPRESS_FORMAT" "Compress Format" "${COMPRESS_FORMAT_MAP[@]}"
 }
 declare -A RELEASE_NAME_MAP=(["retail"]="Retail" ["RP"]="Release Preview" ["WIS"]="Insider Slow" ["WIF"]="Insider Fast")
 declare -A ANDROID_API_MAP=(["33"]="13.0")
+declare -A SYS_ARCH_MAP=(["x86_64"]="x64" ["arm64-v8a"]="arm64")
+SYS_ARCH=${SYS_ARCH_MAP[$ARCH]} || abort
 RELEASE_NAME=${RELEASE_NAME_MAP[$RELEASE_TYPE]} || abort
 
 echo -e "Build: RELEASE_TYPE=$RELEASE_NAME"
@@ -344,8 +346,13 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     elif [ "$ARCH" = "arm64" ]; then
         mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
     fi
-    mkdir "../common/system/priv-app/KernelSU"
-    cp -f "$KERNELSU_APK_PATH" "../common/system/priv-app/KernelSU/"
+    KSU_APP_DIR="../common/system/priv-app/KernelSU"
+    mkdir "$KSU_APP_DIR"
+    cp -f "$KERNELSU_APK_PATH" "$KSU_APP_DIR/"
+    unzip "$KERNELSU_APK_PATH" "lib/$SYS_ARCH/lib*.so" -d "$KSU_APP_DIR/"
+    if [[ "$ARCH" == "arm64" ]]; then
+        rm -rfv "$KSU_APP_DIR/lib/arm64-v8a/" "$KSU_APP_DIR/lib/arm64/"
+    fi
     echo -e "done\n"
 fi
 
