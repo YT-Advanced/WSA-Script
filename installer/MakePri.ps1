@@ -27,12 +27,12 @@ If ((Test-Path -Path "pri") -Eq $true -And (Test-Path -Path "xml") -Eq $true) {
         Write-Warning "Failed to merge resources from pris`r`nTrying to dump pris to priinfo...."
         New-Item -Path "." -Name "priinfo" -ItemType "directory"
         Clear-Host
-        $i = 0
         $PriItem = Get-Item ".\pri\*" -Include "*.pri"
         Write-Output "Dumping resources...."
+        $i = 0
         $Processes = ForEach ($Item in $PriItem) {
             Start-Process -PassThru -WindowStyle Hidden makepri.exe -Args "dump /if $($Item | Resolve-Path -Relative) /o /es .\pri\resources.pri /of .\priinfo\$($Item.Name).xml /dt detailed"
-            $i = $i + 1
+            $i++
             $Completed = ($i / $PriItem.count) * 100
             Write-Progress -Activity "Dumping resources" -Status "Dumping $($Item.Name):" -PercentComplete $Completed
         }
