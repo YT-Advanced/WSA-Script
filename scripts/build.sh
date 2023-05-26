@@ -177,16 +177,12 @@ ARR_TO_STR() {
     printf -v joined "%s, " "${arr[@]}"
     echo "${joined%, }"
 }
-GAPPS_PROPS_MSG1="\033[0;31mWARNING: Services such as the Play Store may stop working properly."
-GAPPS_PROPS_MSG2="We are not responsible for any problems caused by this!\033[0m"
-GAPPS_PROPS_MSG3="Info: https://support.google.com/android/answer/10248227"
 
 ARGUMENT_LIST=(
     "arch:"
     "release-type:"
     "magisk-ver:"
     "gapps-brand:"
-    "nofix-props"
     "root-sol:"
     "compress-format:"
     "remove-amazon"
@@ -209,7 +205,6 @@ while [[ $# -gt 0 ]]; do
         --arch              ) ARCH="$2"; shift 2 ;;
         --release-type      ) RELEASE_TYPE="$2"; shift 2 ;;
         --gapps-brand       ) GAPPS_BRAND="$2"; shift 2 ;;
-#        --nofix-props       ) NOFIX_PROPS="yes"; shift ;;
         --root-sol          ) ROOT_SOL="$2"; shift 2 ;;
         --compress-format   ) COMPRESS_FORMAT="$2"; shift 2 ;;
         --remove-amazon     ) REMOVE_AMAZON="yes"; shift ;;
@@ -543,14 +538,9 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     find "$WORK_DIR/gapps/system_ext/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_EXT_MNT/priv-app/placeholder" -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     sudo LD_LIBRARY_PATH="../linker/$HOST_ARCH" "$WORK_DIR/magisk/magiskpolicy" --load "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --save "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" "allow gmscore_app gmscore_app vsock_socket { create connect write read }" "allow gmscore_app device_config_runtime_native_boot_prop file read" "allow gmscore_app system_server_tmpfs dir search" "allow gmscore_app system_server_tmpfs file open" "allow gmscore_app system_server_tmpfs filesystem getattr" "allow gmscore_app gpu_device dir search" "allow gmscore_app media_rw_data_file filesystem getattr" || abort
     echo -e "Integrate MindTheGapps done\n"
-    
-#    if [ "$NOFIX_PROPS" ]; then
-#        echo -e "Skip fix $GAPPS_BRAND prop!\n$GAPPS_PROPS_MSG1\n$GAPPS_PROPS_MSG2\n$GAPPS_PROPS_MSG3\n"
-#    else
     echo "Fix MindTheGapps prop"
     sudo python3 fixGappsProp.py "$ROOT_MNT" || abort
     echo -e "done\n"
-#    fi
 fi
 
 echo "Create EROFS images"
@@ -619,9 +609,6 @@ else
     name2=-MindTheGapps-${ANDROID_API_MAP[$ANDROID_API]}
 fi
 artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}
-#if [ "$NOFIX_PROPS" = "yes" ]; then
-#    artifact_name+="-NoFixProps"
-#fi
 if [ "$REMOVE_AMAZON" = "yes" ]; then
     artifact_name+="-RemovedAmazon"
 fi
