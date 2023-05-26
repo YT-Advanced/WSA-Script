@@ -641,7 +641,7 @@ mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
 if [ -z "$COMPRESS_FORMAT" ]; then
     COMPRESS_FORMAT="7z"
 fi
-if [ -n "$COMPRESS_FORMAT" ]; then
+if [ -n "$COMPRESS_FORMAT" ] && [[ "$COMPRESS_FORMAT" != "zip" ]]; then
      FILE_EXT=".$COMPRESS_FORMAT"
      if [ "$FILE_EXT" = ".xz" ]; then
         FILE_EXT=".tar$FILE_EXT"
@@ -658,8 +658,5 @@ elif [ "$COMPRESS_FORMAT" = "xz" ]; then
         echo "Out of memory? Trying again with single threads..."
         tar -cPJvf "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name" || abort
     fi
-elif [ "$COMPRESS_FORMAT" = "zip" ]; then
-    echo "Compressing with zip"
-    cp -r "$WORK_DIR/wsa/$artifact_name" "$OUTPUT_PATH" || abort
 fi
 echo -e "Done\n"
