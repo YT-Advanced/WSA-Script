@@ -641,18 +641,13 @@ mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
 if [ -z "$COMPRESS_FORMAT" ]; then
     COMPRESS_FORMAT="7z"
 fi
-if [ -n "$COMPRESS_FORMAT" ] && [[ "$COMPRESS_FORMAT" != "zip" ]]; then
-     FILE_EXT=".$COMPRESS_FORMAT"
-     if [ "$FILE_EXT" = ".xz" ]; then
-        FILE_EXT=".tar$FILE_EXT"
-     fi
-     echo "file_ext=$FILE_EXT" >> "$GITHUB_OUTPUT"
-     OUTPUT_PATH="$OUTPUT_PATH$FILE_EXT"
-fi
 if [ "$COMPRESS_FORMAT" = "7z" ]; then
+    OUTPUT_PATH="$OUTPUT_PATH.7z"
     echo "Compressing with 7z"
     7z a "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
 elif [ "$COMPRESS_FORMAT" = "xz" ]; then
+    OUTPUT_PATH="$OUTPUT_PATH.tar.xz"
+    echo "file_ext=.tar.xz" >> "$GITHUB_OUTPUT"
     echo "Compressing with tar xz"
     if ! (tar -cP -I 'xz -9 -T0' -f "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name"); then
         echo "Out of memory? Trying again with single threads..."
