@@ -32,7 +32,7 @@ If ((Test-Path -Path "pri") -Eq $true -And (Test-Path -Path "xml") -Eq $true) {
         $i = 0
         $Processes = ForEach ($Item in $PriItem) {
             Start-Process -PassThru -WindowStyle Hidden makepri.exe -Args "dump /if $($Item | Resolve-Path -Relative) /o /es .\pri\resources.pri /of .\priinfo\$($Item.Name).xml /dt detailed"
-            $i++
+            ++$i
             $Completed = ($i / $PriItem.count) * 100
             Write-Progress -Activity "Dumping resources" -Status "Dumping $($Item.Name):" -PercentComplete $Completed
         }
