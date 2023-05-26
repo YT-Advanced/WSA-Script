@@ -632,7 +632,7 @@ echo -e "\nFinishing building...."
 mkdir -p "$OUTPUT_DIR"
 OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name"
 mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
-if [ "$COMPRESS_FORMAT" = "7z" || -z "$COMPRESS_FORMAT"]; then
+if [ "$COMPRESS_FORMAT" = "7z" || -z "$COMPRESS_FORMAT" ]; then
     OUTPUT_PATH="$OUTPUT_PATH.7z"
     echo "Compressing with 7z"
     7z a "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
