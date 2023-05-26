@@ -209,8 +209,7 @@ while [[ $# -gt 0 ]]; do
         --arch              ) ARCH="$2"; shift 2 ;;
         --release-type      ) RELEASE_TYPE="$2"; shift 2 ;;
         --gapps-brand       ) GAPPS_BRAND="$2"; shift 2 ;;
-        --nofix-props       ) 
-        ="yes"; shift ;;
+#        --nofix-props       ) NOFIX_PROPS="yes"; shift ;;
         --root-sol          ) ROOT_SOL="$2"; shift 2 ;;
         --compress-format   ) COMPRESS_FORMAT="$2"; shift 2 ;;
         --remove-amazon     ) REMOVE_AMAZON="yes"; shift ;;
@@ -620,9 +619,9 @@ else
     name2=-MindTheGapps-${ANDROID_API_MAP[$ANDROID_API]}
 fi
 artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}
-if [ "$NOFIX_PROPS" = "yes" ]; then
-    artifact_name+="-NoFixProps"
-fi
+#if [ "$NOFIX_PROPS" = "yes" ]; then
+#    artifact_name+="-NoFixProps"
+#fi
 if [ "$REMOVE_AMAZON" = "yes" ]; then
     artifact_name+="-RemovedAmazon"
 fi
@@ -632,7 +631,7 @@ echo -e "\nFinishing building...."
 mkdir -p "$OUTPUT_DIR"
 OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name"
 mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
-if [ "$COMPRESS_FORMAT" = "7z" || -z "$COMPRESS_FORMAT" ]; then
+if [ "$COMPRESS_FORMAT" = "7z" ]; then
     OUTPUT_PATH="$OUTPUT_PATH.7z"
     echo "Compressing with 7z"
     7z a "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
