@@ -344,9 +344,6 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     elif [ "$ARCH" = "arm64" ]; then
         mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
     fi
-    KSU_APP_DIR="../common/system/data-app/KernelSU"
-    mkdir -p "$KSU_APP_DIR" || abort
-    cp -f "$KERNELSU_APK_PATH" "$KSU_APP_DIR/" || abort
     echo -e "done\n"
 fi
 
@@ -501,7 +498,15 @@ echo -e "Add extra packages done\n"
 
 if [[ "$ROOT_SOL" == "kernelsu" ]]; then
     echo "Add auto-install for KernelSU Manager"
+    # Copy APK
     DAT_APP="$SYSTEM_MNT/data-app"
+    mkdir "$DAT_APP"
+    cp "$KERNELSU_APK_PATH" "$DAT_APP/"
+    sudo chmod 0755 "$DAT_APP/"
+    sudo chmod 0644 "$DAT_APP/KernelSU.apk"
+    sudo find "$DAT_APP/" -exec chown root:root {} \;
+    sudo find "$DAT_APP/" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
+    # Setup script
     KSU_PRE="$SYSTEM_MNT/etc/preinstall.sh"
     sudo tee -a "$KSU_PRE" <<EOF >/dev/null || abort
 #!/system/bin/sh
@@ -529,10 +534,6 @@ EOF
 on property:sys.boot_completed=1
     exec u:r:init:s0 -- /system/bin/logwrapper /system/bin/sh /system/etc/preinstall.sh
 EOF
-    sudo chmod 0755 "$DAT_APP/"
-    sudo chmod 0644 "$DAT_APP/KernelSU.apk"
-    sudo find "$DAT_APP/" -exec chown root:root {} \;
-    sudo find "$DAT_APP/" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     echo -e "Add auto-install for KernelSU Manager Done\n"
 fi
 
