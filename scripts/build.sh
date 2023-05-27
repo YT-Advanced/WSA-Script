@@ -494,13 +494,9 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
 #!/system/bin/sh
 umask 0777
 wait 30
-first_run=$(getprop persist.system.first_run)
-# shellcheck disable=SC2154
-if [ ${first_run} == "true" ]; then
-   pm install -g "/system/user_app/KernelSU.apk"
-   setprop persist.system.first_run false
-else
-   echo "Not first run"
+if [ ! -e /data/system/notfirstrun ]; then	
+	/system/bin/pm install /system/user_app/KernelSU.apk
+	touch /data/system/notfirstrun
 fi
 EOF
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
