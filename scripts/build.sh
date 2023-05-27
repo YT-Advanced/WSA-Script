@@ -518,7 +518,7 @@ done
 # Check installed
 if [ ! -e "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)" ]; then
         # Do install
-	pm install -r /system/data-app/KernelSU.apk
+	pm install -i android -r /system/data-app/KernelSU.apk
 	# Launch app
 	am start -n me.weishu.kernelsu/.ui.MainActivity
 	# Place completed file
