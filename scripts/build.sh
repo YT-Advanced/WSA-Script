@@ -528,16 +528,18 @@ EOF
     sudo chmod 0755 "$KSU_PRE"
     sudo chown root:root "$KSU_PRE"
     sudo setfattr -n security.selinux -v "u:object_r:system_file:s0" "$KSU_PRE" || abort
-    sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
-service preinstall /system/bin/sh /system/etc/preinstall.sh
-    user root
-    group root
-    seclabel u:r:init:s0
-    disabled
-    oneshot
+    # Setup init
+    KSU_INIT="$VENDOR_MNT/etc/init/kernelsu.rc"
+    sudo tee -a "$KSU_INIT" <<EOF >/dev/null
+service preinstall /system/etc/preinstall.sh
+    user system
+    group system
 on property:sys.boot_completed=1
     start preinstall
 EOF
+    sudo chmod 0644 "$KSU_INIT"
+    sudo chown root:root "$KSU_INIT"
+    sudo setfattr -n security.selinux -v "u:object_r:vendor_configs_file:s0" "$KSU_INIT" || abort
     echo -e "Add auto-install for KernelSU Manager Done\n"
 fi
 
