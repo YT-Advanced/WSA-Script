@@ -515,15 +515,13 @@ umask 0777
 while [ ! -d "/storage/emulated/0/Android" ]; do
     sleep 3
 done
-touch "/storage/emulated/0/Download/.PERMISSION_TEST"
-while [ ! -f "/storage/emulated/0/Download/.PERMISSION_TEST" ]; do
-    touch /storage/emulated/0/Download/.PERMISSION_TEST
-    sleep 3
-done
 # Check installed
 if [ ! -e "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)" ]; then
+        # Do install
 	pm install -r /system/data-app/KernelSU.apk
+	# Launch app
 	am start -n me.weishu.kernelsu/.ui.MainActivity
+	# Place completed file
 	touch "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)"
 fi
 EOF
