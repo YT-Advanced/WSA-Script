@@ -509,14 +509,16 @@ if [ ! -e /data/system/ksu_completed_\$(getprop ro.build.date.utc) ]; then
 	touch "/data/system/ksu_completed_\$(grep_get_prop ro.build.date.utc)"
 fi
 EOF
-    chmod 0755 "$SYSTEM_MNT/etc/preinstall.sh"
+    sudo chmod 0755 "$SYSTEM_MNT/etc/preinstall.sh"
+    sudo chown root:root "$SYSTEM_MNT/etc/preinstall.sh"
+    sudo setfattr -n security.selinux -v "u:object_r:system_file:s0"
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
 on property:sys.boot_completed=1
     exec u:r:init:s0 -- /system/bin/logwrapper /system/bin/sh /system/etc/preinstall.sh
 EOF
-    sudo find "$SYSTEM_MNT/data-app" -type d -exec chmod 0755 {} \;
-    sudo find "$SYSTEM_MNT/data-app" -type f -exec chmod 0644 {} \;
-    sudo find "$SYSTEM_MNT/data-app" -type f -exec chown root:root {} \;
+    sudo chmod 0755 "$SYSTEM_MNT/data-app/"
+    sudo chmod 0644 "$SYSTEM_MNT/data-app/KernelSU.apk"
+    sudo find "$SYSTEM_MNT/data-app/" -exec chown root:root {} \;
     echo -e "Add access for KernelSU APK Done\n"
 fi
 
