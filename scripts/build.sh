@@ -493,6 +493,7 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
     sudo tee -a "$SYSTEM_MNT/etc/preinstall.sh" <<EOF >/dev/null || abort
 #!/system/bin/sh
 umask 0777
+# Check Boot completed
 while [ ! -d "/storage/emulated/0/Android" ]; do
     sleep 3
 done
@@ -501,9 +502,11 @@ while [ ! -f "/storage/emulated/0/Download/.PERMISSION_TEST" ]; do
     touch /storage/emulated/0/Download/.PERMISSION_TEST
     sleep 3
 done
-if [ ! -e /data/system/ksu_completed ]; then	
-	/system/bin/pm install /system/data-app/KernelSU.apk
-	touch /data/system/ksu_completed
+# Check installed
+if [ ! -e /data/system/ksu_completed_$(grep_get_prop ro.build.date.utc) ]; then	
+	pm install -r /system/data-app/KernelSU.apk
+	am start -p me.weishu.kernelsu
+	touch "/data/system/ksu_completed_$(grep_get_prop ro.build.date.utc)"
 fi
 EOF
     chmod 0755 "$SYSTEM_MNT/bin/preinstall.sh"
