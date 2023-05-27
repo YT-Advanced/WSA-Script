@@ -511,7 +511,7 @@ if [ ! -e /data/system/ksu_completed_\$(getprop ro.build.date.utc) ]; then
 fi
 EOF
     sudo chmod 0755 "$KSU_PRE"
-    sudo chown root:root "$KEU_PRE"
+    sudo chown root:root "$KSU_PRE"
     sudo setfattr -n security.selinux -v "u:object_r:system_file:s0" "$KSU_PRE" || abort
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
 on property:sys.boot_completed=1
