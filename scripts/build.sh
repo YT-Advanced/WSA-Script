@@ -530,7 +530,7 @@ EOF
     sudo setfattr -n security.selinux -v "u:object_r:system_file:s0" "$KSU_PRE" || abort
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
 on property:sys.boot_completed=1
-    exec u:r:init:s0 -- /system/bin/logwrapper /system/bin/sh /system/etc/preinstall.sh
+    exec - system system -- /system/bin/logwrapper /system/etc/preinstall.sh
 EOF
     echo -e "Add auto-install for KernelSU Manager Done\n"
 fi
