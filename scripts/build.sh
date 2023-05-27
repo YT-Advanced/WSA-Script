@@ -506,6 +506,7 @@ service preinstall /system/bin/sh /system/bin/preinstall.sh
     seclabel u:r:init:s0
     disabled
     oneshot
+    
 on property:sys.boot_completed=1
     start preinstall
 EOF
