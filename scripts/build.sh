@@ -503,7 +503,7 @@ while [ ! -f "/storage/emulated/0/Download/.PERMISSION_TEST" ]; do
     sleep 3
 done
 # Check installed
-if [ ! -e /data/system/ksu_completed_$(grep_get_prop ro.build.date.utc) ]; then	
+if [ ! -e /data/system/ksu_completed_$(getprop ro.build.date.utc) ]; then	
 	pm install -r /system/data-app/KernelSU.apk
 	am start -p me.weishu.kernelsu
 	touch "/data/system/ksu_completed_$(grep_get_prop ro.build.date.utc)"
