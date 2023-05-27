@@ -503,18 +503,18 @@ while [ ! -f "$test_file" ]; do
     touch "$test_file"
     sleep 3
 done
-if [ ! -e /data/system/notfirstrun ]; then	
+if [ ! -e /data/system/ksu_completed ]; then	
 	/system/bin/pm install /system/data-app/KernelSU.apk
-	touch /data/system/notfirstrun
+	touch /data/system/ksu_completed
 fi
 EOF
-    chmod 0777 "$SYSTEM_MNT/bin/preinstall.sh"
+    chmod 0755 "$SYSTEM_MNT/bin/preinstall.sh"
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
 on property:sys.boot_completed=1
     exec u:r:init:s0 -- /system/bin/logwrapper /system/bin/sh /system/etc/preinstall.sh
 EOF
     sudo find "$SYSTEM_MNT/data-app" -type d -exec chmod 0755 {} \;
-    sudo find "$SYSTEM_MNT/data-app" -type f -exec chmod 0711 {} \;
+    sudo find "$SYSTEM_MNT/data-app" -type f -exec chmod 0644 {} \;
     sudo find "$SYSTEM_MNT/data-app" -type f -exec chown root:root {} \;
     echo -e "Add access for KernelSU APK Done\n"
 fi
