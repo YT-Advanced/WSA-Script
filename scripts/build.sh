@@ -344,16 +344,9 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     elif [ "$ARCH" = "arm64" ]; then
         mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
     fi
-    KSU_APP_DIR="../common/system/priv-app/KernelSU"
+    KSU_APP_DIR="../common/system/user_app/KernelSU"
     mkdir "$KSU_APP_DIR"
     cp -f "$KERNELSU_APK_PATH" "$KSU_APP_DIR/"
-    unzip "$KERNELSU_APK_PATH" "lib/*/lib*.so" -d "$KSU_APP_DIR/"
-    mv -v "$KSU_APP_DIR/lib/arm64-v8a/" "$KSU_APP_DIR/lib/arm64/"
-    if [[ "$ARCH" == "arm64" ]]; then
-        rm -rf "$KSU_APP_DIR/lib/x86_64/"
-    else
-        rm -rf "$KSU_APP_DIR/lib/arm64/"
-    fi
     echo -e "done\n"
 fi
 
@@ -492,10 +485,34 @@ done
 
     echo -e "Integrate Magisk done\n"
 elif [ "$ROOT_SOL" = "kernelsu" ]; then
-    echo "Integrate KernelSU"
+    echo "Copy KernelSU kernel"
     mv "$WORK_DIR/wsa/$ARCH/Tools/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel_origin"
     cp "$WORK_DIR/kernelsu/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel"
-    echo -e "Integrate KernelSU done\n"
+    echo "Copy KernelSU kernel done\n"
+    echo "Copy KernelSU APK"
+    sudo tee -a "$SYSTEM_MNT/bin/preinstall.sh" <<EOF >/dev/null || abort
+#!/system/bin/sh
+umask 0777
+wait 30
+first_run=$(getprop persist.system.first_run)
+if [ ${first_run} == "true" ]; then
+   pm install -g "/system/user_app/KernelSU.apk"
+   setprop persist.system.first_run false
+else
+   echo "Not first run"
+fi
+EOF
+    sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
+service preinstall /system/bin/sh /system/bin/preinstall.sh
+    user root
+    group root
+    seclabel u:r:init:s0
+    disabled
+    oneshot
+on property:sys.boot_completed=1
+    start preinstall
+EOF    
+    echo -e "Copy KernelSU APK Done\n"
 fi
 
 echo "Add extra packages"
