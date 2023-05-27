@@ -521,10 +521,10 @@ while [ ! -f "/storage/emulated/0/Download/.PERMISSION_TEST" ]; do
     sleep 3
 done
 # Check installed
-if [ ! -e "/data/system/ksu_completed_\$(getprop ro.build.date.utc)" ]; then
+if [ ! -e "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)" ]; then
 	pm install -r /system/data-app/KernelSU.apk
-	am start -p me.weishu.kernelsu
-	touch "/data/system/ksu_completed_\$(getprop ro.build.date.utc)"
+	am start -n me.weishu.kernelsu/.ui.MainActivity
+	touch "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)"
 fi
 EOF
     sudo chmod 0755 "$KSU_PRE"
