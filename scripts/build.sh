@@ -344,7 +344,7 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
 #    elif [ "$ARCH" = "arm64" ]; then
 #        mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
 #    fi
-    KSU_APP_DIR="../common/system/priv-app/KernelSU"
+    KSU_APP_DIR="../common/system/data-app/KernelSU"
     mkdir -p "$KSU_APP_DIR" || abort
     cp -f "$KERNELSU_APK_PATH" "$KSU_APP_DIR/" || abort
     echo -e "done\n"
@@ -482,8 +482,8 @@ for i in "$NEW_INITRC_DIR"/*; do
         sudo awk -i inplace '{if($0 ~ /service zygote /){print $0;print "    exec u:r:magisk:s0 0 0 -- /debug_ramdisk/magisk --zygote-restart";a="";next}} 1' "$i"
     fi
 done
-
     echo -e "Integrate Magisk done\n"
+
 elif [ "$ROOT_SOL" = "kernelsu" ]; then
     echo "Copy KernelSU kernel"
     mv "$WORK_DIR/wsa/$ARCH/Tools/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel_origin"
@@ -493,9 +493,17 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
     sudo tee -a "$SYSTEM_MNT/etc/preinstall.sh" <<EOF >/dev/null || abort
 #!/system/bin/sh
 umask 0777
-wait 30
+while [ ! -d "/storage/emulated/0/Android" ]; do
+    sleep 3
+done
+local test_file="/storage/emulated/0/Download/.PERMISSION_TEST"
+touch "$test_file"
+while [ ! -f "$test_file" ]; do
+    touch "$test_file"
+    sleep 3
+done
 if [ ! -e /data/system/notfirstrun ]; then	
-	/system/bin/pm install /system/priv-app/KernelSU.apk
+	/system/bin/pm install /system/data-app/KernelSU.apk
 	touch /data/system/notfirstrun
 fi
 EOF
@@ -504,6 +512,9 @@ EOF
 on property:sys.boot_completed=1
     exec u:r:init:s0 -- /system/bin/logwrapper /system/bin/sh /system/etc/preinstall.sh
 EOF
+    sudo find "$SYSTEM_MNT/data-app" -type d -exec chmod 0755 {} \;
+    sudo find "$SYSTEM_MNT/data-app" -type f -exec chmod 0711 {} \;
+    sudo find "$SYSTEM_MNT/data-app" -type f -exec chown root:root {} \;
     echo -e "Add access for KernelSU APK Done\n"
 fi
 
