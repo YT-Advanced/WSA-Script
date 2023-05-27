@@ -490,7 +490,7 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
     cp "$WORK_DIR/kernelsu/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel"
     echo -e "Copy KernelSU kernel done\n"
     echo "Copy KernelSU APK"
-    sudo tee -a "$SYSTEM_MNT/bin/preinstall.sh" <<EOF >/dev/null || abort
+    sudo tee -a "$SYSTEM_MNT/etc/preinstall.sh" <<EOF >/dev/null || abort
 #!/system/bin/sh
 umask 0777
 wait 30
@@ -500,15 +500,8 @@ if [ ! -e /data/system/notfirstrun ]; then
 fi
 EOF
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
-service preinstall /system/bin/sh /system/bin/preinstall.sh
-    user root
-    group root
-    seclabel u:r:init:s0
-    disabled
-    oneshot
-    
 on property:sys.boot_completed=1
-    start preinstall
+    exec u:r:init:s0 -- /system/bin/logwrapper /system/bin/sh /system/etc/preinstall.sh
 EOF
     echo -e "Copy KernelSU APK Done\n"
 fi
