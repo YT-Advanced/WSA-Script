@@ -503,13 +503,13 @@ while [ ! -f "/storage/emulated/0/Download/.PERMISSION_TEST" ]; do
     sleep 3
 done
 # Check installed
-if [ ! -e /data/system/ksu_completed_$(getprop ro.build.date.utc) ]; then	
+if [ ! -e /data/system/ksu_completed_\$(getprop ro.build.date.utc) ]; then	
 	pm install -r /system/data-app/KernelSU.apk
 	am start -p me.weishu.kernelsu
-	touch "/data/system/ksu_completed_$(grep_get_prop ro.build.date.utc)"
+	touch "/data/system/ksu_completed_\$(grep_get_prop ro.build.date.utc)"
 fi
 EOF
-    chmod 0755 "$SYSTEM_MNT/bin/preinstall.sh"
+    chmod 0755 "$SYSTEM_MNT/etc/preinstall.sh"
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
 on property:sys.boot_completed=1
     exec u:r:init:s0 -- /system/bin/logwrapper /system/bin/sh /system/etc/preinstall.sh
