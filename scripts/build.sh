@@ -500,8 +500,8 @@ if [[ "$ROOT_SOL" == "kernelsu" ]]; then
     echo "Add auto-install for KernelSU Manager"
     # Copy APK
     DAT_APP="$SYSTEM_MNT/data-app"
-    mkdir "$DAT_APP"
-    cp "$KERNELSU_APK_PATH" "$DAT_APP/"
+    sudo mkdir "$DAT_APP"
+    sudo cp "$KERNELSU_APK_PATH" "$DAT_APP/"
     sudo chmod 0755 "$DAT_APP/"
     sudo chmod 0644 "$DAT_APP/KernelSU.apk"
     sudo find "$DAT_APP/" -exec chown root:root {} \;
