@@ -496,6 +496,7 @@ umask 0777
 while [ ! -d "/storage/emulated/0/Android" ]; do
     sleep 3
 done
+# shellcheck disable=SC2154
 local test_file="/storage/emulated/0/Download/.PERMISSION_TEST"
 touch "$test_file"
 while [ ! -f "$test_file" ]; do
