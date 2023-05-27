@@ -488,13 +488,14 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
     echo "Copy KernelSU kernel"
     mv "$WORK_DIR/wsa/$ARCH/Tools/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel_origin"
     cp "$WORK_DIR/kernelsu/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel"
-    echo "Copy KernelSU kernel done\n"
+    echo -e "Copy KernelSU kernel done\n"
     echo "Copy KernelSU APK"
     sudo tee -a "$SYSTEM_MNT/bin/preinstall.sh" <<EOF >/dev/null || abort
 #!/system/bin/sh
 umask 0777
 wait 30
 first_run=$(getprop persist.system.first_run)
+# shellcheck disable=SC2154
 if [ ${first_run} == "true" ]; then
    pm install -g "/system/user_app/KernelSU.apk"
    setprop persist.system.first_run false
@@ -511,7 +512,7 @@ service preinstall /system/bin/sh /system/bin/preinstall.sh
     oneshot
 on property:sys.boot_completed=1
     start preinstall
-EOF    
+EOF
     echo -e "Copy KernelSU APK Done\n"
 fi
 
