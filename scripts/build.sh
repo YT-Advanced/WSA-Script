@@ -339,14 +339,14 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     if ! unzip "$KERNELSU_PATH" -d "$WORK_DIR/kernelsu"; then
         abort "Unzip KernelSU failed, package is corrupted?"
     fi
-    if [ "$ARCH" = "x64" ]; then
-        mv "$WORK_DIR/kernelsu/bzImage" "$WORK_DIR/kernelsu/kernel"
-    elif [ "$ARCH" = "arm64" ]; then
-        mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
-    fi
-    KSU_APP_DIR="../common/system/user_app/KernelSU"
+#    if [ "$ARCH" = "x64" ]; then
+#        mv "$WORK_DIR/kernelsu/bzImage" "$WORK_DIR/kernelsu/kernel"
+#    elif [ "$ARCH" = "arm64" ]; then
+#        mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
+#    fi
+    KSU_APP_DIR="../common/system/priv-app/KernelSU"
     mkdir -p "$KSU_APP_DIR" || abort
-    cp -f "$KERNELSU_APK_PATH" "$KSU_APP_DIR/"
+    cp -f "$KERNELSU_APK_PATH" "$KSU_APP_DIR/" || abort
     echo -e "done\n"
 fi
 
@@ -489,21 +489,22 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
     mv "$WORK_DIR/wsa/$ARCH/Tools/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel_origin"
     cp "$WORK_DIR/kernelsu/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel"
     echo -e "Copy KernelSU kernel done\n"
-    echo "Copy KernelSU APK"
+    echo "Add access for KernelSU APK"
     sudo tee -a "$SYSTEM_MNT/etc/preinstall.sh" <<EOF >/dev/null || abort
 #!/system/bin/sh
 umask 0777
 wait 30
 if [ ! -e /data/system/notfirstrun ]; then	
-	/system/bin/pm install /system/user_app/KernelSU.apk
+	/system/bin/pm install /system/priv-app/KernelSU.apk
 	touch /data/system/notfirstrun
 fi
 EOF
+    chmod 0777 "$SYSTEM_MNT/bin/preinstall.sh"
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
 on property:sys.boot_completed=1
     exec u:r:init:s0 -- /system/bin/logwrapper /system/bin/sh /system/etc/preinstall.sh
 EOF
-    echo -e "Copy KernelSU APK Done\n"
+    echo -e "Add access for KernelSU APK Done\n"
 fi
 
 echo "Add extra packages"
