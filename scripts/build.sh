@@ -489,8 +489,9 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
     mv "$WORK_DIR/wsa/$ARCH/Tools/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel_origin"
     cp "$WORK_DIR/kernelsu/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel"
     echo -e "Copy KernelSU kernel done\n"
-    echo "Add access for KernelSU APK"
-    sudo tee -a "$SYSTEM_MNT/etc/preinstall.sh" <<EOF >/dev/null || abort
+    echo "Add auto-install for KernelSU Manager"
+    KSU_PRE="$SYSTEM_MNT/etc/preinstall.sh"
+    sudo tee -a "$KSU_PRE" <<EOF >/dev/null || abort
 #!/system/bin/sh
 umask 0777
 # Check Boot completed
@@ -506,12 +507,12 @@ done
 if [ ! -e /data/system/ksu_completed_\$(getprop ro.build.date.utc) ]; then	
 	pm install -r /system/data-app/KernelSU.apk
 	am start -p me.weishu.kernelsu
-	touch "/data/system/ksu_completed_\$(grep_get_prop ro.build.date.utc)"
+	touch "/data/system/ksu_completed_\$(getprop ro.build.date.utc)"
 fi
 EOF
-    sudo chmod 0755 "$SYSTEM_MNT/etc/preinstall.sh"
-    sudo chown root:root "$SYSTEM_MNT/etc/preinstall.sh"
-    sudo setfattr -n security.selinux -v "u:object_r:system_file:s0"
+    sudo chmod 0755 "$KSU_PRE"
+    sudo chown root:root "$KEU_PRE"
+    sudo setfattr -n security.selinux -v "u:object_r:system_file:s0" "$KSU_PRE" || abort
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
 on property:sys.boot_completed=1
     exec u:r:init:s0 -- /system/bin/logwrapper /system/bin/sh /system/etc/preinstall.sh
