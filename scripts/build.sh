@@ -339,11 +339,11 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     if ! unzip "$KERNELSU_PATH" -d "$WORK_DIR/kernelsu"; then
         abort "Unzip KernelSU failed, package is corrupted?"
     fi
-#    if [ "$ARCH" = "x64" ]; then
-#        mv "$WORK_DIR/kernelsu/bzImage" "$WORK_DIR/kernelsu/kernel"
-#    elif [ "$ARCH" = "arm64" ]; then
-#        mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
-#    fi
+    if [ "$ARCH" = "x64" ]; then
+        mv "$WORK_DIR/kernelsu/bzImage" "$WORK_DIR/kernelsu/kernel"
+    elif [ "$ARCH" = "arm64" ]; then
+        mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
+    fi
     KSU_APP_DIR="../common/system/data-app/KernelSU"
     mkdir -p "$KSU_APP_DIR" || abort
     cp -f "$KERNELSU_APK_PATH" "$KSU_APP_DIR/" || abort
