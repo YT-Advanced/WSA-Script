@@ -504,7 +504,7 @@ while [ ! -f "/storage/emulated/0/Download/.PERMISSION_TEST" ]; do
     sleep 3
 done
 # Check installed
-if [ ! -e /data/system/ksu_completed_\$(getprop ro.build.date.utc) ]; then	
+if [ ! -e "/data/system/ksu_completed_\$(getprop ro.build.date.utc)" ]; then
 	pm install -r /system/data-app/KernelSU.apk
 	am start -p me.weishu.kernelsu
 	touch "/data/system/ksu_completed_\$(getprop ro.build.date.utc)"
@@ -520,6 +520,7 @@ EOF
     sudo chmod 0755 "$SYSTEM_MNT/data-app/"
     sudo chmod 0644 "$SYSTEM_MNT/data-app/KernelSU.apk"
     sudo find "$SYSTEM_MNT/data-app/" -exec chown root:root {} \;
+    sudo find "$SYSTEM_MNT/data-app/" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     echo -e "Add access for KernelSU APK Done\n"
 fi
 
