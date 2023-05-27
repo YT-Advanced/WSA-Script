@@ -498,6 +498,7 @@ while [ ! -d "/storage/emulated/0/Android" ]; do
 done
 # shellcheck disable=SC2154
 local test_file="/storage/emulated/0/Download/.PERMISSION_TEST"
+# shellcheck disable=SC2154
 touch "$test_file"
 while [ ! -f "$test_file" ]; do
     touch "$test_file"
