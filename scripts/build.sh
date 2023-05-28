@@ -511,39 +511,40 @@ if [[ "$ROOT_SOL" == "kernelsu" ]]; then
     sudo tee -a "$KSU_PRE" <<EOF >/dev/null || abort
 #!/system/bin/sh
 umask 0777
-# Check Boot completed
+echo "Checking boot completed"
 while [ ! -d "/storage/emulated/0/Android" ]; do
-    sleep 3
+    echo "Failed, try again."
+    sleep 1
 done
-# Check installed
+echo "Checking past install"
 if [ ! -e "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)" ]; then
-    # Do install
+    echo "Installing KernelSU APK"
     pm install -i android -r /system/data-app/KernelSU.apk
-    # Launch app
+    echo "Launching KernelSU App"
     am start -n me.weishu.kernelsu/.ui.MainActivity
-    # Place completed file
+    echo "Placing completed file"
     touch "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)"
+    echo "Done!"
+else
+    echo "KernelSU is installed this WSA build."
 fi
 EOF
     sudo chmod 0755 "$KSU_PRE"
     sudo chown root:root "$KSU_PRE"
     sudo setfattr -n security.selinux -v "u:object_r:system_file:s0" "$KSU_PRE" || abort
     # Setup init
-    KSU_INIT="$VENDOR_MNT/etc/init/kernelsu.rc"
+    KSU_INIT="$SYSTEM_MNT/etc/init/hw/init.rc"
     sudo tee "$KSU_INIT" <<EOF >/dev/null
-service ksuinstall /system/etc/ksuinstall.sh
-    class core
+service ksuinstall logwrapper /system/etc/ksuinstall.sh
     user shell
     group shell
+    class late_start
     seclabel u:r:shell:s0
-EOF
-    sudo chmod 0644 "$KSU_INIT"
-    sudo chown root:root "$KSU_INIT"
-    sudo setfattr -n security.selinux -v "u:object_r:vendor_configs_file:s0" "$KSU_INIT" || abort
-    sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
-import /vendor/etc/init/kernelsu.rc
-on init
+    disabled
+    oneshot
+on property:sys.boot_completed=1
     start ksuinstall
+    exec - shell shell -- logwrapper /system/etc/ksuinstall.sh
 EOF
     echo -e "Add auto-install for KernelSU Manager Done\n"
 fi
