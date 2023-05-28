@@ -518,16 +518,17 @@ if [[ "$ROOT_SOL" == "kernelsu" ]]; then
     sudo tee -a "$KSU_PRE" <<EOF >/dev/null || abort
 #!/system/bin/sh
 umask 0777
+echo "\nKernelSU Install Manager\n"
 echo "Checking boot completed"
 while [ ! -d "/storage/emulated/0/Android" ]; do
     echo "Failed, try again."
     sleep 5
 done
+echo "Device is booted."
 echo "Checking past install"
 if [ ! -e "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)" ]; then
     echo "Installing KernelSU APK"
     pm install -i android -r /system/data-app/KernelSU.apk
-    appops set me.weishu.kernelsu ACCESS_RESTRICTED_SETTINGS allow
     echo "Launching KernelSU App"
     am start -n me.weishu.kernelsu/.ui.MainActivity
     echo "Placing completed file"
@@ -543,7 +544,7 @@ EOF
     # Setup init
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
 on property:sys.boot_completed=1
-    exec u:r:init:s0 -- /system/bin/logwrapper /system/bin/sh /system/bin/ksuinstall
+    exec u:r:init:s0 1700 1700 -- /system/bin/logwrapper /system/bin/sh /system/bin/ksuinstall
 EOF
     echo -e "Add auto-install for KernelSU Manager Done\n"
 fi
