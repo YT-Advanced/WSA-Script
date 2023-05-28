@@ -82,16 +82,8 @@ mk_overlayfs() {
     local lowerdir="$1"
     local upperdir workdir merged context own
     merged="$3"
-    case "$2" in
-        system)
-            upperdir="$WORK_DIR/upper/$2"
-            workdir="$WORK_DIR/worker/$2"
-            ;;
-        *)
-            upperdir="$WORK_DIR/upper/system/$2"
-            workdir="$WORK_DIR/worker/system/$2"
-            ;;
-    esac
+    upperdir="$WORK_DIR/upper/$2"
+    workdir="$WORK_DIR/worker/$2"
     echo "mk_overlayfs: label $2
         lowerdir=$lowerdir
         upperdir=$upperdir
