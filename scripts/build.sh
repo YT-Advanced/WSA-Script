@@ -512,10 +512,9 @@ if [[ "$ROOT_SOL" == "kernelsu" ]]; then
     sudo find "$DAT_APP/" -exec chown root:root {} \;
     sudo find "$DAT_APP/" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     # Setup script
-    KSU_PRE="$SYSTEM_MNT/bin/ksuinstall"
+    KSU_PRE="$SYSTEM_MNT/bin/ksuinstall.sh"
     sudo tee -a "$KSU_PRE" <<EOF >/dev/null || abort
 #!/system/bin/sh
-umask 0777
 echo "\nKernelSU Install Manager\n"
 echo "Checking boot completed"
 while [ ! -d "/storage/emulated/0/Android" ]; do
@@ -540,10 +539,18 @@ EOF
     sudo chown root:root "$KSU_PRE"
     sudo setfattr -n security.selinux -v "u:object_r:init:s0" "$KSU_PRE" || abort
     # Setup init
-    sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
+    sudo tee -a "$SYSTEM_MNT/init.environ.rc" <<EOF >/dev/null
 
+service ksuins /system/bin/sh /system/bin/ksuinstall.sh
+    user root
+    group root
+    seclabel u:r:init:s0
+    disabled
+    oneshot
+    
 on property:sys.boot_completed=1
-    exec - system system -- /system/bin/sh /system/bin/ksuinstall
+    start ksuins
+    exec - system system -- /system/bin/sh /system/bin/ksuinstall.sh
 EOF
     echo -e "Add auto-install for KernelSU Manager Done\n"
 fi
