@@ -540,9 +540,17 @@ EOF
     sudo chown root:root "$KSU_PRE"
     sudo setfattr -n security.selinux -v "u:object_r:system_file:s0" "$KSU_PRE" || abort
     # Setup init
-    sudo tee "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
+    sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
+service ksuinstall logwrapper sh /system/bin/ksuinstall
+    user shell
+    group shell
+    class late_start
+    seclabel u:r:shell:s0
+    disabled
+    oneshot
 on property:sys.boot_completed=1
-    exec u:r:init:s0 -- /system/bin/logwrapper /system/bin/sh /system/bin/ksuinstall
+    start ksuinstall
+    exec - system system -- logwrapper sh /system/bin/ksuinstall
 EOF
     echo -e "Add auto-install for KernelSU Manager Done\n"
 fi
