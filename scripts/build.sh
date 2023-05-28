@@ -488,13 +488,6 @@ for i in "$NEW_INITRC_DIR"/*; do
 done
     echo -e "Integrate Magisk done\n"
 
-elif [ "$ROOT_SOL" = "kernelsu" ]; then
-    echo "Copy KernelSU kernel"
-    mv "$WORK_DIR/wsa/$ARCH/Tools/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel_origin"
-    cp "$WORK_DIR/kernelsu/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel"
-    echo -e "Copy KernelSU kernel done\n"
-fi
-
 echo "Add extra packages"
 sudo cp -r "../common/system/"* "$SYSTEM_MNT" || abort
 find "../common/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/priv-app/placeholder" -type d -exec chmod 0755 {} \;
@@ -504,6 +497,10 @@ find "../common/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs
 echo -e "Add extra packages done\n"
 
 if [[ "$ROOT_SOL" == "kernelsu" ]]; then
+    echo "Copy KernelSU kernel"
+    mv "$WORK_DIR/wsa/$ARCH/Tools/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel_origin"
+    cp "$WORK_DIR/kernelsu/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel"
+    echo -e "Copy KernelSU kernel done\n"
     echo "Add auto-install for KernelSU Manager"
     # Copy APK
     DAT_APP="$SYSTEM_MNT/data-app"
@@ -540,7 +537,7 @@ fi
 EOF
     sudo chmod 0755 "$KSU_PRE"
     sudo chown root:root "$KSU_PRE"
-    sudo setfattr -n security.selinux -v "u:object_r:system_file:s0" "$KSU_PRE" || abort
+    sudo setfattr -n security.selinux -v "u:object_r:init:s0" "$KSU_PRE" || abort
     # Setup init
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
 on property:sys.boot_completed=1
