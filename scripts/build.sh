@@ -487,6 +487,7 @@ for i in "$NEW_INITRC_DIR"/*; do
     fi
 done
     echo -e "Integrate Magisk done\n"
+fi
 
 echo "Add extra packages"
 sudo cp -r "../common/system/"* "$SYSTEM_MNT" || abort
