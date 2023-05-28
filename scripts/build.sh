@@ -527,6 +527,7 @@ echo "Checking past install"
 if [ ! -e "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)" ]; then
     echo "Installing KernelSU APK"
     pm install -i android -r /system/data-app/KernelSU.apk
+    appops set me.weishu.kernelsu ACCESS_RESTRICTED_SETTINGS allow
     echo "Launching KernelSU App"
     am start -n me.weishu.kernelsu/.ui.MainActivity
     echo "Placing completed file"
@@ -541,16 +542,8 @@ EOF
     sudo setfattr -n security.selinux -v "u:object_r:system_file:s0" "$KSU_PRE" || abort
     # Setup init
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
-service ksuinstall logwrapper sh /system/bin/ksuinstall
-    user shell
-    group shell
-    class late_start
-    seclabel u:r:shell:s0
-    disabled
-    oneshot
 on property:sys.boot_completed=1
-    start ksuinstall
-    exec - system system -- logwrapper sh /system/bin/ksuinstall
+    exec u:r:init:s0 -- /system/bin/logwrapper /system/bin/sh /system/bin/ksuinstall
 EOF
     echo -e "Add auto-install for KernelSU Manager Done\n"
 fi
