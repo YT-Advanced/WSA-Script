@@ -539,7 +539,7 @@ EOF
     sudo chown root:root "$KSU_PRE"
     sudo setfattr -n security.selinux -v "u:object_r:init:s0" "$KSU_PRE" || abort
     # Setup init
-    sudo tee -a "$SYSTEM_MNT/init.environ.rc" <<EOF >/dev/null
+    sudo tee -a "$ROOT_MNT/init.environ.rc" <<EOF >/dev/null
 
 service ksuins /system/bin/sh /system/bin/ksuinstall.sh
     user root
