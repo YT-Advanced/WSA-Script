@@ -525,7 +525,7 @@ echo "Device is booted."
 echo "Checking past install"
 if [ ! -e "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)" ]; then
     echo "Installing KernelSU APK"
-    pm install -i android -r /system/data-app/KernelSU.apk
+    pm install -r /system/data-app/KernelSU.apk
     echo "Launching KernelSU App"
     am start -n me.weishu.kernelsu/.ui.MainActivity
     echo "Placing completed file"
@@ -548,7 +548,7 @@ service ksuins /system/bin/sh /system/bin/ksuinstall.sh
     disabled
     oneshot
     
-on property:sys.boot_completed=1
+on boot
     start ksuins
     exec - system system -- /system/bin/sh /system/bin/ksuinstall.sh
 EOF
