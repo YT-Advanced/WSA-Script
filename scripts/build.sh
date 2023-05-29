@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC2046
 #
 # This file is part of MagiskOnWSALocal.
 #
@@ -339,24 +340,68 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     if ! unzip "$KERNELSU_PATH" -d "$WORK_DIR/kernelsu"; then
         abort "Unzip KernelSU failed, package is corrupted?"
     fi
-    if [ "$ARCH" = "x64" ]; then
-        mv "$WORK_DIR/kernelsu/bzImage" "$WORK_DIR/kernelsu/kernel"
-    elif [ "$ARCH" = "arm64" ]; then
-        mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
-    fi
-    KSU_APP_DIR="../common/system/priv-app/KernelSU"
-    mkdir "$KSU_APP_DIR"
+    KSU_APP_DIR="../common/system/app/KernelSU"
+    mkdir -p "$KSU_APP_DIR"
     cp -f "$KERNELSU_APK_PATH" "$KSU_APP_DIR/"
     unzip "$KERNELSU_APK_PATH" "lib/*/lib*.so" -d "$KSU_APP_DIR/"
-    mv -v "$KSU_APP_DIR/lib/arm64-v8a/" "$KSU_APP_DIR/lib/arm64/"
-    if [[ "$ARCH" == "arm64" ]]; then
-        rm -rf "$KSU_APP_DIR/lib/x86_64/"
-    else
-        rm -rf "$KSU_APP_DIR/lib/arm64/"
+    sudo chmod 755 "$KSU_APP_DIR/lib/x86_64/libkernelsu.so"
+    sudo chmod 755 "$KSU_APP_DIR/lib/x86_64/libksud.so"
+    sudo chmod 755 "$KSU_APP_DIR/lib/arm64-v8a/libkernelsu.so"
+    sudo chmod 755 "$KSU_APP_DIR/lib/arm64-v8a/libksud.so"
+    if [ "$ARCH" = "x64" ]; then
+        mv "$WORK_DIR/kernelsu/bzImage" "$WORK_DIR/kernelsu/kernel"
+        sudo tee -a "$KSU_APP_DIR/Android.mk" <<EOF >/dev/null
+LOCAL_PATH := $(call my-dir)
+
+my_archs := arm x86 arm64
+my_src_arch := $(call get-prebuilt-src-arch, $(my_archs))
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := KernelSU
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_TAGS := optional
+LOCAL_BUILT_MODULE_STEM := package.apk
+LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+LOCAL_CERTIFICATE := PRESIGNED
+LOCAL_SRC_FILES := KernelSU.apk
+
+LOCAL_PREBUILT_JNI_LIBS := \
+  lib/x86_64/libkernelsu.so \
+  lib/x86_64/libksud.so
+
+LOCAL_MODULE_TARGET_ARCH := $(my_src_arch)
+
+include $(BUILD_PREBUILT)
+EOF
+
+    elif [ "$ARCH" = "arm64" ]; then
+        mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
+        sudo tee -a "$KSU_APP_DIR/Android.mk" <<EOF >/dev/null
+LOCAL_PATH := $(call my-dir)
+
+my_archs := arm x86 arm64
+my_src_arch := $(call get-prebuilt-src-arch, $(my_archs))
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := KernelSU
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_TAGS := optional
+LOCAL_BUILT_MODULE_STEM := package.apk
+LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+LOCAL_CERTIFICATE := PRESIGNED
+LOCAL_SRC_FILES := KernelSU.apk
+
+LOCAL_PREBUILT_JNI_LIBS := \
+  lib/arm64-v8a/libkernelsu.so \
+  lib/arm64-v8a/libksud.so
+
+LOCAL_MODULE_TARGET_ARCH := $(my_src_arch)
+
+include $(BUILD_PREBUILT)
+EOF
     fi
     echo -e "done\n"
 fi
-
 if [ "$GAPPS_BRAND" != 'none' ]; then
     update_gapps_zip_name
     echo "Extract MindTheGapps"
@@ -504,6 +549,13 @@ find "../common/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs
 find "../common/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/priv-app/placeholder" -type f -exec chmod 0644 {} \;
 find "../common/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/priv-app/placeholder" -exec chown root:root {} \;
 find "../common/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/priv-app/placeholder" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
+sudo chmod 0755 "$SYSTEM_MNT/app/KernelSU/"
+sudo chmod 0644 "$SYSTEM_MNT/app/KernelSU/KernelSU.apk"
+sudo find "$SYSTEM_MNT/app/KernelSU/" -exec chown root:root {} \;
+sudo find "$SYSTEM_MNT/app/KernelSU/" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \;
+sudo chmod -R a+rwX "$SYSTEM_MNT/app/KernelSU/lib/"
+sudo chmod -R a+rwX "$SYSTEM_MNT/app/KernelSU/lib/x86_64/"
+sudo chmod -R a+rwX "$SYSTEM_MNT/app/KernelSU/lib/arm64-v8a/"
 echo -e "Add extra packages done\n"
 
 echo "Permissions management Netfree and Netspark security certificates"
