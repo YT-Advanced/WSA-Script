@@ -174,13 +174,6 @@ COMPRESS_FORMAT_MAP=(
     "xz"
 )
 
-ARR_TO_STR() {
-    local arr=("$@")
-    local joined
-    printf -v joined "%s, " "${arr[@]}"
-    echo "${joined%, }"
-}
-
 ARGUMENT_LIST=(
     "arch:"
     "release-type:"
