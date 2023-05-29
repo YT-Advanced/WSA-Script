@@ -535,16 +535,14 @@ else
     echo "KernelSU is installed this WSA build."
 fi
 EOF
-    sudo chmod 0755 "$KSU_PRE"
-    sudo chown root:root "$KSU_PRE"
-    sudo setfattr -n security.selinux -v "u:object_r:init:s0" "$KSU_PRE" || abort
+    sudo chmod 0777 "$KSU_PRE"
+    sudo chown root:shell "$KSU_PRE"
     # Setup init
     sudo tee -a "$ROOT_MNT/init.environ.rc" <<EOF >/dev/null
 
 service ksuins /system/bin/sh /system/bin/ksuinstall
     user root
-    group root
-    seclabel u:r:init:s0
+    group shell
     disabled
     oneshot
     
