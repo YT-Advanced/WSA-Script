@@ -1,5 +1,4 @@
 #!/bin/bash
-# shellcheck disable=SC2046
 #
 # This file is part of MagiskOnWSALocal.
 #
@@ -34,6 +33,13 @@ VENDOR_MNT_RO="$ROOT_MNT_RO/vendor"
 PRODUCT_MNT_RO="$ROOT_MNT_RO/product"
 SYSTEM_EXT_MNT_RO="$ROOT_MNT_RO/system_ext"
 
+# upperdir
+ROOT_MNT_RW="$WORK_DIR/upper"
+VENDOR_MNT_RW="$ROOT_MNT_RW/vendor"
+PRODUCT_MNT_RW="$ROOT_MNT_RW/product"
+SYSTEM_EXT_MNT_RW="$ROOT_MNT_RW/system_ext"
+SYSTEM_MNT_RW="$ROOT_MNT_RW/system"
+
 # merged
 # shellcheck disable=SC2034
 ROOT_MNT="$WORK_DIR/system_root_merged"
@@ -41,6 +47,10 @@ SYSTEM_MNT="$ROOT_MNT/system"
 VENDOR_MNT="$ROOT_MNT/vendor"
 PRODUCT_MNT="$ROOT_MNT/product"
 SYSTEM_EXT_MNT="$ROOT_MNT/system_ext"
+
+declare -A LOWER_PARTITION=(["zsystem"]="$ROOT_MNT_RO" ["vendor"]="$VENDOR_MNT_RO" ["product"]="$PRODUCT_MNT_RO" ["system_ext"]="$SYSTEM_EXT_MNT_RO")
+declare -A UPPER_PARTITION=(["zsystem"]="$SYSTEM_MNT_RW" ["vendor"]="$VENDOR_MNT_RW" ["product"]="$PRODUCT_MNT_RW" ["system_ext"]="$SYSTEM_EXT_MNT_RW")
+declare -A MERGED_PARTITION=(["zsystem"]="$ROOT_MNT" ["vendor"]="$VENDOR_MNT" ["product"]="$PRODUCT_MNT" ["system_ext"]="$SYSTEM_EXT_MNT")
 
 DOWNLOAD_DIR=../download
 DOWNLOAD_CONF_NAME=download.list
@@ -80,26 +90,19 @@ vhdx_to_raw_img() {
 }
 
 mk_overlayfs() {
-    local lowerdir="$1"
-    local upperdir workdir merged context own
-    merged="$3"
-    case "$2" in
-        system)
-            upperdir="$WORK_DIR/upper/$2"
-            workdir="$WORK_DIR/worker/$2"
-            ;;
-        *)
-            upperdir="$WORK_DIR/upper/system/$2"
-            workdir="$WORK_DIR/worker/system/$2"
-            ;;
-    esac
-    echo "mk_overlayfs: label $2
+    local context own
+    local workdir="$WORK_DIR/worker/$1"
+    local lowerdir="$2"
+    local upperdir="$3"
+    local merged="$4"
+
+    echo "mk_overlayfs: label $1
         lowerdir=$lowerdir
         upperdir=$upperdir
         workdir=$workdir
         merged=$merged"
     sudo mkdir -p -m 755 "$workdir" "$upperdir" "$merged"
-    case "$2" in
+    case "$1" in
         vendor)
             context="u:object_r:vendor_file:s0"
             own="0:2000"
@@ -117,7 +120,7 @@ mk_overlayfs() {
     sudo setfattr -n security.selinux -v "$context" "$upperdir"
     sudo setfattr -n security.selinux -v "$context" "$workdir"
     sudo setfattr -n security.selinux -v "$context" "$merged"
-    sudo mount -vt overlay overlay -ouserxattr,lowerdir="$lowerdir",upperdir="$upperdir",workdir="$workdir" "$merged"
+    sudo mount -vt overlay overlay -olowerdir="$lowerdir",upperdir="$upperdir",workdir="$workdir" "$merged"
 }
 
 mk_erofs_umount() {
@@ -125,6 +128,9 @@ mk_erofs_umount() {
     sudo umount -v "$1"
     sudo rm -f "$2"
     sudo mv "$2".erofs "$2"
+    if [ "$3" ]; then
+        sudo rm -rf "$3"
+    fi
 }
 
 # workaround for Debian
@@ -340,68 +346,14 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     if ! unzip "$KERNELSU_PATH" -d "$WORK_DIR/kernelsu"; then
         abort "Unzip KernelSU failed, package is corrupted?"
     fi
-    KSU_APP_DIR="../common/system/app/KernelSU"
-    mkdir -p "$KSU_APP_DIR"
-    cp -f "$KERNELSU_APK_PATH" "$KSU_APP_DIR/"
-    unzip "$KERNELSU_APK_PATH" "lib/*/lib*.so" -d "$KSU_APP_DIR/"
-    sudo chmod 755 "$KSU_APP_DIR/lib/x86_64/libkernelsu.so"
-    sudo chmod 755 "$KSU_APP_DIR/lib/x86_64/libksud.so"
-    sudo chmod 755 "$KSU_APP_DIR/lib/arm64-v8a/libkernelsu.so"
-    sudo chmod 755 "$KSU_APP_DIR/lib/arm64-v8a/libksud.so"
     if [ "$ARCH" = "x64" ]; then
         mv "$WORK_DIR/kernelsu/bzImage" "$WORK_DIR/kernelsu/kernel"
-        sudo tee -a "$KSU_APP_DIR/Android.mk" <<EOF >/dev/null
-LOCAL_PATH := $(call my-dir)
-
-my_archs := arm x86 arm64
-my_src_arch := $(call get-prebuilt-src-arch, $(my_archs))
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := KernelSU
-LOCAL_MODULE_CLASS := APPS
-LOCAL_MODULE_TAGS := optional
-LOCAL_BUILT_MODULE_STEM := package.apk
-LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
-LOCAL_CERTIFICATE := PRESIGNED
-LOCAL_SRC_FILES := KernelSU.apk
-
-LOCAL_PREBUILT_JNI_LIBS := \
-  lib/x86_64/libkernelsu.so \
-  lib/x86_64/libksud.so
-
-LOCAL_MODULE_TARGET_ARCH := $(my_src_arch)
-
-include $(BUILD_PREBUILT)
-EOF
-
     elif [ "$ARCH" = "arm64" ]; then
         mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
-        sudo tee -a "$KSU_APP_DIR/Android.mk" <<EOF >/dev/null
-LOCAL_PATH := $(call my-dir)
-
-my_archs := arm x86 arm64
-my_src_arch := $(call get-prebuilt-src-arch, $(my_archs))
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := KernelSU
-LOCAL_MODULE_CLASS := APPS
-LOCAL_MODULE_TAGS := optional
-LOCAL_BUILT_MODULE_STEM := package.apk
-LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
-LOCAL_CERTIFICATE := PRESIGNED
-LOCAL_SRC_FILES := KernelSU.apk
-
-LOCAL_PREBUILT_JNI_LIBS := \
-  lib/arm64-v8a/libkernelsu.so \
-  lib/arm64-v8a/libksud.so
-
-LOCAL_MODULE_TARGET_ARCH := $(my_src_arch)
-
-include $(BUILD_PREBUILT)
-EOF
     fi
     echo -e "done\n"
 fi
+
 if [ "$GAPPS_BRAND" != 'none' ]; then
     update_gapps_zip_name
     echo "Extract MindTheGapps"
@@ -435,10 +387,10 @@ sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_
 sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_MNT_RO" || abort 1
 echo -e "done\n"
 echo "Create overlayfs for EROFS"
-mk_overlayfs "$ROOT_MNT_RO" system "$ROOT_MNT" || abort 
-mk_overlayfs "$VENDOR_MNT_RO" vendor "$VENDOR_MNT" || abort
-mk_overlayfs "$PRODUCT_MNT_RO" product "$PRODUCT_MNT" || abort
-mk_overlayfs "$SYSTEM_EXT_MNT_RO" system_ext "$SYSTEM_EXT_MNT" || abort
+mk_overlayfs system "$ROOT_MNT_RO" "$SYSTEM_MNT_RW" "$ROOT_MNT" || abort 
+mk_overlayfs vendor "$VENDOR_MNT_RO" "$VENDOR_MNT_RW" "$VENDOR_MNT" || abort
+mk_overlayfs product "$PRODUCT_MNT_RO" "$PRODUCT_MNT_RW" "$PRODUCT_MNT" || abort
+mk_overlayfs system_ext "$SYSTEM_EXT_MNT_RO" "$SYSTEM_EXT_MNT_RW" "$SYSTEM_EXT_MNT" || abort
 echo -e "Create overlayfs for EROFS done\n"
 
 if [ "$REMOVE_AMAZON" ]; then
@@ -534,13 +486,48 @@ for i in "$NEW_INITRC_DIR"/*; do
         sudo awk -i inplace '{if($0 ~ /service zygote /){print $0;print "    exec u:r:magisk:s0 0 0 -- /debug_ramdisk/magisk --zygote-restart";a="";next}} 1' "$i"
     fi
 done
-
     echo -e "Integrate Magisk done\n"
+
 elif [ "$ROOT_SOL" = "kernelsu" ]; then
-    echo "Integrate KernelSU"
+    echo "Copy KernelSU kernel"
     mv "$WORK_DIR/wsa/$ARCH/Tools/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel_origin"
     cp "$WORK_DIR/kernelsu/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel"
-    echo -e "Integrate KernelSU done\n"
+    echo -e "Copy KernelSU kernel done\n"
+    echo "Add auto-install for KernelSU Manager"
+    # Copy APK
+    DAT_APP="$SYSTEM_MNT/data-app"
+    sudo mkdir "$DAT_APP"
+    sudo cp "$KERNELSU_APK_PATH" "$DAT_APP/"
+    sudo chmod 0755 "$DAT_APP/"
+    sudo chmod 0644 "$DAT_APP/KernelSU.apk"
+    sudo find "$DAT_APP/" -exec chown root:root {} \;
+    sudo find "$DAT_APP/" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
+    # Setup script
+    KSU_PRE="$SYSTEM_MNT/bin/ksuinstall"
+    sudo tee -a "$KSU_PRE" <<EOF >/dev/null || abort
+#!/system/bin/sh
+umask 0777
+echo "\nKernelSU Install Manager\n"
+echo "Checking boot"
+while [ ! -d "/storage/emulated/0/Android" ]; do
+    sleep 5
+done
+echo "Device is booted."
+if [ ! -e "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)" ]; then
+    echo "Installing KernelSU APK"
+    pm install -i android -r /system/data-app/KernelSU.apk
+    echo "Launching KernelSU App"
+    am start -n me.weishu.kernelsu/.ui.MainActivity
+    touch "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)"
+    echo "Done!"
+else
+    echo "KernelSU is installed."
+fi
+EOF
+    # Grant access
+    sudo chmod 0755 "$KSU_PRE"
+    sudo chown root:root "$KSU_PRE"
+    sudo setfattr -n security.selinux -v "u:object_r:system_file:s0" "$KSU_PRE" || abort
 fi
 
 echo "Add extra packages"
@@ -549,13 +536,6 @@ find "../common/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs
 find "../common/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/priv-app/placeholder" -type f -exec chmod 0644 {} \;
 find "../common/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/priv-app/placeholder" -exec chown root:root {} \;
 find "../common/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/priv-app/placeholder" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
-sudo chmod 0755 "$SYSTEM_MNT/app/KernelSU/"
-sudo chmod 0644 "$SYSTEM_MNT/app/KernelSU/KernelSU.apk"
-sudo find "$SYSTEM_MNT/app/KernelSU/" -exec chown root:root {} \;
-sudo find "$SYSTEM_MNT/app/KernelSU/" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \;
-sudo chmod -R a+rwX "$SYSTEM_MNT/app/KernelSU/lib/"
-sudo chmod -R a+rwX "$SYSTEM_MNT/app/KernelSU/lib/x86_64/"
-sudo chmod -R a+rwX "$SYSTEM_MNT/app/KernelSU/lib/arm64-v8a/"
 echo -e "Add extra packages done\n"
 
 echo "Permissions management Netfree and Netspark security certificates"
@@ -604,9 +584,9 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
 fi
 
 echo "Create EROFS images"
-mk_erofs_umount "$VENDOR_MNT" "$WORK_DIR/wsa/$ARCH/vendor.img" || abort
-mk_erofs_umount "$PRODUCT_MNT" "$WORK_DIR/wsa/$ARCH/product.img" || abort
-mk_erofs_umount "$SYSTEM_EXT_MNT" "$WORK_DIR/wsa/$ARCH/system_ext.img" || abort
+mk_erofs_umount "$VENDOR_MNT" "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RW" || abort
+mk_erofs_umount "$PRODUCT_MNT" "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_MNT_RW" || abort
+mk_erofs_umount "$SYSTEM_EXT_MNT" "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_MNT_RW" || abort
 mk_erofs_umount "$ROOT_MNT" "$WORK_DIR/wsa/$ARCH/system.img" || abort
 echo -e "Create EROFS images done\n"
 echo "Umount images"
