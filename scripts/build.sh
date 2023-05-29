@@ -535,21 +535,12 @@ else
     echo "KernelSU is installed this WSA build."
 fi
 EOF
-    sudo chmod 0777 "$KSU_PRE"
-    sudo chown root:shell "$KSU_PRE"
+    sudo chmod 0755 "$KSU_PRE"
     # Setup init
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
 
-service ksuins /system/bin/sh /system/bin/ksuinstall.sh
-    user root
-    group shell
-    seclabel u:r:shell:s0
-    disabled
-    oneshot
-    
 on boot
     exec -- /system/bin/ksuinstall.sh
-    start ksuins
 EOF
     echo -e "Add auto-install for KernelSU Manager Done\n"
 fi
