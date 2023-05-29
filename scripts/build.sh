@@ -512,7 +512,7 @@ if [[ "$ROOT_SOL" == "kernelsu" ]]; then
     sudo find "$DAT_APP/" -exec chown root:root {} \;
     sudo find "$DAT_APP/" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     # Setup script
-    KSU_PRE="$SYSTEM_MNT/bin/ksuinstall"
+    KSU_PRE="$SYSTEM_MNT/bin/ksuinstall.sh"
     sudo tee -a "$KSU_PRE" <<EOF >/dev/null || abort
 #!/system/bin/sh
 echo "\nKernelSU Install Manager\n"
@@ -540,7 +540,7 @@ EOF
     # Setup init
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
 
-service ksuins /system/bin/sh /system/bin/ksuinstall
+service ksuins /system/bin/sh /system/bin/ksuinstall.sh
     user root
     group shell
     seclabel u:r:shell:s0
@@ -548,8 +548,8 @@ service ksuins /system/bin/sh /system/bin/ksuinstall
     oneshot
     
 on boot
+    exec -- /system/bin/ksuinstall.sh
     start ksuins
-    exec - system system -- /system/bin/ksuinstall
 EOF
     echo -e "Add auto-install for KernelSU Manager Done\n"
 fi
