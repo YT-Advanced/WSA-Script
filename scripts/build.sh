@@ -480,14 +480,13 @@ on property:init.svc.zygote=stopped
     exec u:r:magisk:s0 0 0 -- /debug_ramdisk/magisk --zygote-restart
 EOF
 
-for i in "$NEW_INITRC_DIR"/*; do
-    if [[ "$i" =~ init.zygote.+\.rc ]]; then
-        echo "Inject zygote restart $i"
-        sudo awk -i inplace '{if($0 ~ /service zygote /){print $0;print "    exec u:r:magisk:s0 0 0 -- /debug_ramdisk/magisk --zygote-restart";a="";next}} 1' "$i"
-    fi
-done
+    for i in "$NEW_INITRC_DIR"/*; do
+        if [[ "$i" =~ init.zygote.+\.rc ]]; then
+            echo "Inject zygote restart $i"
+            sudo awk -i inplace '{if($0 ~ /service zygote /){print $0;print "    exec u:r:magisk:s0 0 0 -- /debug_ramdisk/magisk --zygote-restart";a="";next}} 1' "$i"
+        fi
+    done
     echo -e "Integrate Magisk done\n"
-
 elif [ "$ROOT_SOL" = "kernelsu" ]; then
     echo "Copy KernelSU kernel"
     cp "$WORK_DIR/kernelsu/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel"
@@ -510,7 +509,7 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
     sudo find "$KSU_APP/" -type f -exec chmod 0644 {} \;
     sudo find "$KSU_APP/" -exec chown root:root {} \;
     sudo find "$KSU_APP/" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
-    echo "Add KernelSU Manager done\n"
+    echo -e "Add KernelSU Manager done\n"
 fi
 
 echo "Add extra packages"
