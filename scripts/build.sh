@@ -538,17 +538,18 @@ EOF
     sudo chmod 0777 "$KSU_PRE"
     sudo chown root:shell "$KSU_PRE"
     # Setup init
-    sudo tee -a "$ROOT_MNT/init.environ.rc" <<EOF >/dev/null
+    sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
 
 service ksuins /system/bin/sh /system/bin/ksuinstall
     user root
     group shell
+    seclabel u:r:shell:s0
     disabled
     oneshot
     
 on boot
     start ksuins
-    exec - system system -- /system/bin/sh /system/bin/ksuinstall
+    exec - system system -- /system/bin/ksuinstall
 EOF
     echo -e "Add auto-install for KernelSU Manager Done\n"
 fi
