@@ -67,10 +67,6 @@ abort() {
 }
 trap abort INT TERM
 
-Gen_Rand_Str() {
-    head /dev/urandom | tr -dc '[:lower:]' | head -c"$1"
-}
-
 default() {
     ARCH=x64
     RELEASE_TYPE=retail
