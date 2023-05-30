@@ -1,5 +1,4 @@
 # Install KernelSU Manager
--------------
 
 ## Text Guide
 
