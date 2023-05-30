@@ -21,10 +21,6 @@
 # shellcheck disable=SC2034
 HOST_ARCH=$(uname -m)
 cd "$(dirname "$0")" || exit 1
-# export TMPDIR=$(dirname "$PWD")/WORK_DIR_
-if [ "$TMPDIR" ] && [ ! -d "$TMPDIR" ]; then
-    mkdir -p "$TMPDIR"
-fi
 WORK_DIR=$(mktemp -d -t wsa-build-XXXXXXXXXX_) || exit 1
 
 # lowerdir
@@ -480,24 +476,41 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
     echo "Copy KernelSU kernel"
     cp "$WORK_DIR/kernelsu/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel"
     echo -e "Copy KernelSU kernel done\n"
-    echo "Add KernelSU Manager"
-    KSU_APP_DIR="../common/KernelSU"
-    mkdir "$KSU_APP_DIR"
-    mv "$KERNELSU_APK_PATH" "$KSU_APP_DIR/"
-    unzip "$KERNELSU_APK_PATH" "lib/*/lib*.so" -d "$KSU_APP_DIR/"
-    mv -v "$KSU_APP_DIR/lib/arm64-v8a/" "$KSU_APP_DIR/lib/arm64/"
-    if [[ "$ARCH" == "arm64" ]]; then
-        rm -rf "$KSU_APP_DIR/lib/x86_64/"
-    else
-        rm -rf "$KSU_APP_DIR/lib/arm64/"
-    fi
-    KSU_APP="$SYSTEM_MNT/app/KernelSU"
-    sudo mkdir "$KSU_APP"
-    sudo cp "$KERNELSU_APK_PATH" "$KSU_APP/"
-    sudo find "$KSU_APP/" -type d -exec chmod 0755 {} \;
-    sudo find "$KSU_APP/" -type f -exec chmod 0644 {} \;
-    sudo find "$KSU_APP/" -exec chown root:root {} \;
-    sudo find "$KSU_APP/" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
+    echo "Add auto-install script for KernelSU Manager"
+    # Copy APK
+    DAT_APP="$SYSTEM_MNT/data-app"
+    sudo mkdir "$DAT_APP"
+    sudo cp -f "$KERNELSU_APK_PATH" "$DAT_APP/"
+    sudo chmod 0755 "$DAT_APP/"
+    sudo chmod 0644 "$DAT_APP/KernelSU.apk"
+    sudo find "$DAT_APP/" -exec chown root:root {} \;
+    sudo find "$DAT_APP/" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
+    # Setup script
+    KSU_PRE="$SYSTEM_MNT/bin/ksuinstall"
+    sudo tee -a "$KSU_PRE" <<EOF >/dev/null || abort
+#!/system/bin/sh
+umask 0777
+echo "\nKernelSU Install Manager\n"
+echo "Checking boot"
+while [ ! -d "/storage/emulated/0/Android" ]; do
+    sleep 5
+done
+echo "Device is booted."
+if [ ! -e "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)" ]; then
+    echo "Installing KernelSU APK"
+    pm install -i android -r /system/data-app/KernelSU.apk
+    echo "Launching KernelSU App"
+    am start -n me.weishu.kernelsu/.ui.MainActivity
+    touch "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)"
+    echo "Done!"
+else
+    echo "KernelSU is installed."
+fi
+EOF
+    # Grant access
+    sudo chmod 0755 "$KSU_PRE"
+    sudo chown root:root "$KSU_PRE"
+    sudo setfattr -n security.selinux -v "u:object_r:system_file:s0" "$KSU_PRE" || abort
     echo -e "Add KernelSU Manager done\n"
 fi
 
