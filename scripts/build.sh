@@ -491,20 +491,15 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
 #!/system/bin/sh
 umask 0777
 echo "\nKernelSU Install Manager\n"
-echo "Checking boot"
-while [ ! -d "/storage/emulated/0/Android" ]; do
-    sleep 5
-done
-echo "Device is booted."
 if [ ! -e "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)" ]; then
-    echo "Installing KernelSU APK"
+    echo "\nInstalling KernelSU APK"
     pm install -i android -r /system/data-app/KernelSU.apk
-    echo "Launching KernelSU App"
+    echo "\nLaunching KernelSU App"
     am start -n me.weishu.kernelsu/.ui.MainActivity
     touch "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)"
-    echo "Done!"
+    echo "\nDone!\n"
 else
-    echo "KernelSU is installed."
+    echo "\nKernelSU is installed.\n"
 fi
 EOF
     # Grant access
@@ -516,6 +511,7 @@ fi
 
 echo "Add extra packages"
 sudo cp -r "../common/system/"* "$SYSTEM_MNT" || abort
+find "../common/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo rm -rf "$SYSTEM_MNT/priv-app/placeholder/oat"
 find "../common/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/priv-app/placeholder" -type d -exec chmod 0755 {} \;
 find "../common/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/priv-app/placeholder" -type f -exec chmod 0644 {} \;
 find "../common/system/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/priv-app/placeholder" -exec chown root:root {} \;
