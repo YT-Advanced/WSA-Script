@@ -1,5 +1,16 @@
 # Install KernelSU Manager
 -------------
 
+## Text Guide
+
+1. [Connect to WSA with ADB](ADB-Sideloading.md#setting-up-adb-to-work-with-wsa)
+2. Run the following command:
+   ```
+   adb shell ksuinstall
+   ```
+   
+If the installation completes successfully, the KernelSU Manager will launching.
+
+<!--
 ## Video Guide
-https://github.com/YT-Advanced/WSA-Script/assets/52069677/5ee887e2-ab0c-4f40-990d-0014428c2249
+-->
