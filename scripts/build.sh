@@ -596,7 +596,7 @@ cp "../xml/priconfig.xml" "$WORK_DIR/wsa/$ARCH/xml/" || abort
 cp ../installer/MakePri.ps1 "$WORK_DIR/wsa/$ARCH" || abort
 if [[ "$ROOT_SOL" = "none" ]] && [[ "$GAPPS_BRAND" = "none" ]] && [[ "$REMOVE_AMAZON" == "yes" ]]; then
     sed -i -e 's/Start-Process\ "wsa:\/\/com.topjohnwu.magisk"//g' ../installer/Install.ps1
-    sed -i -e 's/com.android.vending/com.android.settings/g' ../installer/Install.ps1
+    sed -i -e 's/Start-Process\ "wsa:\/\/com.android.vending"//g' ../installer/Install.ps1
 else
     if [[ "$ROOT_SOL" != "magisk" ]]; then
         sed -i -e 's/Start-Process\ "wsa:\/\/com.topjohnwu.magisk"//g' ../installer/Install.ps1
