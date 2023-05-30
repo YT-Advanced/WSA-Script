@@ -116,8 +116,18 @@ jobs:
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
 
   build:
+    name: Build WSA
+    strategy:
+      matrix:
+        arch: [x64, arm64]
+        root: [magisk, none]
+        gapps: [MindTheGapps, none]
     permissions: write-all
     needs: check
     uses: ./.github/workflows/build.yml
     if: needs.check.outputs.SHOULD_BUILD == 'yes'
+    with:
+      arch: ${{ matrix.arch }}
+      gapps: ${{ matrix.gapps }}
+      root: ${{ matrix.root }}
     secrets: inherit
