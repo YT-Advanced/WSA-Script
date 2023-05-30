@@ -598,10 +598,8 @@ if [[ "$ROOT_SOL" = "none" ]] && [[ "$GAPPS_BRAND" = "none" ]] && [[ "$REMOVE_AM
     sed -i -e 's/Start-Process\ "wsa:\/\/com.topjohnwu.magisk"//g' ../installer/Install.ps1
     sed -i -e 's/com.android.vending/com.android.settings/g' ../installer/Install.ps1
 else
-    if [[ "$ROOT_SOL" = "none" ]]; then
+    if [[ "$ROOT_SOL" != "magisk" ]]; then
         sed -i -e 's/Start-Process\ "wsa:\/\/com.topjohnwu.magisk"//g' ../installer/Install.ps1
-    elif [[ "$ROOT_SOL" = "kernelsu" ]]; then
-        sed -i -e 's/com.topjohnwu.magisk/me.weishu.kernelsu/g' ../installer/Install.ps1
     elif [[ "$MAGISK_VER" = "delta" ]]; then
         sed -i -e 's/com.topjohnwu.magisk/io.github.huskydg.magisk/g' ../installer/Install.ps1
     elif [[ "$MAGISK_VER" = "alpha" ]]; then
