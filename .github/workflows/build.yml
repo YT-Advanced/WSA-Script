@@ -46,7 +46,7 @@ jobs:
       - name: Install Ubuntu Dependencies 🧑‍🏭
         uses: sn-o-w/cache-apt-pkgs-action@master
         with:
-          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv lzip
+          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv
           version: 1.0
 
       - name: Build WSA ${{ matrix.arch }} with GAPPS ${{ matrix.root }} 🏗️
