@@ -614,7 +614,6 @@ cp ../installer/Run.bat "$WORK_DIR/wsa/$ARCH" || abort
 echo -e "Remove signature and add scripts done\n"
 
 echo "Generate info"
-
 if [[ "$ROOT_SOL" = "none" ]]; then
     name1=""
 elif [ "$ROOT_SOL" = "magisk" ]; then
@@ -650,8 +649,8 @@ elif [ "$COMPRESS_FORMAT" = "xz" ]; then
         tar -cPJvf "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name" || abort
     fi
 elif [ "$COMPRESS_FORMAT" = "zip" ]; then
-    touch "$WORK_DIR/wsa/$ARCH/apex/.gitkeep"
     echo "Compressing with zip later..."
     cp -r "$WORK_DIR/wsa/$artifact_name" "$OUTPUT_PATH" || abort
+    touch "$OUTPUT_PATH/apex/.gitkeep" || abort
 fi
 echo -e "Done\n"
