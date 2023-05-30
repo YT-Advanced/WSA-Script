@@ -381,10 +381,6 @@ echo -e "Create overlayfs for EROFS done\n"
 if [ "$REMOVE_AMAZON" ]; then
     echo "Remove Amazon Appstore"
     rm -f "$WORK_DIR/wsa/$ARCH/apex/mado_release.apex"
-    # Prevents folders from being deleted
-    if [[ "$COMPRESS_FORMAT" = "zip" ]]; then
-        touch "$WORK_DIR/wsa/$ARCH/apex/.gitkeep"
-    fi
     echo -e "done\n"
 fi
 
@@ -587,9 +583,7 @@ echo "Remove signature and add scripts"
 sudo rm -rf "${WORK_DIR:?}"/wsa/"$ARCH"/\[Content_Types\].xml "$WORK_DIR/wsa/$ARCH/AppxBlockMap.xml" "$WORK_DIR/wsa/$ARCH/AppxSignature.p7x" "$WORK_DIR/wsa/$ARCH/AppxMetadata" || abort
 cp "$VCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH" || abort
 cp "$UWPVCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH" || abort
-cp "../bin/$ARCH/makepri.exe" "$WORK_DIR/wsa/$ARCH" || abort
 cp "../xml/priconfig.xml" "$WORK_DIR/wsa/$ARCH/xml/" || abort
-cp ../installer/MakePri.ps1 "$WORK_DIR/wsa/$ARCH" || abort
 if [[ "$ROOT_SOL" = "none" ]] && [[ "$GAPPS_BRAND" = "none" ]] && [[ "$REMOVE_AMAZON" == "yes" ]]; then
     sed -i -e 's/Start-Process\ "wsa:\/\/com.topjohnwu.magisk"//g' ../installer/Install.ps1
     sed -i -e 's/Start-Process\ "wsa:\/\/com.android.vending"//g' ../installer/Install.ps1
@@ -610,8 +604,10 @@ else
     fi
 fi
 cp ../installer/Install.ps1 "$WORK_DIR/wsa/$ARCH" || abort
+find "$WORK_DIR/wsa/$ARCH" -not -path "*/pri*" -not -path "*/xml*" -printf "%P\n" | sed -e 's/\//\\/g' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist.txt" || abort
+cp "../bin/$ARCH/makepri.exe" "$WORK_DIR/wsa/$ARCH" || abort
+cp ../installer/MakePri.ps1 "$WORK_DIR/wsa/$ARCH" || abort
 cp ../installer/Run.bat "$WORK_DIR/wsa/$ARCH" || abort
-find "$WORK_DIR/wsa/$ARCH" -not -path "*/pri*" -not -path "*/xml*" -not -name "MakePri.ps1" -not -name "makepri.exe" -not -name ".gitkeep" -printf "%P\n" | sed -e 's/\//\\/g' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist.txt" || abort
 echo -e "Remove signature and add scripts done\n"
 
 echo "Generate info"
@@ -651,6 +647,7 @@ elif [ "$COMPRESS_FORMAT" = "xz" ]; then
         tar -cPJvf "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name" || abort
     fi
 elif [ "$COMPRESS_FORMAT" = "zip" ]; then
+    touch "$WORK_DIR/wsa/$ARCH/apex/.gitkeep"
     echo "Compressing with zip later..."
     cp -r "$WORK_DIR/wsa/$artifact_name" "$OUTPUT_PATH" || abort
 fi
