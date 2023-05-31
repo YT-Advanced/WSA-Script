@@ -43,7 +43,7 @@ jobs:
           latestver = html.find("a", string=re.compile("MicrosoftCorporationII\.WindowsSubsystemForAndroid_.*\.msixbundle")).text
           latestver = latestver.replace('MicrosoftCorporationII.WindowsSubsystemForAndroid_', '')
           latestver = latestver.replace('_neutral_~_8wekyb3d8bbwe.msixbundle', '')
-          currentver = requests.get(f"https://raw.githubusercontent.com/${{github.repository}}/update/wsa.appversion").text
+          currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/wsa.appversion").text
           latestver = latestver.replace('\n', '')
           currentver = currentver.replace('\n', '')
           build = False
@@ -54,7 +54,7 @@ jobs:
           file = open('wsa.appversion', 'w')
           file.write(latestver)
           file.close()
-          currentver = requests.get(f"https://raw.githubusercontent.com/${{github.repository}}/update/magisk.appversion").text
+          currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/magisk.appversion").text
           latestver = json.loads(requests.get(f"https://github.com/topjohnwu/magisk-files/raw/master/stable.json").content)['magisk']['version']
           latestver = latestver.replace('\n', '')
           currentver = currentver.replace('\n', '')
@@ -64,7 +64,7 @@ jobs:
           file = open('magisk.appversion', 'w')
           file.write(latestver)
           file.close()
-          currentver = requests.get(f"https://raw.githubusercontent.com/${{github.repository}}/update/gapps.appversion").text
+          currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/gapps.appversion").text
           latestver = json.loads(requests.get(f"https://api.github.com/repos/Howard20181/MindTheGappsBuilder/releases/latest").content)['name']
           latestver = latestver.replace('\n', '')
           currentver = currentver.replace('\n', '')
