@@ -46,7 +46,7 @@ jobs:
 
       - name: Build WSA ${{ matrix.arch }} with GAPPS ${{ matrix.root }} 🏗️
         id: wsa
-        run: ./scripts/build.sh --arch ${{ inputs.arch }} --release-type WIF --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --remove-amazon --compress-format zip
+        run: ./scripts/build.sh --arch ${{ inputs.arch }} --release-type retail --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --remove-amazon --compress-format zip
 
       - name: Pass to Windows
         uses: actions/upload-artifact@v3
