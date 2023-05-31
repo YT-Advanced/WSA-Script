@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@main
+        uses: actions/checkout@v3
 
       - name: Create Issues comment
         id: comment
@@ -166,7 +166,7 @@ jobs:
 
       - name: Install Ubuntu Dependencies
         if: env.iscustom == 'true' && success()
-        uses: sn-o-w/cache-apt-pkgs-action@master
+        uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv
           version: 1.0
@@ -199,7 +199,7 @@ jobs:
 
       - name: Upload to Artifacts
         if: env.iscustom == 'true' && success() 
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.wsa.outputs.artifact }}
           path: output
