@@ -39,7 +39,7 @@ jobs:
           deactivate
 
       - name: Install Ubuntu Dependencies 🧑‍🏭
-        uses: sn-o-w/cache-apt-pkgs-action@master
+        uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv
           version: 1.0
@@ -48,13 +48,13 @@ jobs:
         id: wsa
         run: ./scripts/build.sh --arch ${{ inputs.arch }} --release-type retail --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --remove-amazon --compress-format zip
 
-      - name: Pass to Windows
+      - name: Pass to Windows 💸
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.wsa.outputs.artifact }}
           path: output
 
-      - name: Prepare release tag
+      - name: Prepare release tag 🏷️
         id: date
         run: echo "date=$(date +'v%Y-%m-%d')" >> "$GITHUB_OUTPUT"
         
@@ -67,33 +67,33 @@ jobs:
     runs-on: windows-latest
     needs: build
     steps:
-      - name: Checkout
+      - name: Checkout ♻️
         uses: actions/checkout@v3
 
-      - name: Download raw zip
+      - name: Download raw zip ⌛
         uses: actions/download-artifact@v3
         with:
           path: ./output/
           name: ${{ needs.build.outputs.zipname }}
 
-      - name: Copy makepri from WindowsSDK
+      - name: Copy makepri from WindowsSDK 🏗️
         run: cp -Force "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\makepri.exe" ".\output\${{ needs.build.outputs.zipname }}"
         
-      - name: Merge language resource
+      - name: Merge language resource 🧙🏻‍♂️
         shell: pwsh
         run: |
          $ProcMakePri = Start-Process pwsh.exe -PassThru -NoNewWindow -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory "${{ github.workspace }}\output\${{ needs.build.outputs.zipname }}"
          $ProcMakePri.WaitForExit()
          
-      - name: Remove unused artifact
+      - name: Remove unused artifact ❌
         uses: geekyeggo/delete-artifact@v2
         with:
           name: ${{ needs.build.outputs.zipname }}
 
-      - name: Compress artifact
+      - name: Compress artifact 📦
         run: 7z a -t7z ${{ needs.build.outputs.zipname }}.7z .\output\${{ needs.build.outputs.zipname }}\*
         
-      - name: File Checksum
+      - name: File Checksum ✔️
         id: run
         run: |
           $hash = Get-FileHash ${{ needs.build.outputs.zipname }}.7z | Select-Object -ExpandProperty Hash
