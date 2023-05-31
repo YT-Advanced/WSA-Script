@@ -1,5 +1,5 @@
 name: Custom Build
-run-name: WSA ${{ inputs.release_type }} Channel with ${{ inputs.root_sol }} and ${{ inputs.gapps_brand }}
+run-name: WSA ${{ inputs.release_type }} ${{ inputs.arch }} with ${{ inputs.root_sol }} and ${{ inputs.gapps_brand }}
 on:
   workflow_dispatch:
     inputs:
@@ -8,7 +8,7 @@ on:
         description: Target CPU architecture of WSA.
         required: true
         options: [x64, arm64, Both]
-        default: Both
+        default: x64
       release_type:
         type: choice
         description: WSA Release Channel
@@ -51,7 +51,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - name: Generate build matrix
+      - name: Generate build matrix ⌛
         id: set-matrix
         uses: actions/github-script@v6
         with:
@@ -117,7 +117,7 @@ jobs:
           deactivate
 
       - name: Install Ubuntu Dependencies 🧑‍🏭
-        uses: sn-o-w/cache-apt-pkgs-action@master
+        uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv
           version: 1.0
@@ -163,8 +163,8 @@ jobs:
         run: |
           sha256sum '${{ steps.wsa.outputs.artifact }}${{ inputs.compression }}' >> sha256-checksum.txt
 
-      - name: Upload Artifact 🤌
-        uses: actions/upload-artifact@v3.1.2
+      - name: Upload Artifact 📦
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.wsa.outputs.artifact }}
           path: output
