@@ -57,13 +57,14 @@ jobs:
       - name: Prepare release tag
         id: date
         run: echo "date=$(date +'v%Y-%m-%d')" >> "$GITHUB_OUTPUT"
+        
     outputs:
       zipname: ${{ steps.wsa.outputs.artifact }}
       date: ${{ steps.date.outputs.date }}
       
   make-pri:
     name: Merge language resource
-    runs-on: windows-latest
+    runs-on: windows-2019
     needs: build
     steps:
       - name: Checkout
@@ -77,8 +78,14 @@ jobs:
 
       - name: Merge language resource
         shell: pwsh
-        run: .\output\${{ needs.build.outputs.zipname }}\MakePri.ps1
-
+        run: |
+         $ProcMakePri = Start-Process pwsh.exe -PassThru -NoNewWindow -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory "${{ github.workspace }}\output\${{ needs.build.outputs.zipname }}"
+         $ProcMakePri.WaitForExit()
+         If ($ProcMakePri.ExitCode -Ne 0) {
+             Write-Warning "Failed to merge resources, WSA Seetings will always be in English"
+             exit $ProcMakePri.ExitCode
+         }
+         
       - name: Remove unused artifact
         uses: geekyeggo/delete-artifact@v2
         with:
@@ -100,5 +107,5 @@ jobs:
           files: ${{ needs.build.outputs.zipname }}.7z
           fail_on_unmatched_files: true
           append_body: true
-          tag_name: ${{ needs.build.outputs.date }} ${{ needs.build.outputs.zipname }}.7z
-          body: ${{ steps.run.outputs.hash }}
+          tag_name: ${{ needs.build.outputs.date }}
+          body: ${{ steps.run.outputs.hash }} ${{ needs.build.outputs.zipname }}.7z
