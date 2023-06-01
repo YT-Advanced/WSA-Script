@@ -80,7 +80,7 @@ jobs:
       - name: Checkout ♻️
         uses: actions/checkout@v3
          
-      - name: Eenviroments variables setup
+      - name: Enviroments variables setup
         run: |
           declare -A opts=( \
               ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF" \
@@ -99,7 +99,7 @@ jobs:
           
           if [[ "$ROOT_SOL" == "none" ]] && [[ "${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]}" == "none" ]] && [[ "${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}" != "--remove-amazon" ]]; then
               echo -e "\nBUILD FAILED\n"
-              echo -e "The option you choiced does not require you to run this build.\nThere is no need to change the configuration, just install directly from the Microsoft Store.\nhttps://apps.microsoft.com/store/detail/9P3395VX91NR\n\n"
+              echo -e "The option you choiced does not require you to run this build.\nThere is no need to change the configuration, just install directly from the Microsoft Store.\nhttps://apps.microsoft.com/store/detail/9P3395VX91NR\n"
               exit 1
           fi
 
