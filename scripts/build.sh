@@ -486,7 +486,7 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
     sudo tee -a "$KSU_PRE" <<EOF >/dev/null || abort
 #!/system/bin/sh
 umask 0777
-echo "\nKernelSU Install Manager\n"
+echo "\nKernelSU Install Manager"
 if [ ! -e "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)" ]; then
     echo "\nInstalling KernelSU APK"
     pm install -i android -r /system/data-app/KernelSU.apk
