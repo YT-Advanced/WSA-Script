@@ -467,8 +467,7 @@ Now run WSA and your serdata should hopefully be restored
 - [Cinit and the WSAPatch Guide](https://github.com/cinit/WSAPatch): Many thanks for the comprehensive guide, files and support provided by Cinit and the contributers at the WSAPatch repository. Windows™ 10 Builds in this repo rely on the hard work of this project and  hence credit is given where due
 - [StoreLib](https://github.com/StoreDev/StoreLib): API for downloading WSA
 - [Magisk](https://github.com/topjohnwu/Magisk): The Magic Mask for Android
-- [WSA-Kernel-SU](https://github.com/tiann/KernelSU): A Kernel based root solution for Android
-- [Kernel Assisted Superuser](https://git.zx2c4.com/kernel-assisted-superuser): Kernel assisted means of gaining a root shell for Android
+- [KernelSU](https://github.com/tiann/KernelSU): A Kernel based root solution for Android
 - [MagiskOnWSALocal](https://github.com/LSPosed/MagiskOnWSALocal): Integrate Magisk root and Google Apps into WSA
 
 ***The repository is provided as a utility.***
