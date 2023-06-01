@@ -148,6 +148,12 @@ jobs:
               ROOT_SOL="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
               MAGISK_VER="${opts[ROOT_SOL,Magisk Stable]}"
           fi
+          
+          if [[ "$ROOT_SOL" == "none" ]] && [[ "${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]}" == "none" ]] && [[ "${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}" != "--remove-amazon" ]]; then
+              echo -e "\nBUILD FAILED\n\nNot all options need to go through this build.\nThere is no need to change the configuration, just install directly from the Microsoft Store."
+              exit 1
+          fi
+          
           mkdir -p download
           echo -e "user_code=$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
 
