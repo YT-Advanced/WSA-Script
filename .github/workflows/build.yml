@@ -107,4 +107,4 @@ jobs:
           fail_on_unmatched_files: true
           append_body: true
           tag_name: ${{ needs.build.outputs.date }}
-          body: ${{ steps.run.outputs.hash }} ${{ needs.build.outputs.zipname }}.7z
+          body: ${{ steps.run.outputs.hash }}  ${{ needs.build.outputs.zipname }}.7z
