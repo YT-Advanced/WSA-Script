@@ -80,19 +80,9 @@ jobs:
       - name: Checkout ♻️
         uses: actions/checkout@v3
          
-      - name: Enviroments variables setup
-        run: |
-          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF"  ["ROOT_SOL,Magisk Stable"]="stable" ["ROOT_SOL,Magisk Beta"]="beta" ["ROOT_SOL,Magisk Canary"]="canary" ["ROOT_SOL,Magisk Debug"]="debug" ["ROOT_SOL,Magisk Delta (HuskyDG)"]="delta" ["ROOT_SOL,Magisk Alpha (vvb2060)"]="alpha" ["ROOT_SOL,KernelSU"]="kernelsu" ["ROOT_SOL,Non-root"]="none" ["GAPPS_BRAND,MindTheGapps v13.0"]="MindTheGapps" ["GAPPS_BRAND,No GApps"]="none" ["REMOVE_AMAZON,true"]="--remove-amazon" ["COMPRESSION,.zip"]="zip" ["COMPRESSION,.7z"]="7z" ["COMPRESSION,.tar.xz"]="xz" )
-          
-          if [[ "${{ inputs.root_sol }}" == *Magisk* ]]; then
-              MAGISK_VER="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
-              ROOT_SOL="magisk"
-          else
-              ROOT_SOL="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
-              MAGISK_VER="${opts[ROOT_SOL,Magisk Stable]}"
-          fi
-          
-          if [[ "$ROOT_SOL" == "none" ]] && [[ "${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]}" == "none" ]] && [[ "${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}" != "--remove-amazon" ]]; then
+      - name: Check options
+        run: |          
+          if [[ "${{ inputs.root_sol }}" == "Non-root" ]] && [[ "${{ inputs.gapps_brand }}" == "No GApps" ]] && [[ "${{ inputs.remove_amazon }}" == "false" ]]; then
               echo -e "\nBUILD FAILED\n"
               echo -e "The option you choiced does not require you to run this build.\nThere is no need to change the configuration, just install directly from the Microsoft Store.\nhttps://apps.microsoft.com/store/detail/9P3395VX91NR\n"
               exit 1
@@ -157,7 +147,17 @@ jobs:
 
       - name: Build WSA 🏗️
         id: wsa
-        run: |          
+        run: |
+          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF"  ["ROOT_SOL,Magisk Stable"]="stable" ["ROOT_SOL,Magisk Beta"]="beta" ["ROOT_SOL,Magisk Canary"]="canary" ["ROOT_SOL,Magisk Debug"]="debug" ["ROOT_SOL,Magisk Delta (HuskyDG)"]="delta" ["ROOT_SOL,Magisk Alpha (vvb2060)"]="alpha" ["ROOT_SOL,KernelSU"]="kernelsu" ["ROOT_SOL,Non-root"]="none" ["GAPPS_BRAND,MindTheGapps v13.0"]="MindTheGapps" ["GAPPS_BRAND,No GApps"]="none" ["REMOVE_AMAZON,true"]="--remove-amazon" ["COMPRESSION,.zip"]="zip" ["COMPRESSION,.7z"]="7z" ["COMPRESSION,.tar.xz"]="xz" )
+          
+          if [[ "${{ inputs.root_sol }}" == *Magisk* ]]; then
+              MAGISK_VER="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
+              ROOT_SOL="magisk"
+          else
+              ROOT_SOL="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
+              MAGISK_VER="${opts[ROOT_SOL,Magisk Stable]}"
+          fi
+          
           mkdir -p download
           echo -e "user_code=$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
 
