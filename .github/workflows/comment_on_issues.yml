@@ -192,7 +192,7 @@ jobs:
         run: ./scripts/build.sh ${{ env.body }}
 
       - name: File Checksum
-        if: env.iscustom == 'true' && success() && steps.wsa.outputs.file_ext != ".zip"
+        if: env.iscustom == 'true' && success() && steps.wsa.outputs.file_ext != '.zip'
         working-directory: output
         run: |
           sha256sum '${{ steps.wsa.outputs.artifact }}${{ steps.wsa.outputs.file_ext }}' >> sha256-checksum.txt
