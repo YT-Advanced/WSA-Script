@@ -264,11 +264,18 @@ update_gapps_zip_name() {
     GAPPS_ZIP_NAME=MindTheGapps-$ARCH-${ANDROID_API_MAP[$ANDROID_API]}.zip
     GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 }
+echo "Generate Download Links"
 if [ "$DOWN_WSA" != "no" ]; then
-    echo "Generate Download Links"
     python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
     # shellcheck disable=SC1090
     source "$WSA_WORK_ENV" || abort
+else
+    printf "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
+    printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
+    printf "  out=Microsoft.VCLibs.140.00.UWPDesktop_x64.appx\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
+    printf "https://raw.githubusercontent.com/M1k3G0/Win10_LTSC_VP9_Installer/master/Microsoft.VCLibs.140.00_14.0.30704.0_x64__8wekyb3d8bbwe.appx\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
+    printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
+    printf "  out=Microsoft.VCLibs.140.00_x64.appx" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
 fi
 if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
     python3 generateMagiskLink.py "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
@@ -285,7 +292,7 @@ if [ "$GAPPS_BRAND" != "none" ]; then
     update_gapps_zip_name
     python3 generateGappsLink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$ANDROID_API" "$GAPPS_ZIP_NAME" || abort
 fi
- echo "Download Artifacts"
+echo "Download Artifacts"
 if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j5 -c -R -m0 --async-dns=false --check-integrity=true --continue=true --allow-overwrite=true --conditional-get=true -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"; then
     echo "We have encountered an error while downloading files."
     exit 1
