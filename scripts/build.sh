@@ -275,7 +275,7 @@ else
     printf "  out=Microsoft.VCLibs.140.00.UWPDesktop_x64.appx\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "https://raw.githubusercontent.com/M1k3G0/Win10_LTSC_VP9_Installer/master/Microsoft.VCLibs.140.00_14.0.30704.0_x64__8wekyb3d8bbwe.appx\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    printf "  out=Microsoft.VCLibs.140.00_x64.appx" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
+    printf "  out=Microsoft.VCLibs.140.00_x64.appx\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
 fi
 if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
     python3 generateMagiskLink.py "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
