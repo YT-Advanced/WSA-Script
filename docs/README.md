@@ -183,7 +183,7 @@
 2. In the latest release, go to the Assets section and download the Windows Subsystem For Android™ version of your choosing (do not download "Source code")
 
 > **Note** : 
-> If you want to download WSA with KernelSU or Magisk Delta, please go to [![Action Tab](https://github.com/YT-Advanced/WSA-Script/actions/workflows/custom_build.yml/badge.svg)](https://github.com/YT-Advanced/WSA-Script/actions/workflows/custom_build.yml) and download the package from the Action. 
+> If you want to download WSA with Magisk Delta, please go to [![Action Tab](https://github.com/YT-Advanced/WSA-Script/actions/workflows/custom_build.yml/badge.svg)](https://github.com/YT-Advanced/WSA-Script/actions/workflows/custom_build.yml) and download the package from the Action. 
 
 3. Check integrity of downloaded file by [Follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/Checksum.md)
 4. Extract the zip file
@@ -302,10 +302,27 @@ In order to make a backup of your WSA data you must copy the Userdata.vhdx (whic
 
 ## Restoring Your Backup
 
-Before attempting to restore your backup, you must remove WSA if installed. Then before you run the "Run.bat" script (to reinstall WSA after removing it), you need to remove these two lines from Install.ps1: 
-```powershell
+Before attempting to restore your backup, you must remove WSA if installed. Then before you run the "Run.bat" script (to reinstall WSA after removing it), you need to remove these lines from Install.ps1: 
+
+Official Magisk:
+```pwsh
 Start-Process "wsa://com.topjohnwu.magisk"
+```
+Magisk Delta:
+```pwsh
+Start-Process "wsa://io.github.huskydg.magisk"
+```
+Magisk Alpha:
+```pwsh
+Start-Process "wsa://io.github.vvb2060.magisk"
+```
+Google Play Store:
+```pwsh
 Start-Process "wsa://com.android.vending"
+```
+Amazon Appstore:
+```pwsh
+Start-Process "wsa://com.amazon.venezia"
 ``` 
 After running the script, do not run WSA at all, and go to %localappdata%\Packages and (if the folders do not exist, create them) in MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe\LocalCache\ paste the userdata.vhdx
 
@@ -383,10 +400,6 @@ Now run WSA and your serdata should hopefully be restored
 **How do I uninstall Magisk?**
 
 - Request, using [Issues](https://github.com/YT-Advanced/WSA-Script/issues), a Windows Subsystem For Android™ version that doesn't include Magisk from the [Releases page](https://github.com/YT-Advanced/WSA-Script/releases/latest). Then follow the [Installation instructions](#installation)
-
-**Can I switch between OpenGApps and MindTheGapps?**
-
-- No. GApps will no longer function. Do a [complete uninstallation](#uninstallation) before switching
 </details>
 
 &nbsp;
@@ -396,12 +409,11 @@ Now run WSA and your serdata should hopefully be restored
 
 &nbsp;
 
+### Install KernelSU Manager:
+[<img src="https://img.shields.io/badge/-How%20to%20install%20KernelSU%20Manager-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/KernelSU.md)
 
 ### Check Integrity Guide:
 [<img src="https://img.shields.io/badge/-HOW%20TO%20CHECK%20INTEGRITY%20OF%20DOWNLOAD%20PACKAGES-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/Checksum.md)
-
-### Install KernerSU:
-[<img src="https://img.shields.io/badge/-How%20to%20install%20KernelSU%20Manager-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/KernelSU.md)
 
 ### GPU Guide:
 [<img src="https://img.shields.io/badge/-How%20to%20Change%20the%20GPU%20Used-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/ChangingGPU.md)
@@ -455,11 +467,7 @@ Now run WSA and your serdata should hopefully be restored
 - [Cinit and the WSAPatch Guide](https://github.com/cinit/WSAPatch): Many thanks for the comprehensive guide, files and support provided by Cinit and the contributers at the WSAPatch repository. Windows™ 10 Builds in this repo rely on the hard work of this project and  hence credit is given where due
 - [StoreLib](https://github.com/StoreDev/StoreLib): API for downloading WSA
 - [Magisk](https://github.com/topjohnwu/Magisk): The Magic Mask for Android
-- [The Open Google Apps Project](https://opengapps.org): Script the automatic generation of up-to-date Google Apps packages
-- [WSA-Kernel-SU](https://github.com/LSPosed/WSA-Kernel-SU): A kernel module to provide /system/xbin/su to Android Kernel
-- [Kernel Assisted Superuser](https://git.zx2c4.com/kernel-assisted-superuser): Kernel assisted means of gaining a root shell for Android
-- [WSAGAScript](https://github.com/ADeltaX/WSAGAScript): The first GApps integration script for WSA
-- [MagiskOnWSA](https://github.com/LSPosed/MagiskOnWSA): `Deprecated` Integrate Magisk root and Google Apps into WSA
+- [KernelSU](https://github.com/tiann/KernelSU): A Kernel based root solution for Android
 - [MagiskOnWSALocal](https://github.com/LSPosed/MagiskOnWSALocal): Integrate Magisk root and Google Apps into WSA
 
 ***The repository is provided as a utility.***

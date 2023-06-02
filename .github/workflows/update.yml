@@ -43,7 +43,7 @@ jobs:
           latestver = html.find("a", string=re.compile("MicrosoftCorporationII\.WindowsSubsystemForAndroid_.*\.msixbundle")).text
           latestver = latestver.replace('MicrosoftCorporationII.WindowsSubsystemForAndroid_', '')
           latestver = latestver.replace('_neutral_~_8wekyb3d8bbwe.msixbundle', '')
-          currentver = requests.get(f"https://raw.githubusercontent.com/${{github.repository}}/update/wsa.appversion").text
+          currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/wsa.appversion").text
           latestver = latestver.replace('\n', '')
           currentver = currentver.replace('\n', '')
           build = False
@@ -54,7 +54,7 @@ jobs:
           file = open('wsa.appversion', 'w')
           file.write(latestver)
           file.close()
-          currentver = requests.get(f"https://raw.githubusercontent.com/${{github.repository}}/update/magisk.appversion").text
+          currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/magisk.appversion").text
           latestver = json.loads(requests.get(f"https://github.com/topjohnwu/magisk-files/raw/master/stable.json").content)['magisk']['version']
           latestver = latestver.replace('\n', '')
           currentver = currentver.replace('\n', '')
@@ -64,7 +64,7 @@ jobs:
           file = open('magisk.appversion', 'w')
           file.write(latestver)
           file.close()
-          currentver = requests.get(f"https://raw.githubusercontent.com/${{github.repository}}/update/gapps.appversion").text
+          currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/gapps.appversion").text
           latestver = json.loads(requests.get(f"https://api.github.com/repos/Howard20181/MindTheGappsBuilder/releases/latest").content)['name']
           latestver = latestver.replace('\n', '')
           currentver = currentver.replace('\n', '')
@@ -83,7 +83,7 @@ jobs:
 
       - name: Update App version 🔗
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
-        if: ${{ env.SHOULD_BUILD == 'yes'}}
+        if: env.SHOULD_BUILD == 'yes'
         with:
           branch: update
           push_options: '--force'
@@ -92,12 +92,12 @@ jobs:
           create_branch: true
 
       - name: Prepare release tag 🏷️
-        if: ${{ env.SHOULD_BUILD == 'yes'}}
+        if: env.SHOULD_BUILD == 'yes'
         id: date
         run: echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
 
       - name: Add text format to release 📝
-        if: ${{ env.SHOULD_BUILD == 'yes'}}
+        if: env.SHOULD_BUILD == 'yes'
         uses: softprops/action-gh-release@v0.1.15
         with:
           tag_name: ${{ steps.date.outputs.date }}
@@ -116,8 +116,18 @@ jobs:
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
 
   build:
+    name: Build WSA
+    strategy:
+      matrix:
+        arch: [x64, arm64]
+        root: [magisk, none]
+        gapps: [MindTheGapps, none]
     permissions: write-all
     needs: check
     uses: ./.github/workflows/build.yml
-    if: ${{ needs.check.outputs.SHOULD_BUILD == 'yes' }}
+    if: needs.check.outputs.SHOULD_BUILD == 'yes'
+    with:
+      arch: ${{ matrix.arch }}
+      gapps: ${{ matrix.gapps }}
+      root: ${{ matrix.root }}
     secrets: inherit

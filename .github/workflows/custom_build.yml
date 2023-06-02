@@ -1,5 +1,5 @@
 name: Custom Build
-run-name: WSA ${{ inputs.release_type }} Channel with ${{ inputs.root_sol }} and ${{ inputs.gapps_brand }}
+run-name: WSA ${{ inputs.release_type }} ${{ inputs.arch }} with ${{ inputs.root_sol }} and ${{ inputs.gapps_brand }}
 on:
   workflow_dispatch:
     inputs:
@@ -8,7 +8,7 @@ on:
         description: Target CPU architecture of WSA.
         required: true
         options: [x64, arm64, Both]
-        default: Both
+        default: x64
       release_type:
         type: choice
         description: WSA Release Channel
@@ -37,7 +37,7 @@ on:
         description: Compression format.
         required: true
         options: [".zip",".7z",".tar.xz"]
-        default: ".7z"
+        default: ".zip"
       remove_amazon:
         description: "Remove Amazon Appstore from the system"
         required: true
@@ -51,7 +51,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - name: Generate build matrix
+      - name: Generate build matrix ⌛
         id: set-matrix
         uses: actions/github-script@v6
         with:
@@ -79,9 +79,17 @@ jobs:
     steps:
       - name: Checkout ♻️
         uses: actions/checkout@v3
-      
+         
+      - name: Check options
+        run: |          
+          if [[ "${{ inputs.root_sol }}" == "Non-root" ]] && [[ "${{ inputs.gapps_brand }}" == "No GApps" ]] && [[ "${{ inputs.remove_amazon }}" == "false" ]]; then
+              echo -e "\nBUILD FAILED\n"
+              echo -e "The option you choiced does not require you to run this build.\nThere is no need to change the configuration, just install directly from the Microsoft Store.\nhttps://apps.microsoft.com/store/detail/9P3395VX91NR\n"
+              exit 1
+          fi
+
       - name: Get WSA Insider Preview build 🏭
-        if: ${{ inputs.release_type == 'Insider Private'}}
+        if: inputs.release_type == 'Insider Private'
         shell: python
         run: |
           import requests
@@ -93,7 +101,7 @@ jobs:
           for str in res:
               with open(env_file, "a") as wr:
                   wr.write("LINK=" + str['browser_download_url'])
-              
+
       - name: Setup Python 👷
         uses: actions/setup-python@v4
         with:
@@ -115,15 +123,15 @@ jobs:
               python3 -m pip install --upgrade -r requirements.txt || abort "Failed to install python3 dependencies"
           }
           deactivate
-          
+
       - name: Install Ubuntu Dependencies 🧑‍🏭
-        uses: sn-o-w/cache-apt-pkgs-action@master
+        uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv lzip
+          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv
           version: 1.0
-      
+
       - name: Download WSA Preview build + VCLibs 14 + UI XAML manually 🧙🏻‍♂️
-        if: ${{ inputs.release_type == 'Insider Private'}}
+        if: inputs.release_type == 'Insider Private'
         run: |
           wget -P ./download/wsa ${{ env.LINK }}
           mv ./download/wsa/*.Msixbundle ./download/wsa-WIF.zip
@@ -140,7 +148,8 @@ jobs:
       - name: Build WSA 🏗️
         id: wsa
         run: |
-          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF" ["ROOT_SOL,Magisk Stable"]="stable" ["ROOT_SOL,Magisk Beta"]="beta" ["ROOT_SOL,Magisk Canary"]="canary" ["ROOT_SOL,Magisk Debug"]="debug" ["ROOT_SOL,Magisk Delta (HuskyDG)"]="delta" ["ROOT_SOL,Magisk Alpha (vvb2060)"]="alpha" ["ROOT_SOL,KernelSU"]="kernelsu" ["ROOT_SOL,Non-root"]="none" ["GAPPS_BRAND,MindTheGapps v13.0"]="MindTheGapps" ["GAPPS_BRAND,No GApps"]="none" ["REMOVE_AMAZON,true"]="--remove-amazon" ["COMPRESSION,.zip"]="zip" ["COMPRESSION,.7z"]="7z" ["COMPRESSION,.tar.xz"]="xz" )
+          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF"  ["ROOT_SOL,Magisk Stable"]="stable" ["ROOT_SOL,Magisk Beta"]="beta" ["ROOT_SOL,Magisk Canary"]="canary" ["ROOT_SOL,Magisk Debug"]="debug" ["ROOT_SOL,Magisk Delta (HuskyDG)"]="delta" ["ROOT_SOL,Magisk Alpha (vvb2060)"]="alpha" ["ROOT_SOL,KernelSU"]="kernelsu" ["ROOT_SOL,Non-root"]="none" ["GAPPS_BRAND,MindTheGapps v13.0"]="MindTheGapps" ["GAPPS_BRAND,No GApps"]="none" ["REMOVE_AMAZON,true"]="--remove-amazon" ["COMPRESSION,.zip"]="zip" ["COMPRESSION,.7z"]="7z" ["COMPRESSION,.tar.xz"]="xz" )
+          
           if [[ "${{ inputs.root_sol }}" == *Magisk* ]]; then
               MAGISK_VER="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
               ROOT_SOL="magisk"
@@ -148,21 +157,23 @@ jobs:
               ROOT_SOL="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
               MAGISK_VER="${opts[ROOT_SOL,Magisk Stable]}"
           fi
+          
           mkdir -p download
           echo -e "user_code=$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
-          
+
           if [[ "${{ inputs.release_type }}" == *Private* ]]; then
               ./scripts/build.sh --arch ${{ matrix.arch }} --release-type WIF --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --skip-download-wsa --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
           else
               ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
           fi
-          
+
       - name: File Checksum ✔️
+        if: inputs.compression != '.zip'
         working-directory: output
         run: |
           sha256sum '${{ steps.wsa.outputs.artifact }}${{ inputs.compression }}' >> sha256-checksum.txt
 
-      - name: Upload Artifact 🤌
+      - name: Upload Artifact 📦
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.wsa.outputs.artifact }}

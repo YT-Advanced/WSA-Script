@@ -20,6 +20,10 @@
 ```Powershell
   certutil -hashfile "WSA_2XXX.XXXXX.X.X_XXXX_Release-Nightly-with-magisk-XXXXXXX-XXXXXX-MindTheGapps-XX.X-RemovedAmazon" SHA256
 ```
+For PowerShell:
+```PowerShell
+  (Get-FileHash -Path "WSA_2XXX.XXXXX.X.X_XXXX_Release-Nightly-with-magisk-XXXXXXX-XXXXXX-MindTheGapps-XX.X-RemovedAmazon" -Algorithm SHA256).Hash
+```
 &nbsp;  
 
 ### **4. Compare the SHA256 output with ones at [Release](https://github.com/YT-Advanced/WSA-Script/releases/latest) or in the `sha256-checksum.txt` (if you download artifact from the Custom Build task).** 

@@ -1,9 +1,15 @@
 # Install KernelSU Manager
 
-1. Download WSA with KernelSU from [![Action Tab](https://github.com/YT-Advanced/WSA-Script/actions/workflows/custom_build.yml/badge.svg)](https://github.com/YT-Advanced/WSA-Script/actions/workflows/custom_build.yml) then [Follow this guide](https://github.com/YT-Advanced/WSA-Script#--installation) to install it.
+## Text Guide
 
-1. Download KernelSU Manager from [![Build Manager](https://github.com/tiann/KernelSU/actions/workflows/build-manager.yml/badge.svg?event=push)](https://github.com/tiann/KernelSU/actions/workflows/build-manager.yml?query=event%3Apush+is%3Acompleted+branch%3Amain) (Download the artifact named `manager`).
+1. [Connect to WSA with ADB](ADB-Sideloading.md#setting-up-adb-to-work-with-wsa)
+2. Run the following command:
+   ```
+   adb shell ksuinstall
+   ```
+   
+If the installation completes successfully, the KernelSU Manager will launching.
 
-1. Unzip the downloaded zip package and get the manager apk named `KernelSU_vx.x.x-xx-.....apk`.
-
-1. Use the command `adb install <apkname>.apk` or WSAPacman to install the manager.
+<!--
+## Video Guide
+-->
