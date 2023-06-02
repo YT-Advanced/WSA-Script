@@ -1,22 +1,17 @@
-name: Auto Build (Use for call only)
-on: [workflow_call]
-
-concurrency:
-  group: ${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
-
+name: Auto Build function (Use for call only)
+on: 
+ workflow_call:
+    inputs:
+      arch:
+        type: string
+      gapps:
+        type: string
+      root:
+        type: string
 jobs:
   build:
-    if: ${{github.repository == 'YT-Advanced/WSA-Script'}}
     name: Build WSA
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: [x64, arm64]
-        root: [magisk, none]
-        gapps: [MindTheGapps, none]
-        release: [retail]
-        compress-format: [7z]
     steps:
       - name: Checkout ♻️
         uses: actions/checkout@v3
@@ -28,7 +23,7 @@ jobs:
           python-version: '3.x'
           cache: 'pip'
           cache-dependency-path: scripts/
-          
+
       - name: Setup Python3 Virtual Enviroment 🐍
         working-directory: scripts
         run: |
@@ -42,29 +37,74 @@ jobs:
               python3 -m pip install --upgrade -r requirements.txt || abort "Failed to install python3 dependencies"
           }
           deactivate
-          
+
       - name: Install Ubuntu Dependencies 🧑‍🏭
-        uses: sn-o-w/cache-apt-pkgs-action@master
+        uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv lzip
+          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv
           version: 1.0
-          
+
       - name: Build WSA ${{ matrix.arch }} with GAPPS ${{ matrix.root }} 🏗️
         id: wsa
-        run: ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${{ matrix.release }} --magisk-ver stable --gapps-brand ${{ matrix.gapps }} --root-sol ${{ matrix.root }} --remove-amazon --compress-format ${{ matrix.compress-format }}
+        run: ./scripts/build.sh --arch ${{ inputs.arch }} --release-type retail --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --remove-amazon --compress-format zip
 
-      - name: File Checksum ✔️
+      - name: Pass to Windows 💸
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.wsa.outputs.artifact }}
+          path: output
+
+      - name: Prepare release tag 🏷️
         id: date
-        working-directory: output
-        run: |
-          echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
-          echo "checksum=$(sha256sum '${{ steps.wsa.outputs.artifact }}.${{ matrix.compress-format }}')" >> $GITHUB_OUTPUT
+        run: echo "date=$(date +'v%Y-%m-%d')" >> "$GITHUB_OUTPUT"
+        
+    outputs:
+      zipname: ${{ steps.wsa.outputs.artifact }}
+      date: ${{ steps.date.outputs.date }}
+      
+  make-pri:
+    name: Merge language resource
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Checkout ♻️
+        uses: actions/checkout@v3
 
+      - name: Download raw zip ⌛
+        uses: actions/download-artifact@v3
+        with:
+          path: ./output/
+          name: ${{ needs.build.outputs.zipname }}
+
+      - name: Copy makepri from WindowsSDK 🏗️
+        run: cp -Force "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\makepri.exe" ".\output\${{ needs.build.outputs.zipname }}"
+        
+      - name: Merge language resource 🧙🏻‍♂️
+        shell: pwsh
+        run: |
+         $ProcMakePri = Start-Process pwsh.exe -PassThru -NoNewWindow -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory "${{ github.workspace }}\output\${{ needs.build.outputs.zipname }}"
+         $ProcMakePri.WaitForExit()
+         
+      - name: Remove unused artifact ❌
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: ${{ needs.build.outputs.zipname }}
+
+      - name: Compress artifact 📦
+        run: 7z a -t7z ${{ needs.build.outputs.zipname }}.7z .\output\${{ needs.build.outputs.zipname }}\*
+        
+      - name: File Checksum ✔️
+        id: run
+        run: |
+          $hash = Get-FileHash ${{ needs.build.outputs.zipname }}.7z | Select-Object -ExpandProperty Hash
+          $hash = $hash.ToLower()
+          ("hash=" + $hash) >> $env:GITHUB_OUTPUT
+          
       - name: Update build to release 🤌
         uses: softprops/action-gh-release@v0.1.15
         with:
-          files: output/${{ steps.wsa.outputs.artifact }}.${{ matrix.compress-format }}
+          files: ${{ needs.build.outputs.zipname }}.7z
           fail_on_unmatched_files: true
           append_body: true
-          tag_name: ${{ steps.date.outputs.date }}
-          body: ${{ steps.date.outputs.checksum }}
+          tag_name: ${{ needs.build.outputs.date }}
+          body: ${{ steps.run.outputs.hash }}  ${{ needs.build.outputs.zipname }}.7z
