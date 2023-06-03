@@ -569,7 +569,7 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     echo -e "Integrate MindTheGapps done\n"
     echo "Fix system props"
 # The first argument is prop path, second is brand + manufacturer (google), third is product name (redfin), fourth is device model (Pixel 5), fifth is Build ID (RQ3A.210905.001)
-    sudo python3 fixGappsProp.py "$ROOT_MNT" "google" "redfin" "Pixel 5" "RQ3A.210905.001" || abort
+    sudo python3 fixGappsProp.py "$ROOT_MNT" "google" "redfin" "Pixel 5" "TQ2A.230505.002" || abort
     echo -e "done\n"
 fi
 
