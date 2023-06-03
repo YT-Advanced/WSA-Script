@@ -3,7 +3,7 @@
 *.exe binary
 *.apk binary
 *.so binary
-*.xml text eol=crlf
+*.xml text eol=lf
 *.bat text eol=crlf
 *.ps1 text eol=crlf
 *.* merge=theirs
