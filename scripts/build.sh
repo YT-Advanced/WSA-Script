@@ -660,6 +660,7 @@ elif [ "$COMPRESS_FORMAT" = "xz" ]; then
     fi
 elif [ "$COMPRESS_FORMAT" = "zip" ]; then
     echo "Compressing with zip later..."
+    echo "file_ext=.zip" >> "$GITHUB_OUTPUT"
     cp -r "$WORK_DIR/wsa/$artifact_name" "$OUTPUT_PATH" || abort
     touch "$OUTPUT_PATH/apex/.gitkeep" || abort
 fi
