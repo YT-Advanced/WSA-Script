@@ -235,7 +235,7 @@ check_list "$COMPRESS_FORMAT" "Compress Format" "${COMPRESS_FORMAT_MAP[@]}"
 
 # shellcheck disable=SC1091
 [ -f "$PYTHON_VENV_DIR/bin/activate" ] && {
-    source "$PYTHON_VENV_DIR/bin/activate" || abort "Failed to activate virtual environment, please re-run install_deps.sh"
+    source "$PYTHON_VENV_DIR/bin/activate" || abort "Failed to activate virtual environment"
 }
 declare -A RELEASE_NAME_MAP=(["retail"]="Retail" ["RP"]="Release Preview" ["WIS"]="Insider Slow" ["WIF"]="Insider Fast")
 declare -A ANDROID_API_MAP=(["33"]="13.0")
@@ -351,7 +351,7 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     echo "Extract MindTheGapps"
     mkdir -p "$WORK_DIR/gapps" || abort
     if [ -f "$GAPPS_PATH" ]; then
-        if ! unzip "$GAPPS_PATH" "system/*" -x "system/addon.d/*" "system/system_ext/priv-app/SetupWizard/*" -d "$WORK_DIR/gapps"; then
+        if ! unzip "$GAPPS_PATH" "system/*" -x "system/addon.d/*" "system/product/app/*Exchange*/*" "system/product/etc/default-permissions/*mtg*" "system/product/etc/permissions/*dialer*" "system/product/etc/sysconfig/*build*" "system/product/framework/*" "system/product/lib*/*" "system/product/priv-app/AndroidAuto*/*" "system/system_ext/priv-app/SetupWizard/*" -d "$WORK_DIR/gapps"; then
             abort "Unzip MindTheGapps failed, package is corrupted?"
         fi
         mv "$WORK_DIR/gapps/system/"* "$WORK_DIR/gapps" || abort
@@ -388,6 +388,7 @@ echo -e "Create overlayfs for EROFS done\n"
 if [ "$REMOVE_AMAZON" ]; then
     echo "Remove Amazon Appstore"
     rm -f "$WORK_DIR/wsa/$ARCH/apex/mado_release.apex"
+    # Stub
     find "${PRODUCT_MNT:?}"/{apex,etc/*permissions} 2>/dev/null | grep -e mado | sudo xargs rm -rf
     echo -e "done\n"
 fi
