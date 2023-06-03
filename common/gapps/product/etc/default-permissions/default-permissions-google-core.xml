@@ -14,14 +14,14 @@
         <permission name="android.permission.ACCESS_COARSE_LOCATION" fixed="true"/>
         <permission name="android.permission.READ_CONTACTS" fixed="true"/>
         <permission name="android.permission.WRITE_EXTERNAL_STORAGE" fixed="true"/>
-        <permission name="android.permission.POST_NOTIFICATIONS" fixed="true"/>
+        <permission name="android.permission.POST_NOTIFICATIONS" fixed="false"/>
         <permission name="android.permission.READ_EXTERNAL_STORAGE" fixed="true"/>
     </exception>
     
     <exception
         package="com.google.android.gms">
         <permission name="android.permission.GET_ACCOUNTS" fixed="true"/>
-        <permission name="android.permission.POST_NOTIFICATIONS" fixed="true"/>
+        <permission name="android.permission.POST_NOTIFICATIONS" fixed="false"/>
         <permission name="android.permission.ACCESS_FINE_LOCATION" fixed="true"/>
         <permission name="android.permission.READ_PHONE_STATE" fixed="true"/>
         <permission name="android.permission.RECEIVE_SMS" fixed="true"/>
@@ -75,7 +75,7 @@
         <permission name="android.permission.ANSWER_PHONE_CALLS" fixed="true"/>
         <permission name="android.permission.BLUETOOTH_CONNECT" fixed="true"/>
         <permission name="android.permission.BLUETOOTH_SCAN" fixed="true"/>
-        <permission name="android.permission.POST_NOTIFICATIONS" fixed="true"/>
+        <permission name="android.permission.POST_NOTIFICATIONS" fixed="false"/>
         <permission name="android.permission.READ_MEDIA_AUDIO" fixed="true"/>
         <permission name="android.permission.READ_MEDIA_VIDEO" fixed="true"/>
     </exception>
