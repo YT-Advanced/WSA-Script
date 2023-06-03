@@ -198,7 +198,7 @@ jobs:
           sha256sum '${{ steps.wsa.outputs.artifact }}${{ steps.wsa.outputs.file_ext }}' >> sha256-checksum.txt
 
       - name: Upload to Artifacts
-        if: env.iscustom == 'true' && success() 
+        if: env.iscustom == 'true' && success() && inputs.compression != '.zip'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.wsa.outputs.artifact }}
