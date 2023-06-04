@@ -109,7 +109,6 @@ dalvik.vm.madvise.artfile.size=4294967295
 ####################################
 # from variable PRODUCT_SYSTEM_DEFAULT_PROPERTIES
 ####################################
-# end of file
 
 # extra prop added by MagiskOnWSA
 ro.product.brand=google
@@ -121,3 +120,4 @@ ro.product.model=Pixel 5
 ro.system.build.flavor=redfin-user
 ro.build.fingerprint=google/redfin/redfin:13/TQ2A.230505.002.A1/2305.40000.2.0:user/release-keys
 ro.system.build.description=redfin-user 13 TQ2A.230505.002.A1 2305.40000.2.0 release-keys
+# end of file
