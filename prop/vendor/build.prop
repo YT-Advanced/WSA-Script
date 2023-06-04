@@ -1,0 +1,115 @@
+####################################
+# from generate-common-build-props
+# These properties identify this partition image.
+####################################
+ro.product.vendor.brand=google
+ro.product.vendor.device=redfin
+ro.product.vendor.manufacturer=Google
+ro.product.vendor.model=Pixel 5
+ro.product.vendor.name=redfin
+ro.vendor.product.cpu.abilist=x86_64,x86,arm64-v8a,armeabi-v7a,armeabi
+ro.vendor.product.cpu.abilist32=x86,armeabi-v7a,armeabi
+ro.vendor.product.cpu.abilist64=x86_64,arm64-v8a
+ro.vendor.build.date=Thu Jun  1 01:29:59 UTC 2023
+ro.vendor.build.date.utc=1685582999
+ro.vendor.build.fingerprint=google/redfin/redfin:13/TQ2A.230505.002.A1/2305.40000.2.0:user/release-keys
+ro.vendor.build.id=TQ2A.230505.002.A1
+ro.vendor.build.tags=release-keys
+ro.vendor.build.type=user
+ro.vendor.build.version.incremental=2305.40000.2.0
+ro.vendor.build.version.release=13
+ro.vendor.build.version.release_or_codename=13
+ro.vendor.build.version.sdk=33
+####################################
+# from out/target/product/windows_x86_64/obj/ETC/android_info_prop_intermediates/android_info.prop
+####################################
+####################################
+# from variable ADDITIONAL_VENDOR_PROPERTIES
+####################################
+ro.vndk.version=33
+ro.bionic.arch=x86_64
+ro.bionic.cpu_variant=
+ro.bionic.2nd_arch=x86
+ro.bionic.2nd_cpu_variant=
+persist.sys.dalvik.vm.lib.2=libart.so
+dalvik.vm.isa.x86_64.variant=x86_64
+dalvik.vm.isa.x86_64.features=default
+dalvik.vm.isa.x86.variant=x86_64
+dalvik.vm.isa.x86.features=default
+ro.boot.dynamic_partitions=true
+ro.product.first_api_level=30
+ro.vendor.build.security_patch=
+ro.product.board=windows
+ro.board.platform=windows
+ro.hwui.use_vulkan=
+####################################
+# from variable PRODUCT_VENDOR_PROPERTIES
+####################################
+ro.zygote=zygote64_32
+# Removed by post_process_props.py because overridden by ro.zygote=zygote64_32
+#ro.zygote?=zygote32
+ro.logd.size.stats=64K
+log.tag.stats_log=I
+ro.carrier=unknown
+ro.config.notification_sound=OnTheHunt.ogg
+ro.config.alarm_alert=Alarm_Classic.ogg
+ro.apex.updatable=true
+ro.virtual_ab.enabled=true
+ro.control_privapp_permissions=enforce
+external_storage.projid.enabled=1
+external_storage.casefold.enabled=1
+external_storage.sdcardfs.enabled=0
+dalvik.vm.heapstartsize=16m
+dalvik.vm.heapgrowthlimit=192m
+dalvik.vm.heapsize=512m
+dalvik.vm.heaptargetutilization=0.75
+dalvik.vm.heapminfree=512k
+dalvik.vm.heapmaxfree=8m
+debug.sf.nobootanimation=1
+ro.opengles.version=196608
+debug.stagefright.ccodec=0
+debug.latte.hwcodec.avcdec=2
+debug.latte.hwcodec.hevcdec=2
+debug.latte.hwcodec.vp8dec=2
+debug.latte.hwcodec.vp9dec=2
+debug.latte.hwcodec.mp4vdec=2
+debug.latte.hwcodec.av1dec=2
+debug.latte.hwcodec.h263dec=2
+debug.latte.hwcodec.mpeg2dec=2
+debug.hwui.disable_disk_cache=1
+ro.hardware.egl=emulation
+ro.surface_flinger.running_without_sync_framework=true
+debug.sf.vsync_reactor_ignore_present_fences=true
+service.sf.prime_shader_cache=0
+ro.hardware.audio.primary=windows
+drm.service.enabled=true
+wifi.interface=wlan0
+vendor.bt.rootcanal_test_console=off
+ro.incremental.enable=true
+####################################
+# from variable PRODUCT_DEFAULT_PROPERTY_OVERRIDES
+####################################
+ro.dalvik.vm.native.bridge=libhoudini.so
+####################################
+# from variable PRODUCT_PROPERTY_OVERRIDES
+####################################
+ro.dalvik.vm.isa.arm=x86
+ro.vendor.enable.native.bridge.exec=1
+ro.dalvik.vm.isa.arm64=x86_64
+ro.vendor.enable.native.bridge.exec64=1
+# end of file
+
+# extra prop added by MagiskOnWSA
+ro.product.brand=google
+ro.product.manufacturer=Google
+ro.build.product=redfin
+ro.vendor.build.product=redfin
+ro.product.name=redfin
+ro.product.device=redfin
+ro.product.model=Pixel 5
+ro.build.flavor=redfin-user
+ro.vendor.build.flavor=redfin-user
+ro.build.description=redfin-user 13 TQ2A.230505.002.A1 2305.40000.2.0 release-keys
+ro.build.fingerprint=google/redfin/redfin:13/TQ2A.230505.002.A1/2305.40000.2.0:user/release-keys
+ro.vendor.build.description=redfin-user 13 TQ2A.230505.002.A1 2305.40000.2.0 release-keys
+ro.bootimage.build.fingerprint=google/redfin/redfin:13/TQ2A.230505.002.A1/2305.40000.2.0:user/release-keys
