@@ -593,11 +593,12 @@ if [[ "$CUSTOM_MODEL" != "none" ]]; then
     MODEL_NAME="${MODEL_NAME_MAP[$CUSTOM_MODEL]}"
     sudo python3 fixGappsProp.py "$ROOT_MNT" "google" "Google" "$CUSTOM_MODEL" "$MODEL_NAME" || abort
     # shellcheck disable=SC2002
-    BUILD_ID=$(cat "$SYSTEM_MNT/build.prop" | grep -e ro.build.id | cut -c 13-)
+    BUILD_ID=$(sudo cat "$SYSTEM_MNT/build.prop" | grep -e ro.build.id | cut -c 13-)
     if [[ "${#BUILD_ID}" != "15" ]]; then
         FIXED_BUILD_ID=$(echo "$BUILD_ID" | cut -c -15)
         echo "Fixed Build ID: $FIXED_BUILD_ID"
-        sudo find "$ROOT_MNT/{system,system_ext,product,vendor}" -name "build.prop" -exec sed -i -e "s/$BUILD_ID/$FIXED_BUILD_ID/g" {} \;
+        # shellcheck disable=SC2086
+        sudo find $ROOT_MNT/{system,system_ext,product,vendor} -name "build.prop" -exec sed -i -e "s/$BUILD_ID/$FIXED_BUILD_ID/g" {} \;
     fi
     echo -e "done\n"
 else
