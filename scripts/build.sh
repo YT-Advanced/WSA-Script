@@ -255,7 +255,6 @@ check_list "$COMPRESS_FORMAT" "Compress Format" "${COMPRESS_FORMAT_MAP[@]}"
     source "$PYTHON_VENV_DIR/bin/activate" || abort "Failed to activate virtual environment"
 }
 declare -A RELEASE_NAME_MAP=(["retail"]="Retail" ["RP"]="Release Preview" ["WIS"]="Insider Slow" ["WIF"]="Insider Fast")
-declare -A ANDROID_API_MAP=(["33"]="13.0")
 RELEASE_NAME=${RELEASE_NAME_MAP[$RELEASE_TYPE]} || abort
 
 echo -e "Build: RELEASE_TYPE=$RELEASE_NAME"
@@ -266,8 +265,7 @@ UWPVCLibs_PATH="$DOWNLOAD_DIR/Microsoft.VCLibs.140.00.UWPDesktop_$ARCH.appx"
 xaml_PATH="$DOWNLOAD_DIR/Microsoft.UI.Xaml.2.8_$ARCH.appx"
 MAGISK_ZIP=magisk-$MAGISK_VER.zip
 MAGISK_PATH=$DOWNLOAD_DIR/$MAGISK_ZIP
-ANDROID_API=33
-GAPPS_ZIP_NAME=MindTheGapps-$ARCH-${ANDROID_API_MAP[$ANDROID_API]}.zip
+GAPPS_ZIP_NAME=MindTheGapps-$ARCH-13.0.zip
 GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 
 update_ksu_zip_name() {
@@ -278,7 +276,7 @@ update_ksu_zip_name() {
     KERNELSU_INFO="$KERNELSU_PATH.info"
 }
 update_gapps_zip_name() {
-    GAPPS_ZIP_NAME=MindTheGapps-$ARCH-${ANDROID_API_MAP[$ANDROID_API]}.zip
+    GAPPS_ZIP_NAME=MindTheGapps-$ARCH-13.0.zip
     GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 }
 echo "Generate Download Links"
@@ -307,7 +305,7 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
 fi
 if [ "$GAPPS_BRAND" != "none" ]; then
     update_gapps_zip_name
-    python3 generateGappsLink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$ANDROID_API" "$GAPPS_ZIP_NAME" || abort
+    python3 generateGappsLink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$GAPPS_ZIP_NAME" || abort
 fi
 echo "Download Artifacts"
 if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j5 -c -R -m0 --async-dns=false --check-integrity=true --continue=true --allow-overwrite=true --conditional-get=true -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"; then
@@ -601,6 +599,7 @@ if [[ "$CUSTOM_MODEL" != "none" ]]; then
         sudo find $ROOT_MNT/{system,system_ext,product,vendor} -name "build.prop" -exec sed -i -e "s/$BUILD_ID/$FIXED_BUILD_ID/g" {} \;
     fi
     echo -e "done\n"
+    MODEL_NAME="${MODEL_NAME// /-}"
 else
     MODEL_NAME="default"
 fi
@@ -672,10 +671,10 @@ fi
 if [ "$GAPPS_BRAND" = "none" ]; then
     name2="-NoGApps"
 else
-    name2=-MindTheGapps-${ANDROID_API_MAP[$ANDROID_API]}
+    name2=-MindTheGapps-13.0
 fi
 if [[ "$MODEL_NAME" != "default" ]]; then
-    name3="-as-$CUSTOM_MODEL"
+    name3="-as-$MODEL_NAME"
 fi
 artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}${name3}
 if [ "$REMOVE_AMAZON" = "yes" ]; then
