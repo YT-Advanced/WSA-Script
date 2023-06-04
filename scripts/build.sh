@@ -160,10 +160,16 @@ GAPPS_BRAND_MAP=(
 )
 
 CUSTOM_MODEL_MAP=(
-    "redfin"
     "none"
-    "barbet"
+    "sunfish"
     "bramble"
+    "redfin"
+    "barbet"
+    "raven"
+    "oriole"
+    "bluejay"
+    "panther"
+    "cheetah"
 )
 
 ROOT_SOL_MAP=(
@@ -583,7 +589,7 @@ fi
 if [[ "$CUSTOM_MODEL" != "none" ]]; then
     echo "Fix system props"
     # The first argument is prop path, second is brand + manufacturer (google), third is product name (redfin), fourth is device model (Pixel 5)
-    declare -A MODEL_NAME_MAP=(["redfin"]="Pixel 5" ["barbet"]="Pixel 5a" ["bramble"]="Pixel 4a (5G)")
+    declare -A MODEL_NAME_MAP=(["sunfish"]="Pixel 4a" ["bramble"]="Pixel 4a (5G)" ["redfin"]="Pixel 5" ["barbet"]="Pixel 5a" ["raven"]="Pixel 6 Pro" ["oriole"]="Pixel 6" ["bluejay"]="Pixel 6a" ["pamther"]="Pixel 7" ["cheetah"]="Pixel 7 Pro")
     MODEL_NAME="${MODEL_NAME_MAP[$CUSTOM_MODEL]}"
     sudo python3 fixGappsProp.py "$ROOT_MNT" "google" "Google" "$CUSTOM_MODEL" "$MODEL_NAME" || abort
     echo -e "done\n"
