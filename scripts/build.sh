@@ -179,6 +179,7 @@ ARGUMENT_LIST=(
     "compress-format:"
     "remove-amazon"
     "skip-download-wsa"
+    "custom-prop"
 )
 
 default
@@ -578,6 +579,7 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     else
         echo -e "Using Pixel 5 build.prop\n"
         sudo python3 fixGappsProp.py "$ROOT_MNT" || abort
+    fi    
     echo -e "Fix system build.prop done\n"
 fi
 
