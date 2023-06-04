@@ -71,7 +71,7 @@ def fix_prop(sec, prop):
     with open(prop, 'r') as f:
         p = Prop(f)
 
-    p += "# extra prop added by MagiskOnWSA"
+    p += "# extra props added by MagiskOnWSA by YT-Advanced/WSA-Script"
 
     for k, v in new_props.items():
         p[f"ro.{k[0]}.{k[1]}"] = v
@@ -92,5 +92,5 @@ def fix_prop(sec, prop):
 
 
 sys_path = sys.argv[1]
-for sec, prop in {"system": sys_path+"/system/build.prop", "product": sys_path+"/product/build.prop", "system_ext": sys_path+"/system_ext/build.prop", "vendor": sys_path+"/vendor/build.prop", "odm": sys_path+"/vendor/odm/etc/build.prop"}.items():
+for sec, prop in {"system": sys_path+"/system/build.prop", "product": sys_path+"/product/build.prop", "system_ext": sys_path+"/system_ext/build.prop", "vendor": sys_path+"/vendor/build.prop", "odm": sys_path+"/vendor/odm/etc/build.prop", "vendor_dlkm": sys_path+"/vendor/vendor_dlkm/etc/build.prop"}.items():
     fix_prop(sec, prop)
