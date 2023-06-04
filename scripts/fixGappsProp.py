@@ -40,6 +40,7 @@ class Prop(OrderedDict):
         self[f".{len(self)}"] = other
         return self
 
+
 new_props = {
     ("product", "brand"): "google",
     ("product", "manufacturer"): "Google",
@@ -49,6 +50,7 @@ new_props = {
     ("product", "model"): "Pixel 5",
     ("build", "flavor"): "redfin-user"
 }
+
 
 def description(sec: str, p: Prop) -> str:
     return f"{p[f'ro.{sec}.build.flavor']} {p[f'ro.{sec}.build.version.release_or_codename']} {p[f'ro.{sec}.build.id']} {p[f'ro.{sec}.build.version.incremental']} {p[f'ro.{sec}.build.tags']}"

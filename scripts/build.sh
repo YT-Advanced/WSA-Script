@@ -568,8 +568,7 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     sudo LD_LIBRARY_PATH="../linker/$HOST_ARCH" "$WORK_DIR/magisk/magiskpolicy" --load "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --save "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" "allow gmscore_app gmscore_app vsock_socket { create connect write read }" "allow gmscore_app device_config_runtime_native_boot_prop file read" "allow gmscore_app system_server_tmpfs dir search" "allow gmscore_app system_server_tmpfs file open" "allow gmscore_app system_server_tmpfs filesystem getattr" "allow gmscore_app gpu_device dir search" "allow gmscore_app media_rw_data_file filesystem getattr" || abort
     echo -e "Integrate MindTheGapps done\n"
     echo "Fix system props"
-# The first argument is prop path, second is brand + manufacturer (google), third is product name (redfin), fourth is device model (Pixel 5), fifth is Build ID (TQ2A.230305.008.C1)
-    sudo python3 fixGappsProp.py "$ROOT_MNT" "google" "redfin" "Pixel 5" "TQ2A.230305.008.C1" || abort
+    sudo python3 fixGappsProp.py "$ROOT_MNT" || abort
     echo -e "done\n"
 fi
 
