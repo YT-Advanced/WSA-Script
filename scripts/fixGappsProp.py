@@ -40,17 +40,20 @@ class Prop(OrderedDict):
         self[f".{len(self)}"] = other
         return self
 
-
 new_props = {
     ("product", "brand"): "google",
+    ("system", "brand"): "google",
     ("product", "manufacturer"): "Google",
-    ("build", "product"): "redfin",
-    ("product", "name"): "redfin",
-    ("product", "device"): "redfin",
-    ("product", "model"): "Pixel 5",
-    ("build", "flavor"): "redfin-user"
+    ("system", "manufacturer"): "Google",
+    ("build", "product"): sys.argv[2],
+    ("product", "name"): sys.argv[2],
+    ("system", "name"): sys.argv[2],
+    ("product", "device"): sys.argv[2],
+    ("system", "device"): sys.argv[2],
+    ("product", "model"): sys.argv[3],
+    ("system", "model"): sys.argv[3],
+    ("build", "flavor"): sys.argv[2] + "-user"
 }
-
 
 def description(sec: str, p: Prop) -> str:
     return f"{p[f'ro.{sec}.build.flavor']} {p[f'ro.{sec}.build.version.release_or_codename']} {p[f'ro.{sec}.build.id']} {p[f'ro.{sec}.build.version.incremental']} {p[f'ro.{sec}.build.tags']}"
@@ -68,7 +71,7 @@ def fix_prop(sec, prop):
     with open(prop, 'r') as f:
         p = Prop(f)
 
-    p += "# extra prop added by MagiskOnWSA"
+    p += "# extra props added by MagiskOnWSA by YT-Advanced/WSA-Script"
 
     for k, v in new_props.items():
         p[f"ro.{k[0]}.{k[1]}"] = v
@@ -89,5 +92,5 @@ def fix_prop(sec, prop):
 
 
 sys_path = sys.argv[1]
-for sec, prop in {"system": sys_path+"/system/build.prop", "product": sys_path+"/product/build.prop", "system_ext": sys_path+"/system_ext/build.prop", "vendor": sys_path+"/vendor/build.prop", "odm": sys_path+"/vendor/odm/etc/build.prop"}.items():
+for sec, prop in {"system": sys_path+"/system/build.prop", "vendor": sys_path+"/vendor/build.prop", "odm": sys_path+"/vendor/odm/etc/build.prop", "vendor_dlkm": sys_path+"/vendor/vendor_dlkm/etc/build.prop"}.items():
     fix_prop(sec, prop)

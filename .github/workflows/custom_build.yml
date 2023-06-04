@@ -1,5 +1,5 @@
 name: Custom Build
-run-name: WSA ${{ inputs.release_type }} ${{ inputs.arch }} with ${{ inputs.root_sol }} and ${{ inputs.gapps_brand }}
+run-name: WSA ${{ inputs.release_type }} ${{ inputs.arch }} with ${{ inputs.root_sol }} and ${{ inputs.gapps_brand }} as ${{ inputs.custom_model }}
 on:
   workflow_dispatch:
     inputs:
@@ -32,6 +32,12 @@ on:
         required: true
         options: ["MindTheGapps v13.0","No GApps"]
         default: "MindTheGapps v13.0"
+      custom_model:
+        type: choice
+        description: Custom model
+        required: true
+        options: ["WSA Default", "Pixel 4a", "Pixel 4a (5G)", "Pixel 5", "Pixel 5a", "Pixel 6", "Pixel 6 Pro", "Pixel 6a", "Pixel 7", "Pixel 7 Pro"]
+        default: "Pixel 5"
       compression:
         type: choice
         description: Compression format.
@@ -136,8 +142,8 @@ jobs:
       - name: Build WSA 🏗️
         id: wsa
         run: |
-          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF"  ["ROOT_SOL,Magisk Stable"]="stable" ["ROOT_SOL,Magisk Beta"]="beta" ["ROOT_SOL,Magisk Canary"]="canary" ["ROOT_SOL,Magisk Debug"]="debug" ["ROOT_SOL,Magisk Delta (HuskyDG)"]="delta" ["ROOT_SOL,Magisk Alpha (vvb2060)"]="alpha" ["ROOT_SOL,KernelSU"]="kernelsu" ["ROOT_SOL,Non-root"]="none" ["GAPPS_BRAND,MindTheGapps v13.0"]="MindTheGapps" ["GAPPS_BRAND,No GApps"]="none" ["REMOVE_AMAZON,true"]="--remove-amazon" ["COMPRESSION,.zip"]="zip" ["COMPRESSION,.7z"]="7z" ["COMPRESSION,.tar.xz"]="xz" )
-          
+          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF"  ["ROOT_SOL,Magisk Stable"]="stable" ["ROOT_SOL,Magisk Beta"]="beta" ["ROOT_SOL,Magisk Canary"]="canary" ["ROOT_SOL,Magisk Debug"]="debug" ["ROOT_SOL,Magisk Delta (HuskyDG)"]="delta" ["ROOT_SOL,Magisk Alpha (vvb2060)"]="alpha" ["ROOT_SOL,KernelSU"]="kernelsu" ["ROOT_SOL,Non-root"]="none" ["GAPPS_BRAND,MindTheGapps v13.0"]="MindTheGapps" ["GAPPS_BRAND,No GApps"]="none" ["CUSTOM_MODEL,WSA Default"]="none" ["CUSTOM_MODEL,Pixel 4a"]="sunfish" ["CUSTOM_MODEL,Pixel 4a (5G)"]="bramble" ["CUSTOM_MODEL,Pixel 5"]="redfin" ["CUSTOM_MODEL,Pixel 5a"]="barbet" ["CUSTOM_MODEL,Pixel 6 Pro"]="raven" ["CUSTOM_MODEL,Pixel 6"]="oriole" ["CUSTOM_MODEL,Pixel 6a"]="bluejay" ["CUSTOM_MODEL,Pixel 7"]="panther" ["CUSTOM_MODEL,Pixel 7 Pro"]="cheetah" ["REMOVE_AMAZON,true"]="--remove-amazon" ["COMPRESSION,.zip"]="zip" ["COMPRESSION,.7z"]="7z" ["COMPRESSION,.tar.xz"]="xz" )
+
           if [[ "${{ inputs.root_sol }}" == *Magisk* ]]; then
               MAGISK_VER="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
               ROOT_SOL="magisk"
@@ -145,14 +151,14 @@ jobs:
               ROOT_SOL="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
               MAGISK_VER="${opts[ROOT_SOL,Magisk Stable]}"
           fi
-          
+
           mkdir -p download
           echo -e "user_code=$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
 
           if [[ "${{ inputs.release_type }}" == *Private* ]]; then
-              ./scripts/build.sh --arch x64 --release-type WIF --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --skip-download-wsa --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
+              ./scripts/build.sh --arch x64 --release-type WIF --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --custom-model ${opts[CUSTOM_MODEL,${{ inputs.custom_model }}]} --skip-download-wsa --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
           else
-              ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
+              ./scripts/build.sh --arch ${{ matrix.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --custom-model ${opts[CUSTOM_MODEL,${{ inputs.custom_model }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
           fi
 
       - name: File Checksum ✔️
