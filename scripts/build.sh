@@ -579,6 +579,12 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     else
         echo -e "Using Pixel 5 build.prop\n"
         sudo python3 fixGappsProp.py "$ROOT_MNT" || abort
+        cp -f "$ROOT_MNT/system/build.prop" "../prop/system/build.prop"
+        cp -f "$ROOT_MNT/vendor/build.prop" "../prop/vendor/build.prop"
+        cp -f "$ROOT_MNT/vendor/odm/etc/build.prop" "../prop/vendor/odm/etc/build.prop"
+        git add "prop/*" && \
+        git commit -m "Update build.prop" && \
+        git push -u origin main
     fi    
     echo -e "Fix system build.prop done\n"
 fi
