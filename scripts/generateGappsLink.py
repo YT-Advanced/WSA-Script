@@ -30,15 +30,12 @@ arch = sys.argv[1]
 arg4 = sys.argv[2]
 download_dir = Path.cwd().parent / "download" if arg4 == "" else Path(arg4)
 tempScript = sys.argv[3]
-android_api = sys.argv[4]
-file_name = sys.argv[5]
+file_name = sys.argv[4]
 print(f"Generating MindTheGapps download link: arch={arch}", flush=True)
 abi_map = {"x64": "x86_64", "arm64": "arm64"}
-android_api_map = {"33": "13.0"}
-release = android_api_map[android_api]
 res = requests.get(
     f'https://sourceforge.net/projects/wsa-mtg/rss?path=/{abi_map[arch]}&limit=100')
-matched = re.search(f'https://.*{release}.*{abi_map[arch]}.*\.zip/download', res.text)
+matched = re.search(f'https://.*13.0.0*{abi_map[arch]}.*\.zip/download', res.text)
 if matched:
     link = matched.group().replace(
         '.zip/download', '.zip').replace('sourceforge.net/projects/wsa-mtg/files', 'downloads.sourceforge.net/project/wsa-mtg')
@@ -51,7 +48,7 @@ else:
     if res.status_code == 200:
         assets = json_data["assets"]
         for asset in assets:
-            if re.match(f'.*{release}.*{abi_map[arch]}.*\.zip$', asset["name"]) and asset["content_type"] == "application/zip":
+            if re.match(f'.*13.0.0*{abi_map[arch]}.*\.zip$', asset["name"]) and asset["content_type"] == "application/zip":
                 link = asset["browser_download_url"]
                 break
     elif res.status_code == 403 and x_ratelimit_remaining == '0':
