@@ -605,7 +605,7 @@ else
     MODEL_NAME="default"
 fi
 
-sudo find "$ROOT_MNT" -exec touch -ht 200901010000.00 {} \; 2>/dev/null
+sudo find "$ROOT_MNT" -not -type l -exec touch -amt 200901010000.00 {} \;
 
 echo "Create EROFS images"
 mk_erofs_umount "$VENDOR_MNT" "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RW" || abort
@@ -675,7 +675,7 @@ else
     name2=-MindTheGapps-${ANDROID_API_MAP[$ANDROID_API]}
 fi
 if [[ "$MODEL_NAME" != "default" ]]; then
-    name3="-Model-$CUSTOM_MODEL"
+    name3="-as-$CUSTOM_MODEL"
 fi
 artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}${name3}
 if [ "$REMOVE_AMAZON" = "yes" ]; then
