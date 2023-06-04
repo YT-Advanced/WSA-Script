@@ -583,9 +583,12 @@ fi
 if [[ "$CUSTOM_MODEL" != "none" ]]; then
     echo "Fix system props"
     # The first argument is prop path, second is brand + manufacturer (google), third is product name (redfin), fourth is device model (Pixel 5)
-    declare -A MODEL_NAME=(["redfin"]="Pixel 5" ["barbet"]="Pixel 5a" ["bramble"]="Pixel 4a (5G)")
-    sudo python3 fixGappsProp.py "$ROOT_MNT" "google" "Google" "$CUSTOM_MODEL" "${MODEL_NAME[$CUSTOM_MODEL]}" || abort
+    declare -A MODEL_NAME_MAP=(["redfin"]="Pixel 5" ["barbet"]="Pixel 5a" ["bramble"]="Pixel 4a (5G)")
+    MODEL_NAME="${MODEL_NAME_MAP[$CUSTOM_MODEL]}"
+    sudo python3 fixGappsProp.py "$ROOT_MNT" "google" "Google" "$CUSTOM_MODEL" "$MODEL_NAME" || abort
     echo -e "done\n"
+else
+    MODEL_NAME="default"
 fi
 
 echo "Create EROFS images"
@@ -655,7 +658,10 @@ if [ "$GAPPS_BRAND" = "none" ]; then
 else
     name2=-MindTheGapps-${ANDROID_API_MAP[$ANDROID_API]}
 fi
-artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}
+if [[ "$MODEL_NAME" != "default" ]]; then
+    name3="-Model-$CUSTOM_MODEL"
+fi
+artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}${name3}
 if [ "$REMOVE_AMAZON" = "yes" ]; then
     artifact_name+="-RemovedAmazon"
 fi
