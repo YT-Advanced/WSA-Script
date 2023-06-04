@@ -97,7 +97,6 @@ ro.dalvik.vm.isa.arm=x86
 ro.vendor.enable.native.bridge.exec=1
 ro.dalvik.vm.isa.arm64=x86_64
 ro.vendor.enable.native.bridge.exec64=1
-# end of file
 
 # extra prop added by MagiskOnWSA
 ro.product.brand=google
@@ -113,3 +112,4 @@ ro.build.description=redfin-user 13 TQ2A.230505.002.A1 2305.40000.2.0 release-ke
 ro.build.fingerprint=google/redfin/redfin:13/TQ2A.230505.002.A1/2305.40000.2.0:user/release-keys
 ro.vendor.build.description=redfin-user 13 TQ2A.230505.002.A1 2305.40000.2.0 release-keys
 ro.bootimage.build.fingerprint=google/redfin/redfin:13/TQ2A.230505.002.A1/2305.40000.2.0:user/release-keys
+# end of file
