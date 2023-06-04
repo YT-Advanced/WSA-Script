@@ -42,11 +42,16 @@ class Prop(OrderedDict):
 
 new_props = {
     ("product", "brand"): "sys.argv[2]",        # Default is google
+    ("system", "brand"): "sys.argv[2]",
     ("product", "manufacturer"): "sys.argv[3]", # Default is Google
+    ("system", "manufacturer"): "sys.argv[3]",
     ("build", "product"): "sys.argv[4]",        # Default is redfin
     ("product", "name"): "sys.argv[4]",         # Default is redfin
+    ("system", "name"): "sys.argv[4]",
     ("product", "device"): "sys.argv[4]",       # Default is redfin
+    ("system", "device"): "sys.argv[4]",
     ("product", "model"): "sys.argv[5]",        # Default is Pixel 5
+    ("system", "model"): "sys.argv[5]",
     ("build", "flavor"): "sys.argv[4]-user"     # Default is redfin-user
 }
 
