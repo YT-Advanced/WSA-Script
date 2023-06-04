@@ -41,18 +41,18 @@ class Prop(OrderedDict):
         return self
 
 new_props = {
-    ("product", "brand"): "google",         # Default is google
+    ("product", "brand"): "google",
     ("system", "brand"): "google",
-    ("product", "manufacturer"): "Google",  # Default is Google
+    ("product", "manufacturer"): "Google",
     ("system", "manufacturer"): "Google",
-    ("build", "product"): sys.argv[2],         # Default is redfin
-    ("product", "name"): sys.argv[2],          # Default is redfin
+    ("build", "product"): sys.argv[2],
+    ("product", "name"): sys.argv[2],
     ("system", "name"): sys.argv[2],
-    ("product", "device"): sys.argv[2],        # Default is redfin
+    ("product", "device"): sys.argv[2],
     ("system", "device"): sys.argv[2],
-    ("product", "model"): sys.argv[3],         # Default is Pixel 5
+    ("product", "model"): sys.argv[3],
     ("system", "model"): sys.argv[3],
-    ("build", "flavor"): sys.argv[2] + "-user" # Default is redfin-user
+    ("build", "flavor"): sys.argv[2] + "-user"
 }
 
 def description(sec: str, p: Prop) -> str:
