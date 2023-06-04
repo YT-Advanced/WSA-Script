@@ -592,10 +592,18 @@ if [[ "$CUSTOM_MODEL" != "none" ]]; then
     declare -A MODEL_NAME_MAP=(["sunfish"]="Pixel 4a" ["bramble"]="Pixel 4a (5G)" ["redfin"]="Pixel 5" ["barbet"]="Pixel 5a" ["raven"]="Pixel 6 Pro" ["oriole"]="Pixel 6" ["bluejay"]="Pixel 6a" ["panther"]="Pixel 7" ["cheetah"]="Pixel 7 Pro")
     MODEL_NAME="${MODEL_NAME_MAP[$CUSTOM_MODEL]}"
     sudo python3 fixGappsProp.py "$ROOT_MNT" "google" "Google" "$CUSTOM_MODEL" "$MODEL_NAME" || abort
+    BUILD_ID=$(cat "$SYSTEM_MNT/build.prop" | grep -e ro.build.id | cut -c 13-)
+    if [[ "${#BUILD_ID}" != "15" ]]; then
+        FIXED_BUILD_ID=$(echo $BUILD_ID | cut -c -15)
+        echo "Fixed Build ID: $FIXED_BUILD_ID"
+        sudo find $ROOT_MNT/{system,system_ext,product,vendor} -name "build.prop" -exec sed -i -e "s/$BUILD_ID/$FIXED_BUILD_ID/g" {} \;
+    fi
     echo -e "done\n"
 else
     MODEL_NAME="default"
 fi
+
+sudo find "$ROOT_MNT" -exec touch -ht 200901010000.00 {} \;
 
 echo "Create EROFS images"
 mk_erofs_umount "$VENDOR_MNT" "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RW" || abort
