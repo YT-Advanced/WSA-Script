@@ -605,7 +605,7 @@ else
     MODEL_NAME="default"
 fi
 
-sudo find "$ROOT_MNT" -exec touch -ht 200901010000.00 {} \;
+sudo find "$ROOT_MNT" -exec touch -ht 200901010000.00 {} \; 2>/dev/null
 
 echo "Create EROFS images"
 mk_erofs_umount "$VENDOR_MNT" "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RW" || abort
