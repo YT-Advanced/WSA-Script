@@ -571,18 +571,20 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     echo -e "Integrate MindTheGapps done\n"
     
     echo "Fix system build.props"
-    if [ "$CUSTOM_PROP" != "no" ]; then
-        cp -f "../prop/system/build.prop" "$ROOT_MNT/system/build.prop"
-        cp -f "../prop/vendor/build.prop" "$ROOT_MNT/vendor/build.prop"
-        cp -f "../prop/vendor/odm/etc/build.prop" "$ROOT_MNT/vendor/odm/etc/build.prop"
-    else
+    if [ "$CUSTOM_PROP" != "yes" ]; then
         sudo python3 fixGappsProp.py "$ROOT_MNT" || abort
-        cp -f "$ROOT_MNT/system/build.prop" "../prop/system/build.prop"
-        cp -f "$ROOT_MNT/vendor/build.prop" "../prop/vendor/build.prop"
-        cp -f "$ROOT_MNT/vendor/odm/etc/build.prop" "../prop/vendor/odm/etc/build.prop"
-        git add "prop/*" && \
+        sudo cp -f "$ROOT_MNT/system/build.prop" "../prop/system/build.prop"
+        sudo cp -f "$ROOT_MNT/vendor/build.prop" "../prop/vendor/build.prop"
+        sudo cp -f "$ROOT_MNT/vendor/odm/etc/build.prop" "../prop/vendor/odm/etc/build.prop"
+        git config --global user.name 'github-actions[bot]' && \
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com' && \
+        git add "../prop/*" && \
         git commit -m "Update build.prop" && \
         git push -u origin main
+    else
+        sudo cp -f "../prop/system/build.prop" "$ROOT_MNT/system/build.prop"
+        sudo cp -f "../prop/vendor/build.prop" "$ROOT_MNT/vendor/build.prop"
+        sudo cp -f "../prop/vendor/odm/etc/build.prop" "$ROOT_MNT/vendor/odm/etc/build.prop"
     fi    
     echo -e "Fix system build.prop done\n"
 fi
