@@ -588,10 +588,10 @@ fi
 
 if [[ "$CUSTOM_MODEL" != "none" ]]; then
     echo "Fix system props"
-    # The first argument is prop path, second is brand + manufacturer (google), third is product name (redfin), fourth is device model (Pixel 5)
+    # The first argument is prop path, second is product name (redfin), third is device model (Pixel 5)
     declare -A MODEL_NAME_MAP=(["sunfish"]="Pixel 4a" ["bramble"]="Pixel 4a (5G)" ["redfin"]="Pixel 5" ["barbet"]="Pixel 5a" ["raven"]="Pixel 6 Pro" ["oriole"]="Pixel 6" ["bluejay"]="Pixel 6a" ["panther"]="Pixel 7" ["cheetah"]="Pixel 7 Pro")
     MODEL_NAME="${MODEL_NAME_MAP[$CUSTOM_MODEL]}"
-    sudo python3 fixGappsProp.py "$ROOT_MNT" "google" "Google" "$CUSTOM_MODEL" "$MODEL_NAME" || abort
+    sudo python3 fixGappsProp.py "$ROOT_MNT" "$CUSTOM_MODEL" "$MODEL_NAME" || abort
     # shellcheck disable=SC2002
     BUILD_ID=$(sudo cat "$SYSTEM_MNT/build.prop" | grep -e ro.build.id | cut -c 13-)
     if [[ "${#BUILD_ID}" != "15" ]]; then
