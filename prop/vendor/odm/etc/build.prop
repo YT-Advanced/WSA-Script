@@ -27,6 +27,7 @@ ro.odm.build.version.sdk=33
 # from variable PRODUCT_ODM_PROPERTIES
 ####################################
 
+# extra prop added by MagiskOnWSA
 ro.product.brand=google
 ro.product.manufacturer=Google
 ro.build.product=redfin
