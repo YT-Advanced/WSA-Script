@@ -189,7 +189,7 @@ jobs:
         id: wsa
         if: env.iscustom == 'true' && success()
         shell: bash
-        run: ./scripts/build.sh ${{ env.body }}
+        run: ./scripts/build.sh --custom-prop ${{ env.body }}
 
       - name: File Checksum
         if: env.iscustom == 'true' && success() && steps.wsa.outputs.file_ext != '.zip'
