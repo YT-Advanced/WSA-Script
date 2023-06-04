@@ -20,15 +20,7 @@ ro.odm.build.version.incremental=2305.40000.2.0
 ro.odm.build.version.release=13
 ro.odm.build.version.release_or_codename=13
 ro.odm.build.version.sdk=33
-####################################
-# from variable ADDITIONAL_ODM_PROPERTIES
-####################################
-####################################
-# from variable PRODUCT_ODM_PROPERTIES
-####################################
-# end of file
 
-# extra prop added by MagiskOnWSA
 ro.product.brand=google
 ro.product.manufacturer=Google
 ro.build.product=redfin
@@ -42,3 +34,11 @@ ro.build.description=redfin-user 13 TQ2A.230505.002.A1 2305.40000.2.0 release-ke
 ro.build.fingerprint=google/redfin/redfin:13/TQ2A.230505.002.A1/2305.40000.2.0:user/release-keys
 ro.odm.build.description=redfin-user 13 TQ2A.230505.002.A1 2305.40000.2.0 release-keys
 ro.bootimage.build.fingerprint=google/redfin/redfin:13/TQ2A.230505.002.A1/2305.40000.2.0:user/release-keys
+
+####################################
+# from variable ADDITIONAL_ODM_PROPERTIES
+####################################
+####################################
+# from variable PRODUCT_ODM_PROPERTIES
+####################################
+# end of file
