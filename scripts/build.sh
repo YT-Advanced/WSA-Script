@@ -570,14 +570,12 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     sudo LD_LIBRARY_PATH="../linker/$HOST_ARCH" "$WORK_DIR/magisk/magiskpolicy" --load "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --save "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" "allow gmscore_app gmscore_app vsock_socket { create connect write read }" "allow gmscore_app device_config_runtime_native_boot_prop file read" "allow gmscore_app system_server_tmpfs dir search" "allow gmscore_app system_server_tmpfs file open" "allow gmscore_app system_server_tmpfs filesystem getattr" "allow gmscore_app gpu_device dir search" "allow gmscore_app media_rw_data_file filesystem getattr" || abort
     echo -e "Integrate MindTheGapps done\n"
     
-    echo -e "Fix system build.prop\n"
+    echo "Fix system build.props"
     if [ "$CUSTOM_PROP" != "no" ]; then
-        echo -e "Using your custom prop\n"
         cp -f "../prop/system/build.prop" "$ROOT_MNT/system/build.prop"
         cp -f "../prop/vendor/build.prop" "$ROOT_MNT/vendor/build.prop"
         cp -f "../prop/vendor/odm/etc/build.prop" "$ROOT_MNT/vendor/odm/etc/build.prop"
     else
-        echo -e "Using Pixel 5 build.prop\n"
         sudo python3 fixGappsProp.py "$ROOT_MNT" || abort
         cp -f "$ROOT_MNT/system/build.prop" "../prop/system/build.prop"
         cp -f "$ROOT_MNT/vendor/build.prop" "../prop/vendor/build.prop"
