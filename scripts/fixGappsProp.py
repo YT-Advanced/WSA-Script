@@ -40,16 +40,14 @@ class Prop(OrderedDict):
         self[f".{len(self)}"] = other
         return self
 
-# The first argument is prop path, second is brand + manufacturer (google), third is product name (redfin), fourth is device model (Pixel 5), fifth is Build ID (RQ3A.210905.001)
 new_props = {
-    ("product", "brand"): "sys.argv[2]", #Default is google
-    ("product", "manufacturer"): "sys.argv[2]", #Default is google
-    ("build", "product"): "sys.argv[3]", #Default is redfin
-    ("build", "id"): "sys.argv[5]", #Default is redfin
-    ("product", "name"): "sys.argv[3]", #Default is redfin
-    ("product", "device"): "sys.argv[3]", #Default is redfin
-    ("product", "model"): "sys.argv[4]", #Default is Pixel 5
-    ("build", "flavor"): "sys.argv[3]-user" #Default is redfin-user
+    ("product", "brand"): "google",
+    ("product", "manufacturer"): "Google",
+    ("build", "product"): "redfin",
+    ("product", "name"): "redfin",
+    ("product", "device"): "redfin",
+    ("product", "model"): "Pixel 5",
+    ("build", "flavor"): "redfin-user"
 }
 
 def description(sec: str, p: Prop) -> str:
