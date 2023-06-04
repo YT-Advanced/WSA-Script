@@ -68,6 +68,7 @@ default() {
     RELEASE_TYPE=retail
     MAGISK_VER=stable
     GAPPS_BRAND=MindTheGapps
+    CUSTOM_MODEL=redfin
     ROOT_SOL=magisk
 }
 
@@ -158,6 +159,13 @@ GAPPS_BRAND_MAP=(
     "none"
 )
 
+CUSTOM_MODEL_MAP=(
+    "redfin"
+    "none"
+    "barbet"
+    "bramble"
+)
+
 ROOT_SOL_MAP=(
     "magisk"
     "kernelsu"
@@ -175,6 +183,7 @@ ARGUMENT_LIST=(
     "release-type:"
     "magisk-ver:"
     "gapps-brand:"
+    "custom-model:"
     "root-sol:"
     "compress-format:"
     "remove-amazon"
@@ -197,6 +206,7 @@ while [[ $# -gt 0 ]]; do
         --arch              ) ARCH="$2"; shift 2 ;;
         --release-type      ) RELEASE_TYPE="$2"; shift 2 ;;
         --gapps-brand       ) GAPPS_BRAND="$2"; shift 2 ;;
+        --custom-model      ) CUSTOM_MODEL="$2"; shift 2;;
         --root-sol          ) ROOT_SOL="$2"; shift 2 ;;
         --compress-format   ) COMPRESS_FORMAT="$2"; shift 2 ;;
         --remove-amazon     ) REMOVE_AMAZON="yes"; shift ;;
@@ -230,6 +240,7 @@ check_list "$ARCH" "Architecture" "${ARCH_MAP[@]}"
 check_list "$RELEASE_TYPE" "Release Type" "${RELEASE_TYPE_MAP[@]}"
 check_list "$MAGISK_VER" "Magisk Version" "${MAGISK_VER_MAP[@]}"
 check_list "$GAPPS_BRAND" "GApps Brand" "${GAPPS_BRAND_MAP[@]}"
+check_list "$CUSTOM_MODEL" "Custom Model" "${CUSTOM_MODEL_MAP[@]}"
 check_list "$ROOT_SOL" "Root Solution" "${ROOT_SOL_MAP[@]}"
 check_list "$COMPRESS_FORMAT" "Compress Format" "${COMPRESS_FORMAT_MAP[@]}"
 
@@ -379,7 +390,7 @@ sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_
 sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_MNT_RO" || abort 1
 echo -e "done\n"
 echo "Create overlayfs for EROFS"
-mk_overlayfs system "$ROOT_MNT_RO" "$SYSTEM_MNT_RW" "$ROOT_MNT" || abort 
+mk_overlayfs system "$ROOT_MNT_RO" "$SYSTEM_MNT_RW" "$ROOT_MNT" || abort
 mk_overlayfs vendor "$VENDOR_MNT_RO" "$VENDOR_MNT_RW" "$VENDOR_MNT" || abort
 mk_overlayfs product "$PRODUCT_MNT_RO" "$PRODUCT_MNT_RW" "$PRODUCT_MNT" || abort
 mk_overlayfs system_ext "$SYSTEM_EXT_MNT_RO" "$SYSTEM_EXT_MNT_RW" "$SYSTEM_EXT_MNT" || abort
@@ -567,8 +578,13 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     find "$WORK_DIR/gapps/system_ext/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_EXT_MNT/priv-app/placeholder" -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     sudo LD_LIBRARY_PATH="../linker/$HOST_ARCH" "$WORK_DIR/magisk/magiskpolicy" --load "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --save "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" "allow gmscore_app gmscore_app vsock_socket { create connect write read }" "allow gmscore_app device_config_runtime_native_boot_prop file read" "allow gmscore_app system_server_tmpfs dir search" "allow gmscore_app system_server_tmpfs file open" "allow gmscore_app system_server_tmpfs filesystem getattr" "allow gmscore_app gpu_device dir search" "allow gmscore_app media_rw_data_file filesystem getattr" || abort
     echo -e "Integrate MindTheGapps done\n"
+fi
+
+if [[ "$CUSTOM_MODEL" != "none" ]]; then
     echo "Fix system props"
-    sudo python3 fixGappsProp.py "$ROOT_MNT" || abort
+    # The first argument is prop path, second is brand + manufacturer (google), third is product name (redfin), fourth is device model (Pixel 5)
+    declare -A MODEL_NAME=(["redfin"]="Pixel 5" ["barbet"]="Pixel 5a" ["bramble"="Pixel 4a (5G)"])
+    sudo python3 fixGappsProp.py "$ROOT_MNT" "google" "Google" "$CUSTOM_MODEL" "${MODEL_NAME[$CUSTOM_MODEL]}" || abort
     echo -e "done\n"
 fi
 
