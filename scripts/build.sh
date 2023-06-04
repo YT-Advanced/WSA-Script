@@ -202,6 +202,7 @@ while [[ $# -gt 0 ]]; do
         --remove-amazon     ) REMOVE_AMAZON="yes"; shift ;;
         --magisk-ver        ) MAGISK_VER="$2"; shift 2 ;;
         --skip-download-wsa ) DOWN_WSA="no"; shift ;;
+        --custom-prop       ) CUSTOM_PROP="yes"; shift ;;
         --                  ) shift; break;;
    esac
 done
@@ -567,9 +568,17 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     find "$WORK_DIR/gapps/system_ext/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_EXT_MNT/priv-app/placeholder" -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     sudo LD_LIBRARY_PATH="../linker/$HOST_ARCH" "$WORK_DIR/magisk/magiskpolicy" --load "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --save "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" "allow gmscore_app gmscore_app vsock_socket { create connect write read }" "allow gmscore_app device_config_runtime_native_boot_prop file read" "allow gmscore_app system_server_tmpfs dir search" "allow gmscore_app system_server_tmpfs file open" "allow gmscore_app system_server_tmpfs filesystem getattr" "allow gmscore_app gpu_device dir search" "allow gmscore_app media_rw_data_file filesystem getattr" || abort
     echo -e "Integrate MindTheGapps done\n"
-    echo "Fix system props"
-    sudo python3 fixGappsProp.py "$ROOT_MNT" || abort
-    echo -e "done\n"
+    
+    echo -e "Fix system build.prop\n"
+    if [ "$CUSTOM_PROP" != "no" ]; then
+        echo -e "Using your custom prop\n"
+        cp -f "../prop/system/build.prop" "$ROOT_MNT/system/build.prop"
+        cp -f "../prop/vendor/build.prop" "$ROOT_MNT/vendor/build.prop"
+        cp -f "../prop/vendor/odm/etc/build.prop" "$ROOT_MNT/vendor/odm/etc/build.prop"
+    else
+        echo -e "Using Pixel 5 build.prop\n"
+        sudo python3 fixGappsProp.py "$ROOT_MNT" || abort
+    echo -e "Fix system build.prop done\n"
 fi
 
 echo "Create EROFS images"
