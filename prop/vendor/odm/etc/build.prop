@@ -1,0 +1,44 @@
+####################################
+# from generate-common-build-props
+# These properties identify this partition image.
+####################################
+ro.product.odm.brand=google
+ro.product.odm.device=redfin
+ro.product.odm.manufacturer=Google
+ro.product.odm.model=Pixel 5
+ro.product.odm.name=redfin
+ro.odm.product.cpu.abilist=x86_64,x86,arm64-v8a,armeabi-v7a,armeabi
+ro.odm.product.cpu.abilist32=x86,armeabi-v7a,armeabi
+ro.odm.product.cpu.abilist64=x86_64,arm64-v8a
+ro.odm.build.date=Thu Jun  1 01:29:59 UTC 2023
+ro.odm.build.date.utc=1685582999
+ro.odm.build.fingerprint=google/redfin/redfin:13/TQ2A.230505.002.A1/2305.40000.2.0:user/release-keys
+ro.odm.build.id=TQ2A.230505.002.A1
+ro.odm.build.tags=release-keys
+ro.odm.build.type=user
+ro.odm.build.version.incremental=2305.40000.2.0
+ro.odm.build.version.release=13
+ro.odm.build.version.release_or_codename=13
+ro.odm.build.version.sdk=33
+####################################
+# from variable ADDITIONAL_ODM_PROPERTIES
+####################################
+####################################
+# from variable PRODUCT_ODM_PROPERTIES
+####################################
+# end of file
+
+# extra prop added by MagiskOnWSA
+ro.product.brand=google
+ro.product.manufacturer=Google
+ro.build.product=redfin
+ro.odm.build.product=redfin
+ro.product.name=redfin
+ro.product.device=redfin
+ro.product.model=Pixel 5
+ro.build.flavor=redfin-user
+ro.odm.build.flavor=redfin-user
+ro.build.description=redfin-user 13 TQ2A.230505.002.A1 2305.40000.2.0 release-keys
+ro.build.fingerprint=google/redfin/redfin:13/TQ2A.230505.002.A1/2305.40000.2.0:user/release-keys
+ro.odm.build.description=redfin-user 13 TQ2A.230505.002.A1 2305.40000.2.0 release-keys
+ro.bootimage.build.fingerprint=google/redfin/redfin:13/TQ2A.230505.002.A1/2305.40000.2.0:user/release-keys
