@@ -93,7 +93,7 @@
           "--magisk-ver": {
               "name": "--magisk-ver",
               "description": "Magisk version.",
-              "detailedinfo": "",
+              "detailedinfo": "Delta version by HuskyDG and Alpha by vvb2060. Other version by topjohnwu",
               "required": true,
               "default": "stable",
               "type": "choice",
@@ -109,7 +109,7 @@
           "--gapps-brand": {
               "name": "--gapps-brand",
               "description": "Google Apps brand.",
-              "detailedinfo": "\"none\" for no integration of Google Apps.",
+              "detailedinfo": "none for no integration of Google Apps.",
               "required": true,
               "default": "MindTheGapps",
               "type": "choice",
@@ -121,7 +121,7 @@
           "--root-sol": {
               "name": "--root-sol",
               "description": "Root solution.",
-              "detailedinfo": "\"none\" means no root.",
+              "detailedinfo": "none for no integration of root.",
               "required": true,
               "default": "magisk",
               "type": "choice",
@@ -131,10 +131,30 @@
                   "none"
               ]
           },
+          "--custom-model": {
+              "name": "--custom-model",
+              "description": "The model which WSA will display as",
+              "detailedinfo": "See the list of device model here: https://support.google.com/pixelphone/thread/213627684",
+              "required": true,
+              "default": "redfin",
+              "type": "choice",
+              "options": [
+                  "none",
+                  "sunfish",
+                  "bramble",
+                  "redfin",
+                  "barbet",
+                  "raven",
+                  "oriole",
+                  "bluejay",
+                  "panther",
+                  "cheetah"
+              ]
+          },
           "--compress-format": {
               "name": "--compress-format",
-              "description": "Compress format of output file.",
-              "detailedinfo": "",
+              "description": "Compression algorithms",
+              "detailedinfo": "Compress format of output file.",
               "required": true,
               "default": "zip",
               "type": "choice",
