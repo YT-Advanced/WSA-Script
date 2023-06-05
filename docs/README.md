@@ -10,13 +10,14 @@
 |------------------------------------------------------------------------|
 |**This repository is designed specifically not to be forked. MagiskOnWSA and some of the various forks and clones that have sprung up on the platform (***potentially***) violate GitHub's Terms of Service due to abuse of GitHub Actions and have been ultimately warned, disabled or banned.**| 
 |**Therefore, don't fork this repository unless you're a developer and want to modify the code itself and/or want to contribute to this Github repository.**|
-|**If you want to create your Custom Build, please follow the instructions set out clearly, to avoid the repo from being taken down as a result of a misuse of Github Actions due to the large number of forks.**|
+|**If you want to create your Custom Build, please follow the instructions set out clearly, to avoid the repo from being taken down as a result of a misuse of Github Actions due to the large number of forks. AND ALSO if you want to build with Latest Insider version, please skip the first 7 steps**|
       
 #### **1. Star this repos (I will happy if you do that)**
 
-#### **2. Check the version from [Releases](https://github.com/YT-Advanced/WSA-Scrpt/releases/latest) first. If it does not have the version you want, continue to follow this guide. If it does, then feel free to use those prebuild WSA builds**
+#### **2. Check the version from [Releases](https://github.com/YT-Advanced/WSA-Scrpt/releases/) first. If it does not have the version you want, continue to follow this guide. If it does, then feel free to use those prebuild WSA builds**
 
-#### **3. Open [this page directly](https://YT-Advanced.github.io/WSA-Script) then choose the option that you want to build**  
+#### **3. Open [this page directly](https://YT-Advanced.github.io/WSA-Script) then choose the option that you want to build**
+
 ![image](https://user-images.githubusercontent.com/70064328/236150011-191bf3a8-2efb-44a1-af44-202c6ea9fe66.png)
 
 #### **4. Click "Create Issues" Button, the issues page will be generated and open. Then you click "Submit New Issues" (green button) and wait.**
