@@ -59,7 +59,7 @@ jobs:
               7z x ./download/xaml/*.nupkg -o./download/xaml/
               mv ./download/xaml/tools/AppX/${{ inputs.arch }}/Release/*.appx ./download/Microsoft.UI.Xaml.2.8_${{ inputs.arch }}.appx
               rm -rf ./download/xaml
-              ./scripts/build.sh --arch ${{ inputs.arch }} --release-type WIF --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --skip-download-wsa --root-sol ${{ inputs.root }} --custom-model --remove-amazon --compress-format zip
+              ./scripts/build.sh --arch ${{ inputs.arch }} --release-type WIF --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --skip-download-wsa --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
           fi
 
       - name: Pass to Windows 💸
