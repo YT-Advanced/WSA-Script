@@ -125,7 +125,7 @@ jobs:
       - name: Delete Tag (if exist) ❌
         uses: dev-drprasad/delete-older-releases@v0.2.1
         with:
-          keep_latest: 0
+          keep_latest: 100
           delete_tags: ${{ steps.date.outputs.date }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
