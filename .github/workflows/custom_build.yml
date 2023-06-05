@@ -87,7 +87,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Get WSA Insider Preview build 🏭
-        if: inputs.release_type == 'Insider Private (x64)'
+        if: inputs.release_type == 'Insider Private'
         shell: python
         run: |
           import requests
@@ -129,7 +129,7 @@ jobs:
           version: 1.0
 
       - name: Download WSA Preview build + UI XAML manually 🧙🏻‍♂️
-        if: inputs.release_type == 'Insider Private (x64)'
+        if: inputs.release_type == 'Insider Private'
         run: |
           wget -P ./download/wsa ${{ env.LINK }}
           mv ./download/wsa/*.Msixbundle ./download/wsa-WIF.zip
