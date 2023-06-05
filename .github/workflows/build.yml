@@ -8,6 +8,8 @@ on:
         type: string
       root:
         type: string
+      link:
+        type: string
 jobs:
   build:
     name: Build WSA
@@ -46,7 +48,19 @@ jobs:
 
       - name: Build WSA ${{ matrix.arch }} with GAPPS ${{ matrix.root }} 🏗️
         id: wsa
-        run: ./scripts/build.sh --arch ${{ inputs.arch }} --release-type retail --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
+        run: |
+          if [[ -z "${{ inputs.link }}" ]]; then
+              ./scripts/build.sh --arch ${{ inputs.arch }} --release-type retail --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
+          else
+              wget -P ./download/wsa ${{ inputs.link }}
+              mv ./download/wsa/*.Msixbundle ./download/wsa-WIF.zip
+              rm -rf ./download/wsa
+              wget -P ./download/xaml https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.8.4.nupkg
+              7z x ./download/xaml/*.nupkg -o./download/xaml/
+              mv ./download/xaml/tools/AppX/${{ inputs.arch }}/Release/*.appx ./download/Microsoft.UI.Xaml.2.8_${{ inputs.arch }}.appx
+              rm -rf ./download/xaml
+              ./scripts/build.sh --arch ${{ inputs.arch }} --release-type WIF --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --skip-download-wsa --root-sol ${{ inputs.root }} --custom-model --remove-amazon --compress-format zip
+          fi
 
       - name: Pass to Windows 💸
         uses: actions/upload-artifact@v3
@@ -56,8 +70,13 @@ jobs:
 
       - name: Prepare release tag 🏷️
         id: date
-        run: echo "date=$(date +'v%Y-%m-%d')" >> "$GITHUB_OUTPUT"
-        
+        run: |
+           if [[ -z "${{ inputs.link }}" ]]; then
+              echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
+           else
+              echo "date=WSA-Insider-Version" >> $GITHUB_OUTPUT
+           fi
+
     outputs:
       zipname: ${{ steps.wsa.outputs.artifact }}
       date: ${{ steps.date.outputs.date }}

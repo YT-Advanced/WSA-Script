@@ -30,6 +30,8 @@ jobs:
           import json
           import time
           env_file = os.getenv('GITHUB_ENV')
+          link = ""
+          print("Check WSA Retail Version")
           status = True
           while status:
             res = requests.post("https://store.rg-adguard.net/api/GetFiles", f"type=CategoryId&url=858014f3-3934-4abe-8078-4aa193e74ca8&ring=Retail&lang=en-US", headers={
@@ -54,6 +56,21 @@ jobs:
           file = open('wsa.appversion', 'w')
           file.write(latestver)
           file.close()
+          print("Check WSA Insider Version")
+          currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/WIF.appversion").text
+          latestver = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest").content)['tag_name']
+          latestver = latestver.replace('\n', '')
+          currentver = currentver.replace('\n', '')
+          if currentver != latestver:
+              build = True
+              insiderlink = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest").content)['assets']
+              for str in insiderlink:
+                  link = str['browser_download_url']
+              msg="Update WSA Insider Version from `v" + currentver + "` to `" + latestver + "`"
+          file = open('WIF.appversion', 'w')
+          file.write(latestver)
+          file.close()
+          print("Check Magisk Stable Version")
           currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/magisk.appversion").text
           latestver = json.loads(requests.get(f"https://github.com/topjohnwu/magisk-files/raw/master/stable.json").content)['magisk']['version']
           latestver = latestver.replace('\n', '')
@@ -64,6 +81,7 @@ jobs:
           file = open('magisk.appversion', 'w')
           file.write(latestver)
           file.close()
+          print("Check MindTheGapps Version")
           currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/gapps.appversion").text
           latestver = json.loads(requests.get(f"https://api.github.com/repos/Howard20181/MindTheGappsBuilder/releases/latest").content)['name']
           latestver = latestver.replace('\n', '')
@@ -76,7 +94,7 @@ jobs:
           file.close()
           if (build):
               with open(env_file, "a") as wr:
-                  wr.write("SHOULD_BUILD=yes\nMSG=" + msg)
+                  wr.write("SHOULD_BUILD=yes\nMSG=" + msg + "\nLINK=" + link)
           else:
               with open(env_file, "a") as wr:
                   wr.write("SHOULD_BUILD=no")
@@ -94,7 +112,23 @@ jobs:
       - name: Prepare release tag 🏷️
         if: env.SHOULD_BUILD == 'yes'
         id: date
-        run: echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
+        shell: bash
+        run: |
+           if [[ -z "${{ env.LINK }}" ]]; then
+              echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
+              echo "prerls=false" >> $GITHUB_OUTPUT
+           else
+              echo "date=WSA-Insider-Version" >> $GITHUB_OUTPUT
+              echo "prerls=true" >> $GITHUB_OUTPUT
+            fi
+
+      - name: Delete Tag (if exist) ❌
+        uses: dev-drprasad/delete-older-releases@v0.2.1
+        with:
+          keep_latest: 0
+          delete_tags: ${{ steps.date.outputs.date }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add text format to release 📝
         if: env.SHOULD_BUILD == 'yes'
@@ -102,6 +136,7 @@ jobs:
         with:
           tag_name: ${{ steps.date.outputs.date }}
           body: "# Changelog\n### ${{ env.MSG }}\n### SHA256 Checksum\n```"
+          prerelease: ${{ steps.date.outputs.prerls }}
 
       - name: Delete old workflow run ❌
         uses: Mattraks/delete-workflow-runs@v2
@@ -114,6 +149,7 @@ jobs:
 
     outputs:
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
+      LINK: ${{ env.LINK }}
 
   build:
     name: Build WSA
@@ -130,4 +166,5 @@ jobs:
       arch: ${{ matrix.arch }}
       gapps: ${{ matrix.gapps }}
       root: ${{ matrix.root }}
+      link: ${{ needs.check.outputs.LINK }}
     secrets: inherit
