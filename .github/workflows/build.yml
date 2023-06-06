@@ -8,7 +8,7 @@ on:
         type: string
       root:
         type: string
-      link:
+      insider:
         type: string
 jobs:
   build:
@@ -49,16 +49,9 @@ jobs:
       - name: Build WSA ${{ matrix.arch }} with GAPPS ${{ matrix.root }} 🏗️
         id: wsa
         run: |
-          if [[ -z "${{ inputs.link }}" ]]; then
+          if [[ -z "${{ inputs.insider }}" ]]; then
               ./scripts/build.sh --arch ${{ inputs.arch }} --release-type retail --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
           else
-              wget -P ./download/wsa ${{ inputs.link }}
-              mv ./download/wsa/*.Msixbundle ./download/wsa-WIF.zip
-              rm -rf ./download/wsa
-              wget -P ./download/xaml https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.8.4.nupkg
-              7z x ./download/xaml/*.nupkg -o./download/xaml/
-              mv ./download/xaml/tools/AppX/${{ inputs.arch }}/Release/*.appx ./download/Microsoft.UI.Xaml.2.8_${{ inputs.arch }}.appx
-              rm -rf ./download/xaml
               ./scripts/build.sh --arch ${{ inputs.arch }} --release-type WIF --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --skip-download-wsa --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
           fi
 
@@ -71,7 +64,7 @@ jobs:
       - name: Prepare release tag 🏷️
         id: date
         run: |
-           if [[ -z "${{ inputs.link }}" ]]; then
+           if [[ -z "${{ inputs.insider }}" ]]; then
               echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
            else
               echo "date=WSA-Insider-Version" >> $GITHUB_OUTPUT

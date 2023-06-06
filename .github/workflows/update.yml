@@ -63,9 +63,7 @@ jobs:
           currentver = currentver.replace('\n', '')
           if currentver != latestver:
               build = True
-              insiderlink = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest").content)['assets']
-              for str in insiderlink:
-                  link = str['browser_download_url']
+              insider = "yes"
               msg="Update WSA Insider Version from `" + currentver + "` to `" + latestver + "`"
           file = open('WIF.appversion', 'w')
           file.write(latestver)
@@ -94,7 +92,7 @@ jobs:
           file.close()
           if (build):
               with open(env_file, "a") as wr:
-                  wr.write("SHOULD_BUILD=yes\nMSG=" + msg + "\nLINK=" + link)
+                  wr.write("SHOULD_BUILD=yes\nMSG=" + msg + "\nINSIDER=" + insider)
           else:
               with open(env_file, "a") as wr:
                   wr.write("SHOULD_BUILD=no")
@@ -114,7 +112,7 @@ jobs:
         id: date
         shell: bash
         run: |
-           if [[ -z "${{ env.LINK }}" ]]; then
+           if [[ -z "${{ env.INSIDER }}" ]]; then
               echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
               echo "prerls=false" >> $GITHUB_OUTPUT
            else
@@ -148,7 +146,7 @@ jobs:
 
     outputs:
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
-      LINK: ${{ env.LINK }}
+      INSIDER_BUILD: ${{ env.INSIDER }}
 
   build:
     name: Build WSA
@@ -165,5 +163,5 @@ jobs:
       arch: ${{ matrix.arch }}
       gapps: ${{ matrix.gapps }}
       root: ${{ matrix.root }}
-      link: ${{ needs.check.outputs.LINK }}
+      insider: ${{ needs.check.outputs.INSIDER_BUILD }}
     secrets: inherit

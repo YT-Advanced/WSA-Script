@@ -86,20 +86,6 @@ jobs:
       - name: Checkout ♻️
         uses: actions/checkout@v3
 
-      - name: Get WSA Insider Preview build 🏭
-        if: inputs.release_type == 'Insider Private'
-        shell: python
-        run: |
-          import requests
-          import os
-          import json
-          import sys
-          env_file = os.getenv('GITHUB_ENV')
-          res = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest").content)['assets']
-          for str in res:
-              with open(env_file, "a") as wr:
-                  wr.write("LINK=" + str['browser_download_url'])
-
       - name: Setup Python 👷
         uses: actions/setup-python@v4
         with:
@@ -127,17 +113,6 @@ jobs:
         with:
           packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv
           version: 1.0
-
-      - name: Download WSA Preview build + UI XAML manually 🧙🏻‍♂️
-        if: inputs.release_type == 'Insider Private'
-        run: |
-          wget -P ./download/wsa ${{ env.LINK }}
-          mv ./download/wsa/*.Msixbundle ./download/wsa-WIF.zip
-          rm -rf ./download/wsa
-          wget -P ./download/xaml https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.8.4.nupkg
-          7z x ./download/xaml/*.nupkg -o./download/xaml/
-          mv ./download/xaml/tools/AppX/${{ inputs.arch }}/Release/*.appx ./download/Microsoft.UI.Xaml.2.8_${{ inputs.arch }}.appx
-          rm -rf ./download/xaml
 
       - name: Build WSA 🏗️
         id: wsa
