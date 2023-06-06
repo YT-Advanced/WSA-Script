@@ -692,6 +692,7 @@ mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
 if [ "$COMPRESS_FORMAT" = "7z" ]; then
     OUTPUT_PATH="$OUTPUT_PATH.7z"
     echo "Compressing with 7z"
+    echo "file_ext=.7z" >> "$GITHUB_OUTPUT"
     7z a "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
 elif [ "$COMPRESS_FORMAT" = "xz" ]; then
     OUTPUT_PATH="$OUTPUT_PATH.tar.xz"
