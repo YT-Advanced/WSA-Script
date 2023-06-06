@@ -121,7 +121,7 @@ jobs:
             fi
 
       - name: Delete Tag (if exist) ❌
-        if: steps.date.outputs.date == "WSA-Insider-Version"
+        if: steps.date.outputs.date == 'WSA-Insider-Version'
         uses: dev-drprasad/delete-tag-and-release@v1.0.1
         with:
           tag_name: ${{ steps.date.outputs.date }}
