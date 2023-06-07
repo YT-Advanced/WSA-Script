@@ -63,12 +63,7 @@ jobs:
             core.setOutput("issuenumber", JSON.stringify(issuenumber));
             core.setOutput("issueauth", JSON.stringify(issueauth));
             core.setOutput("issuetitle", JSON.stringify(issuetitle));
-            if (issuebody != null) {
-               core.setOutput("issuebody", JSON.stringify(issuebody));
-            }
-            else {
-               core.setOutput("issuebody", "It is a null variable");
-            }
+            core.setOutput("issuebody", JSON.stringify(issuebody));
 
       - name: Set Issues Info
         if: success()
@@ -87,6 +82,7 @@ jobs:
           if __name__ == '__main__':
               issues = 'false'
               iscustom = 'true'
+              released = 'false'
               errinfo = ''
               body = ''
               try:
@@ -96,14 +92,19 @@ jobs:
                       body = '${{ env.issuebody }}'
                   else:
                       iscustom = 'false'
-                  if body == 'It is a null variable':
+                  if re.match(".*arch.*64.*release-type.*magisk-ver.*gapps-brand.*root-sol.*custom-model.*compress-format.*", body):
+                      iscustom = 'true'
+                      if re.match(".*retail.*stable.*root-sol[\s\S]{0,24}redfin.*remove-amazon", body):
+                          released = 'true'
+                  else:
                       iscustom = 'false'
-                      errinfo = 'Argument is null, please update the body of the Issues'
+                      errinfo = 'Argument is invaild, please update the body of the Issues'
               except Exception as e:
                   iscustom = 'false'
                   errinfo = 'Issues Body error, {}.'.format(e)
               set_output('issues', issues)
               set_output('iscustom', iscustom)
+              set_output('released', released)
               set_output('errinfo', errinfo)
               set_output('body', body)
 
@@ -117,7 +118,7 @@ jobs:
           labels: 'custom'
 
       - name: Update Comment Begin
-        if: env.issues == 'true' && env.iscustom == 'true'
+        if: env.issues == 'true' && env.iscustom == 'true' && env.released == 'false'
         uses: actions-cool/issues-helper@v3
         with:
           actions: 'update-comment'
@@ -126,8 +127,23 @@ jobs:
           update-mode: replace
           body: |
             Hello ${{ env.issueauth }} .  
-            Your custom WSA build has started building. Please go to the URL below for details.  
+            Your custom WSA build has started building. Please go to the URL below for more details.  
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
+            ----
+          emoji: heart
+
+      - name: Update Comment Released
+        if: env.released == 'true'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'update-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comment-id: ${{ steps.comment.outputs.comment-id }}
+          update-mode: replace
+          body: |
+            Hello ${{ env.issueauth }} .  
+            Your custom WSA build was built and available in the link below:
+            > https://github.com/YT-Advanced/WSA-Script/releases/latest
             ----
           emoji: heart
 
@@ -158,21 +174,21 @@ jobs:
           update-mode: replace
           body: |
             Hello ${{ env.issueauth }}.  
-            Thanks for sending an issues. Now our admin is inactive, just waiting and he will reply soon.  
+            Thanks for sending an issues. Now our admin is inactive, just waiting and he will reply you soon.  
             Hope you have a nice day.  
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
             ----
           emoji: eyes
 
       - name: Install Ubuntu Dependencies
-        if: env.iscustom == 'true' && success()
+        if: env.iscustom == 'true' && success() && env.released == 'false'
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv
           version: 1.0
 
       - name: Setup Python3 Virtual Enviroment
-        if: env.iscustom == 'true' && success()
+        if: env.iscustom == 'true' && success() && env.released == 'false'
         working-directory: scripts
         run: |
           PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
@@ -187,18 +203,18 @@ jobs:
 
       - name: Run Build
         id: wsa
-        if: env.iscustom == 'true' && success()
+        if: env.iscustom == 'true' && success() && env.released == 'false'
         shell: bash
         run: ./scripts/build.sh ${{ env.body }}
 
       - name: File Checksum
-        if: env.iscustom == 'true' && success() && steps.wsa.outputs.file_ext != '.zip'
+        if: env.iscustom == 'true' && success() && env.released == 'false' && steps.wsa.outputs.file_ext != '.zip'
         working-directory: output
         run: |
           sha256sum '${{ steps.wsa.outputs.artifact }}${{ steps.wsa.outputs.file_ext }}' >> sha256-checksum.txt
 
       - name: Upload to Artifacts
-        if: env.iscustom == 'true' && success()
+        if: env.iscustom == 'true' && success() && env.released == 'false'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.wsa.outputs.artifact }}
@@ -206,7 +222,7 @@ jobs:
           retention-days: 5
 
       - name: Update Comment Finish
-        if: env.issues == 'true' && env.iscustom == 'true' && success()
+        if: env.issues == 'true' && env.iscustom == 'true' && success() && env.released == 'false'
         uses: actions-cool/issues-helper@v3
         with:
           actions: 'update-comment'
@@ -243,7 +259,7 @@ jobs:
           update-mode: replace
           body: |
             Hello ${{ env.issueauth }}.  
-            Your custom WSA build failed to build. Please go to the URL below to view the details, make changes to the body and retrigger the build (Close & Reopen).  
+            Your custom WSA build failed to build. Don't worry! Our admin will take a look soon.  
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
             ----
           emoji: confused
