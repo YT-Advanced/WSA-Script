@@ -142,6 +142,7 @@ RELEASE_TYPE_MAP=(
     "RP"
     "WIS"
     "WIF"
+    "latest"
 )
 
 MAGISK_VER_MAP=(
@@ -254,7 +255,7 @@ check_list "$COMPRESS_FORMAT" "Compress Format" "${COMPRESS_FORMAT_MAP[@]}"
 [ -f "$PYTHON_VENV_DIR/bin/activate" ] && {
     source "$PYTHON_VENV_DIR/bin/activate" || abort "Failed to activate virtual environment"
 }
-declare -A RELEASE_NAME_MAP=(["retail"]="Retail" ["RP"]="Release Preview" ["WIS"]="Insider Slow" ["WIF"]="Insider Fast")
+declare -A RELEASE_NAME_MAP=(["retail"]="Retail" ["latest"]="Insider Private" ["RP"]="Release Preview" ["WIS"]="Insider Slow" ["WIF"]="Insider Fast")
 RELEASE_NAME=${RELEASE_NAME_MAP[$RELEASE_TYPE]} || abort
 
 echo -e "Build: RELEASE_TYPE=$RELEASE_NAME"
@@ -285,9 +286,9 @@ if [ "$DOWN_WSA" != "no" ]; then
     # shellcheck disable=SC1090
     source "$WSA_WORK_ENV" || abort
 else
-    printf "%s\n" "$(wget -cq -O - https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | jq -r '.assets[] | .browser_download_url')" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
+    printf "%s\n" "$(wget -cq -O - https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | jq -r '.assets[] | .browser_download_url')" > "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    printf "  out=wsa-WIF.zip\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
+    printf "  out=wsa-latest.zip\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     wget -P "$DOWNLOAD_DIR/xaml" "https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.8.4.nupkg"
     7z x $DOWNLOAD_DIR/xaml/*.nupkg -o../download/
     mv "$DOWNLOAD_DIR/tools/AppX/$ARCH/Release/Microsoft.UI.Xaml.2.8.appx" "$xaml_PATH"
