@@ -122,10 +122,9 @@ jobs:
 
       - name: Delete Tag (if exist) ❌
         if: steps.date.outputs.date == 'WSA-Insider-Version'
-        uses: dev-drprasad/delete-tag-and-release@v1.0.1
+        uses: cb80/delrel@latest
         with:
-          tag_name: ${{ steps.date.outputs.date }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.date.outputs.date }}
 
       - name: Add text format to release 📝
         if: env.SHOULD_BUILD == 'yes'
@@ -134,6 +133,7 @@ jobs:
           tag_name: ${{ steps.date.outputs.date }}
           body: "# Changelog\n### ${{ env.MSG }}\n### SHA256 Checksum\n```"
           prerelease: ${{ steps.date.outputs.prerls }}
+          draft: false
 
       - name: Delete old workflow run ❌
         uses: Mattraks/delete-workflow-runs@v2
