@@ -122,7 +122,7 @@ jobs:
           labels: 'custom'
 
       - name: Update Comment Begin
-        if: env.issues == 'true' && env.iscustom == 'true' && env.released == 'false'
+        if: env.issues == 'true' && env.iscustom == 'true' && env.released == 'false' && env.insider == 'false'
         uses: actions-cool/issues-helper@v3
         with:
           actions: 'update-comment'
@@ -148,6 +148,21 @@ jobs:
             Hello ${{ env.issueauth }} .  
             Your custom WSA build was built and available in the link below:
             > https://github.com/YT-Advanced/WSA-Script/releases/latest
+            ----
+          emoji: heart
+          
+      - name: Update Comment Insider
+        if: env.insider == 'true'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'update-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comment-id: ${{ steps.comment.outputs.comment-id }}
+          update-mode: replace
+          body: |
+            Hello ${{ env.issueauth }} .  
+            Your custom WSA build was built and available in the link below:
+            > https://github.com/YT-Advanced/WSA-Script/releases/tag/WSA-Insider-Version
             ----
           emoji: heart
 
@@ -185,14 +200,14 @@ jobs:
           emoji: eyes
 
       - name: Install Ubuntu Dependencies
-        if: env.iscustom == 'true' && success() && env.released == 'false'
+        if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv
           version: 1.0
 
       - name: Setup Python3 Virtual Enviroment
-        if: env.iscustom == 'true' && success() && env.released == 'false'
+        if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
         working-directory: scripts
         run: |
           PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
@@ -207,7 +222,7 @@ jobs:
 
       - name: Run Build
         id: wsa
-        if: env.iscustom == 'true' && success() && env.released == 'false'
+        if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
         shell: bash
         run: |
           if [[ "${{ env.body }}" == *latest* ]]; then
@@ -218,13 +233,13 @@ jobs:
           fi
 
       - name: File Checksum
-        if: env.iscustom == 'true' && success() && env.released == 'false' && steps.wsa.outputs.file_ext != '.zip'
+        if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false' && steps.wsa.outputs.file_ext != '.zip'
         working-directory: output
         run: |
           sha256sum '${{ steps.wsa.outputs.artifact }}${{ steps.wsa.outputs.file_ext }}' >> sha256-checksum.txt
 
       - name: Upload to Artifacts
-        if: env.iscustom == 'true' && success() && env.released == 'false'
+        if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.wsa.outputs.artifact }}
@@ -232,7 +247,7 @@ jobs:
           retention-days: 5
 
       - name: Update Comment Finish
-        if: env.issues == 'true' && env.iscustom == 'true' && success() && env.released == 'false'
+        if: env.issues == 'true' && env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
         uses: actions-cool/issues-helper@v3
         with:
           actions: 'update-comment'
