@@ -52,7 +52,7 @@ jobs:
           if [[ -z "${{ inputs.insider }}" ]]; then
               ./scripts/build.sh --arch ${{ inputs.arch }} --release-type retail --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
           else
-              ./scripts/build.sh --arch ${{ inputs.arch }} --release-type WIF --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --skip-download-wsa --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
+              ./scripts/build.sh --arch ${{ inputs.arch }} --release-type latest --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --skip-download-wsa --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
           fi
 
       - name: Pass to Windows 💸
