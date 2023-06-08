@@ -564,9 +564,6 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
         sudo chmod 0644 "$WORK_DIR/gapps/${file}"
     done
     sudo cp --preserve=all -r "$WORK_DIR/gapps/system_ext/"* "$SYSTEM_EXT_MNT/" || abort
-    if [ -e "$SYSTEM_EXT_MNT/priv-app/SetupWizard" ]; then
-        rm -rf "${SYSTEM_EXT_MNT:?}/priv-app/Provision"
-    fi
     sudo cp --preserve=all -r "$WORK_DIR/gapps/product/"* "$PRODUCT_MNT" || abort
 
     find "$WORK_DIR/gapps/product/overlay" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$PRODUCT_MNT/overlay/placeholder" -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
