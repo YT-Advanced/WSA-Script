@@ -169,32 +169,24 @@ Write-Output "Installing MagiskOnWSA...."
 
 $winver = (Get-WmiObject -class Win32_OperatingSystem).Caption
 if ($winver.Contains("10")) {
-    if ((Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").DisplayVersion -eq "22H2")
-    {
-        Clear-Host
-        Write-Output "Patching Windows 10 AppxManifest file..."
-        $xml = [xml](Get-Content '.\AppxManifest.xml')
-        $nsm = New-Object Xml.XmlNamespaceManager($xml.NameTable)
-        $nsm.AddNamespace('rescap', "http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities")
-        $nsm.AddNamespace('desktop6', "http://schemas.microsoft.com/appx/manifest/desktop/windows10/6")
-        $node = $xml.Package.Capabilities.SelectSingleNode("rescap:Capability[@Name='customInstallActions']", $nsm)
-        $xml.Package.Capabilities.RemoveChild($node) | Out-Null
-        $node = $xml.Package.Extensions.SelectSingleNode("desktop6:Extension[@Category='windows.customInstall']", $nsm)
-        $xml.Package.Extensions.RemoveChild($node) | Out-Null
-        $xml.Package.Dependencies.TargetDeviceFamily.MinVersion = "10.0.19041.264"
-        $xml.Save(".\AppxManifest.xml")
-
-        Clear-Host
-        Write-Output "Downloading modifided DLL file..."
-        Invoke-WebRequest -Uri https://github.com/cinit/WSAPatch/blob/main/original.dll.win11.22h2/x86_64/winhttp.dll?raw=true -OutFile .\WSAClient\winhttp.dll
-        Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/WsaPatch.dll?raw=true -OutFile .\WSAClient\WsaPatch.dll
-        Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/icu.dll?raw=true -OutFile .\WSAClient\icu.dll
-    }
-    else {
     Clear-Host
-    Write-Warning "Your Windows Version is lower than 10.0.19045.2311, install KB5014032 and KB5022282 then run again."
-    $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-    exit 1
+    Write-Output "Patching Windows 10 AppxManifest file..."
+    $xml = [xml](Get-Content '.\AppxManifest.xml')
+    $nsm = New-Object Xml.XmlNamespaceManager($xml.NameTable)
+    $nsm.AddNamespace('rescap', "http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities")
+    $nsm.AddNamespace('desktop6', "http://schemas.microsoft.com/appx/manifest/desktop/windows10/6")
+    $node = $xml.Package.Capabilities.SelectSingleNode("rescap:Capability[@Name='customInstallActions']", $nsm)
+    $xml.Package.Capabilities.RemoveChild($node) | Out-Null
+    $node = $xml.Package.Extensions.SelectSingleNode("desktop6:Extension[@Category='windows.customInstall']", $nsm)
+    $xml.Package.Extensions.RemoveChild($node) | Out-Null
+    $xml.Package.Dependencies.TargetDeviceFamily.MinVersion = "10.0.19041.264"
+    $xml.Save(".\AppxManifest.xml")
+
+    Clear-Host
+    Write-Output "Downloading modifided DLL file..."
+    Invoke-WebRequest -Uri https://github.com/cinit/WSAPatch/blob/main/original.dll.win11.22h2/x86_64/winhttp.dll?raw=true -OutFile .\WSAClient\winhttp.dll
+    Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/WsaPatch.dll?raw=true -OutFile .\WSAClient\WsaPatch.dll
+    Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/icu.dll?raw=true -OutFile .\WSAClient\icu.dll
     }
 }
 
