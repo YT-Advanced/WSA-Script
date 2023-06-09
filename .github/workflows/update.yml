@@ -131,7 +131,7 @@ jobs:
         uses: softprops/action-gh-release@v0.1.15
         with:
           tag_name: ${{ steps.date.outputs.date }}
-          body: "# Changelog\n### ${{ env.MSG }}\n### SHA256 Checksum\n```"
+          body: "# Changelog\n## ${{ env.MSG }}\n### SHA256 Checksum\n```"
           prerelease: ${{ steps.date.outputs.prerls }}
           draft: false
 
