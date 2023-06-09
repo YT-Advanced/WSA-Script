@@ -1,5 +1,5 @@
 # WSA-Script
-## MagiskOnWSA (For Windows™ 11) by [@YT-Advanced](https://github.com/YT-Advanced/)
+## MagiskOnWSA (For Windows™ 10 and 11) by [@YT-Advanced](https://github.com/YT-Advanced/)
 ### Windows Subsystem For Android™ (WSA) with Google Play Services and Magisk 
 
 <details>     
@@ -105,9 +105,6 @@
 </details>
 
 ## Requirements
-
-> **Note** : 
-> Currently, Microsoft have added some restriction for WSA. So Windows 10 User can't use WSA v2304+. If you want to use WSA, please install [lower version](https://github.com/MustardChef/WSABuilds/releases/Windows_10_2303.40000.5.0)
 
 <center><table>
 <thead>
