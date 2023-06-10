@@ -607,8 +607,9 @@ else
     MODEL_NAME="default"
 fi
 
-echo -e "Improve the speed of video streaming\n"
+echo -e "Improve saved image and video quality\n"
 {
+echo "ro.media.enc.jpeg.quality=100"
 echo "media.stagefright.enable-player=true" 
 echo "media.stagefright.enable-meta=true"
 echo "media.stagefright.enable-scan=true"
@@ -621,12 +622,6 @@ echo -e "Enable Fast boot\n"
 {
 echo "ro.config.hw_quickpoweron=true"
 echo "persist.sys.shutdown.mode=hibernate"
-} >> "$ROOT_MNT/vendor/build.prop"
-
-echo -e "Fix Internet by set DNS"
-{
-echo "net.dns1=8.8.8.8"
-echo "net.dns2=8.8.4.4"
 } >> "$ROOT_MNT/vendor/build.prop"
 
 sudo find "$ROOT_MNT" -not -type l -exec touch -amt 200901010000.00 {} \;
