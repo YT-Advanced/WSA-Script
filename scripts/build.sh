@@ -632,9 +632,9 @@ echo "ro.media.capture.maxres=8m" >> "$ROOT_MNT/vendor/build.prop"
 echo "ro.media.panorama.defres=3264×1840" >> "$ROOT_MNT/vendor/build.prop"
 echo "ro.media.panorama.frameres=1280×720" >> "$ROOT_MNT/vendor/build.prop"
 echo "ro.camcorder.videoModes=true" >> "$ROOT_MNT/vendor/build.prop"
-echo "ro.media.enc.hprof.vid.fps=65"" >> "$ROOT_MNT/vendor/build.prop"
-sudo find "$ROOT_MNT" -not -type l -exec touch -amt 200901010000.00 {} \;
+echo "ro.media.enc.hprof.vid.fps=65" >> "$ROOT_MNT/vendor/build.prop"
 
+sudo find "$ROOT_MNT" -not -type l -exec touch -amt 200901010000.00 {} \;
 echo "Create EROFS images"
 mk_erofs_umount "$VENDOR_MNT" "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RW" || abort
 mk_erofs_umount "$PRODUCT_MNT" "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_MNT_RW" || abort
