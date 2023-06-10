@@ -607,36 +607,27 @@ else
     MODEL_NAME="default"
 fi
 
-echo "Improve the speed of video streaming"
-echo "media.stagefright.enable-player=true" >> "$ROOT_MNT/vendor/build.prop"
-echo "media.stagefright.enable-meta=true" >> "$ROOT_MNT/vendor/build.prop"
-echo "media.stagefright.enable-scan=true" >> "$ROOT_MNT/vendor/build.prop"
-echo "media.stagefright.enable-http=true" >> "$ROOT_MNT/vendor/build.prop"
-echo "media.stagefright.enable-rtsp=true" >> "$ROOT_MNT/vendor/build.prop"
-echo "media.stagefright.enable-record=false" >> "$ROOT_MNT/vendor/build.prop"
+echo -e "Improve the speed of video streaming\n"
+{
+echo "media.stagefright.enable-player=true" 
+echo "media.stagefright.enable-meta=true"
+echo "media.stagefright.enable-scan=true"
+echo "media.stagefright.enable-http=true"
+echo "media.stagefright.enable-rtsp=true"
+echo "media.stagefright.enable-record=false"
+} >> "$ROOT_MNT/vendor/build.prop"
 
-echo "Enable Fast boot"
-echo "ro.config.hw_quickpoweron=true" >> "$ROOT_MNT/vendor/build.prop"
-echo "persist.sys.shutdown.mode=hibernate" >> "$ROOT_MNT/vendor/build.prop"
+echo -e "Enable Fast boot\n"
+{
+echo "ro.config.hw_quickpoweron=true"
+echo "persist.sys.shutdown.mode=hibernate"
+} >> "$ROOT_MNT/vendor/build.prop"
 
-echo "Improve network speed"
-echo "net.tcp.buffersize.default=4096,87380,256960,4096, 16384,256960" >> "$ROOT_MNT/vendor/build.prop"
-echo "net.tcp.buffersize.wifi=4096,87380,256960,4096,163 84,256960" >> "$ROOT_MNT/vendor/build.prop"
-echo "net.tcp.buffersize.umts=4096,87380,256960,4096,163 84,256960" >> "$ROOT_MNT/vendor/build.prop"
-echo "net.tcp.buffersize.gprs=4096,87380,256960,4096,163 84,256960" >> "$ROOT_MNT/vendor/build.prop"
-echo "net.tcp.buffersize.edge=4096,87380,256960,4096,163 84,256960" >> "$ROOT_MNT/vendor/build.prop"
-echo "net.dns1=8.8.8.8" >> "$ROOT_MNT/vendor/build.prop"
-echo "net.dns2=8.8.4.4" >> "$ROOT_MNT/vendor/build.prop"
-
-echo "Improve Recording Quality"
-echo "ro.media.enc.jpeg.quality=100" >> "$ROOT_MNT/vendor/build.prop"
-echo "ro.media.dec.jpeg.memcap=8000000" >> "$ROOT_MNT/vendor/build.prop"
-echo "ro.media.enc.hprof.vid.bps=8000000" >> "$ROOT_MNT/vendor/build.prop"
-echo "ro.media.capture.maxres=8m" >> "$ROOT_MNT/vendor/build.prop"
-echo "ro.media.panorama.defres=3264×1840" >> "$ROOT_MNT/vendor/build.prop"
-echo "ro.media.panorama.frameres=1280×720" >> "$ROOT_MNT/vendor/build.prop"
-echo "ro.camcorder.videoModes=true" >> "$ROOT_MNT/vendor/build.prop"
-echo "ro.media.enc.hprof.vid.fps=65" >> "$ROOT_MNT/vendor/build.prop"
+echo -e "Fix Internet by set DNS"
+{
+echo "net.dns1=8.8.8.8"
+echo "net.dns2=8.8.4.4"
+} >> "$ROOT_MNT/vendor/build.prop"
 
 sudo find "$ROOT_MNT" -not -type l -exec touch -amt 200901010000.00 {} \;
 echo "Create EROFS images"
