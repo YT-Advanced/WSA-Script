@@ -606,17 +606,20 @@ if [[ "$CUSTOM_MODEL" != "none" ]]; then
 else
     MODEL_NAME="default"
 fi
-echo -e "Improve the speed of video streaming\n"
+
+echo "Improve the speed of video streaming"
 echo "media.stagefright.enable-player=true" >> "$ROOT_MNT/vendor/build.prop"
 echo "media.stagefright.enable-meta=true" >> "$ROOT_MNT/vendor/build.prop"
 echo "media.stagefright.enable-scan=true" >> "$ROOT_MNT/vendor/build.prop"
 echo "media.stagefright.enable-http=true" >> "$ROOT_MNT/vendor/build.prop"
 echo "media.stagefright.enable-rtsp=true" >> "$ROOT_MNT/vendor/build.prop"
 echo "media.stagefright.enable-record=false" >> "$ROOT_MNT/vendor/build.prop"
-echo -e "Enable Fast boot\n"
+
+echo "Enable Fast boot"
 echo "ro.config.hw_quickpoweron=true" >> "$ROOT_MNT/vendor/build.prop"
 echo "persist.sys.shutdown.mode=hibernate" >> "$ROOT_MNT/vendor/build.prop"
-echo -e "Improve network speed\n"
+
+echo "Improve network speed"
 echo "net.tcp.buffersize.default=4096,87380,256960,4096, 16384,256960" >> "$ROOT_MNT/vendor/build.prop"
 echo "net.tcp.buffersize.wifi=4096,87380,256960,4096,163 84,256960" >> "$ROOT_MNT/vendor/build.prop"
 echo "net.tcp.buffersize.umts=4096,87380,256960,4096,163 84,256960" >> "$ROOT_MNT/vendor/build.prop"
@@ -624,7 +627,8 @@ echo "net.tcp.buffersize.gprs=4096,87380,256960,4096,163 84,256960" >> "$ROOT_MN
 echo "net.tcp.buffersize.edge=4096,87380,256960,4096,163 84,256960" >> "$ROOT_MNT/vendor/build.prop"
 echo "net.dns1=8.8.8.8" >> "$ROOT_MNT/vendor/build.prop"
 echo "net.dns2=8.8.4.4" >> "$ROOT_MNT/vendor/build.prop"
-echo -e "Improve Recording Quality\n"
+
+echo "Improve Recording Quality"
 echo "ro.media.enc.jpeg.quality=100" >> "$ROOT_MNT/vendor/build.prop"
 echo "ro.media.dec.jpeg.memcap=8000000" >> "$ROOT_MNT/vendor/build.prop"
 echo "ro.media.enc.hprof.vid.bps=8000000" >> "$ROOT_MNT/vendor/build.prop"
