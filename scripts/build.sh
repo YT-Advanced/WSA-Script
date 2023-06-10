@@ -53,7 +53,6 @@ DOWNLOAD_CONF_NAME=download.list
 PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
 OUTPUT_DIR=../output
 WSA_WORK_ENV="${WORK_DIR:?}/ENV"
-if [ -f "$WSA_WORK_ENV" ]; then rm -f "${WSA_WORK_ENV:?}"; fi
 touch "$WSA_WORK_ENV"
 export WSA_WORK_ENV
 abort() {
