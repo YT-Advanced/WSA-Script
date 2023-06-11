@@ -2,10 +2,6 @@
 #### With WSA Sideloader, you can install any APK file onto WSA. 
 #### This guide will show you how to use it.
 
-</br>
-
-</br>
-
 ## How to Download and Install WSA-Sideloader
 
 #### You can download WSA Sideloader in 3 different ways:
