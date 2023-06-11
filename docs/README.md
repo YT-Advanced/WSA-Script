@@ -413,11 +413,11 @@ Now run WSA and your serdata should hopefully be restored
 ### Install KernelSU Manager:
 [<img src="https://img.shields.io/badge/-How%20to%20install%20KernelSU%20Manager-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/KernelSU.md)
 
+### Install BusyBox:
+[<img src="https://img.shields.io/badge/-How%20to%20install%20BusyBox-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/BusyBox.md)
+
 ### Check Integrity Guide:
 [<img src="https://img.shields.io/badge/-HOW%20TO%20CHECK%20INTEGRITY%20OF%20DOWNLOAD%20PACKAGES-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/Checksum.md)
-
-### How to build with latest WSA Insider Build:
-[<img src="https://img.shields.io/badge/-How%20to%20create%20Custom%20Build%20with%20Latest%20Insider%20Version-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/GetWIPLatestBuild.md)
 
 ### GPU Guide:
 [<img src="https://img.shields.io/badge/-How%20to%20Change%20the%20GPU%20Used-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/ChangingGPU.md)
@@ -428,7 +428,9 @@ Now run WSA and your serdata should hopefully be restored
 ### Moving WSA to another drive or partition:
 [<img src="https://img.shields.io/badge/-How%20to%20Move%20WSA%20to%20another%20drive%20or%20partition-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/MoveToExtDrive.md)
 
-GetWIPLatestBuild.md
+### LocalHost Loopback Guide:
+[<img src="https://img.shields.io/badge/-How%20to%20connect%20WSA%20to%20the%20localhost-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/LocalHostLoopback.md)
+
 </details> 
 
 &nbsp;
@@ -439,6 +441,8 @@ GetWIPLatestBuild.md
 ### Common Issues:
 
 [<img src="https://img.shields.io/badge/-Fix%20Install.ps1%20Issue-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/FixInstallps1.md)
+
+[<img src="https://img.shields.io/badge/-Fix%20Install.ps1%20Failed%20to%20update-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/nstallPs1FailedToUpdate.md)
 
 [<img src="https://img.shields.io/badge/-Fix Virtualization and Virtual Machine Platform Error-%23EF2D5E?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/FixVirtError.md)
 
@@ -459,6 +463,12 @@ GetWIPLatestBuild.md
 [<img src="https://img.shields.io/badge/-Fix%20Missing%20Icons%20Issue-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/MissingIcons.md)
 
 [<img src="https://img.shields.io/badge/-Fix%20Target%20Machine%20Actively%20Refused%20Connection-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Fixes/TargetMachineActivelyRefusedConnection.md)
+
+[<img src="https://img.shields.io/badge/-Fix%20Target%20Machine%20Actively%20Refused%20Connection-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Fixes/TargetMachineActivelyRefusedConnection.md)
+
+[<img src="https://img.shields.io/badge/-Fix%20Internet%20security%20settings%20blocked%20from%20opening-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Fixes/InternetSecuritySettingsBlock.md)
+
+[<img src="https://img.shields.io/badge/-Cannot%20sign%20in%20to%20Google%20Account-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/Google%20Play%20Issues.md)
 
 </details>  
 

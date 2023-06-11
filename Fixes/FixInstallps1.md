@@ -1,4 +1,3 @@
-# WSABuilds
    <summary><h2>Issue:<h2><h3> &nbsp; Install.ps1 is not recognized/missing<h3></summary>
 
 <img src="https://media.discordapp.net/attachments/1044322950725259274/1068243571544690719/9Qf3veK.png" />
@@ -6,8 +5,6 @@
    
 <summary><h2>Solution<h2></summary>
 
-&nbsp;
-    
 If the popup windows disappear without asking administrative permission and Windows Subsystem For Android™ is not installed successfully, you should manually run Install.ps1 as administrator:
 
 &nbsp;  
