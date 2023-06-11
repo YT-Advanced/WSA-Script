@@ -7,5 +7,4 @@
 
 ---
 
-## Solution:
-### If you are using VPN, please disconnect it because VPN may make WSA fail to connect to VirtWifi.
+## Solution: If you are using VPN, please disconnect it because VPN may make WSA fail to connect to VirtWifi.
