@@ -146,16 +146,16 @@
   </tr>
   <tr>
     <td rowspan="5"><img style="float: left;" src="https://user-images.githubusercontent.com/68516357/230764789-ad8f7361-4a3b-49a8-a8e9-24fdc87d5781.png" width="66" height="58"/><h4>Windows Features Needed<h4></td>
-    <td colspan="2">Virtual Machine Platform Enabled</td>
+    <td colspan="2">Virtual Machine Platform Enabled : <b>Require!!</b></td>
   </tr>
   <tr>
-    <td colspan="2">Windows Hypervisor Platform Enabled</td>
+    <td colspan="2">Windows Hypervisor Platform Enabled (Optional)</td>
   </tr>
   <tr>
     <td colspan="2">Windows Subsystem For Linux™ Enabled (Optional)</td>
   </tr>
   <tr>
-    <td colspan="2">Hyper V Enabled (Optional)</td>
+    <td colspan="2">Hyper-V Enabled (Optional)</td>
   </tr>
   <tr>
     <td colspan="2"><b><i>These optional settings are for virtualization and provide components that are needed to run WSA. You can enable these settings by pressing the Windows Key + R on your keyboard and typing "OptionalFeatures.exe" into the box, pressing enter and selecting the features above followed by pressing apply<b><i></td>
