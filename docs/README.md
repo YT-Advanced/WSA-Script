@@ -18,17 +18,17 @@
 
 #### **3. Open [this page directly](https://YT-Advanced.github.io/WSA-Script) then choose the option that you want to build**
 
-![image](https://user-images.githubusercontent.com/70064328/236150011-191bf3a8-2efb-44a1-af44-202c6ea9fe66.png)
+![](https://user-images.githubusercontent.com/70064328/236150011-191bf3a8-2efb-44a1-af44-202c6ea9fe66.png)
 
 #### **4. Click "Create Issues" Button, the issues page will be generated and open. Then you click "Submit New Issues" (green button) and wait.**
-![image](https://user-images.githubusercontent.com/70064328/236150320-65fdd492-9fc4-4176-b3bd-a3cee8b7753d.png)
+![](https://user-images.githubusercontent.com/70064328/236150320-65fdd492-9fc4-4176-b3bd-a3cee8b7753d.png)
 
 #### **5. After about 15 minutes, the bot will reply that the workflow have built successfully (like the picture below), OPEN THE LINK BELOW THE BOT COMMENT**
-![image](https://user-images.githubusercontent.com/70064328/236154819-75dd1997-1999-43fd-a482-050f21e34b72.png)
+![](https://user-images.githubusercontent.com/70064328/236154819-75dd1997-1999-43fd-a482-050f21e34b72.png)
 
 #### **6. Download the package as artifact**
 **DO NOT download it via multithread downloaders like IDM**
-![image](https://user-images.githubusercontent.com/68516357/222224469-5748b78a-158e-46ff-9f65-317dbb519aac.png)
+![](https://user-images.githubusercontent.com/68516357/222224469-5748b78a-158e-46ff-9f65-317dbb519aac.png)
 
 #### **7. Install like normal using [the instructions](https://github.com/YT-Advanced/WSA-Script#--installation) in this repository** and most important of all....
 
@@ -42,63 +42,63 @@
    
    ***Step 1.2:***
    
-   ![image](https://user-images.githubusercontent.com/68516357/221641202-e3ef4deb-f2dd-46e6-82c8-fb4767f82e99.png)
+   ![](https://user-images.githubusercontent.com/68516357/221641202-e3ef4deb-f2dd-46e6-82c8-fb4767f82e99.png)
    
 ---   
 #### **2. [Copy the URL of this Repo](https://github.com/YT-Advanced/WSA-Script) and paste it into the the text box below and press "Import"** 
 
-![image](https://user-images.githubusercontent.com/68516357/221643582-72d71f68-8f53-48d9-a940-692a54d42098.png)
+![](https://user-images.githubusercontent.com/68516357/221643582-72d71f68-8f53-48d9-a940-692a54d42098.png)
 
 ---
 #### **3. Go to the **Setting** tab in your newly imported repo and enable "Github Actions"**
    ***Step 3.1:***
    
-![Settings](https://user-images.githubusercontent.com/68516357/222214308-b52b1c6f-a60b-44ef-9ce0-bc335087e3a2.png)
+![](https://user-images.githubusercontent.com/68516357/222214308-b52b1c6f-a60b-44ef-9ce0-bc335087e3a2.png)
 
    ***Step 3.2:***
    
-![MRq9WD3SO2](https://user-images.githubusercontent.com/68516357/222215598-30d68ad3-9700-4061-bba4-815b3befcb10.png)
+![](https://user-images.githubusercontent.com/68516357/222215598-30d68ad3-9700-4061-bba4-815b3befcb10.png)
 
 ---
 #### **4. Then, scroll down until you reach the section titled "Workflow Permission" and follow the steps as shown in the image below**
-![image](https://user-images.githubusercontent.com/68516357/224546417-a82249b4-3864-42bd-8a29-32350b8b0c97.png)
+![](https://user-images.githubusercontent.com/68516357/224546417-a82249b4-3864-42bd-8a29-32350b8b0c97.png)
 
 ---
 #### **5. Open [this link](https://github.com/settings/tokens/new) in new tab, then follow the step below. FINALLY, SCROLL DOWN AND CLICK GENERATE TOKEN**
-![image](https://user-images.githubusercontent.com/70064328/231184720-0d3b4ce7-0b82-4b1f-b337-5f0fd0ceb632.png)
+![](https://user-images.githubusercontent.com/70064328/231184720-0d3b4ce7-0b82-4b1f-b337-5f0fd0ceb632.png)
 
 ---
 #### **6. The key will appear. Then click the copy button at right side of the key.**
-![image](https://user-images.githubusercontent.com/70064328/231189492-cf3b407e-708b-4224-ba4e-11f3e27012a1.png)
+![](https://user-images.githubusercontent.com/70064328/231189492-cf3b407e-708b-4224-ba4e-11f3e27012a1.png)
 
 ---
 #### **7. Now, back to your repository **Setting** tab, and open Secret and Variable, then click Action. Next click **New reporistory secret** button**
-![image](https://user-images.githubusercontent.com/70064328/231191605-1e3c4b53-6d17-49f5-8e7f-c752ae12aee8.png)
+![](https://user-images.githubusercontent.com/70064328/231191605-1e3c4b53-6d17-49f5-8e7f-c752ae12aee8.png)
 
 ---
 #### **8. In the name boxes, type PAT. Next, paste your copied Secret key to Secret boxes, then click **Add Secrets** button**
-![image](https://user-images.githubusercontent.com/70064328/231192376-16aa194c-07ae-4262-857f-d9d86701a110.png)
+![](https://user-images.githubusercontent.com/70064328/231192376-16aa194c-07ae-4262-857f-d9d86701a110.png)
 
 ---
 #### **9. Now, Go to the **Action** tab**
-![CvYhP0B0CI](https://user-images.githubusercontent.com/68516357/222221960-f48ab9c3-eb77-4cb0-b932-5cd343381048.png)
+![](https://user-images.githubusercontent.com/68516357/222221960-f48ab9c3-eb77-4cb0-b932-5cd343381048.png)
 
 ---
 #### **10. In the left sidebar, click the **Custom Build** workflow.**
-![image](https://user-images.githubusercontent.com/68516357/222221307-8a4571d2-ac3e-410b-b999-0eb62b14d8d5.png)
+![](https://user-images.githubusercontent.com/68516357/222221307-8a4571d2-ac3e-410b-b999-0eb62b14d8d5.png)
 
 ---
 #### **11. Above the list of workflow runs, select **Run workflow****
-![image](https://user-images.githubusercontent.com/68516357/222222850-f991890c-5a80-4cc2-b83d-0ef35c24a79e.png)
+![](https://user-images.githubusercontent.com/68516357/222222850-f991890c-5a80-4cc2-b83d-0ef35c24a79e.png)
 
 ---
 #### **12. Select your desired options such as ***Magisk Version***, ***WSA Release Channel + WSA Archetecture*** , ***GApps Varient*** and ***Compression Format*** then click **Run workflow****
-![image](https://user-images.githubusercontent.com/68516357/222224185-abcfa0cf-c8c6-46e3-bc38-871c968b86f2.png)
+![](https://user-images.githubusercontent.com/68516357/222224185-abcfa0cf-c8c6-46e3-bc38-871c968b86f2.png)
 
 ---    
 #### **13. Wait for the action to complete and download the artifact**
 **DO NOT download it via multithread downloaders like IDM**
-![image](https://user-images.githubusercontent.com/68516357/222224469-5748b78a-158e-46ff-9f65-317dbb519aac.png)
+![](https://user-images.githubusercontent.com/68516357/222224469-5748b78a-158e-46ff-9f65-317dbb519aac.png)
 
 ---
 #### **14. Install like normal using [the instructions](https://github.com/YT-Advanced/WSA-Script#--installation) in this repository** and most important of all....
@@ -178,7 +178,7 @@
 > **Note** : 
 > If you have the official Windows Subsystem For Android™ installed, you must [completely uninstall](#uninstallation) it to use MagiskOnWSA. 
 
-> In case you want to preserve your data from the previous installation (official or MagiskOnWSA), you can backup %LOCALAPPDATA%\Packages\MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe\LocalCache\userdata.vhdx before uninstallation and restore it after installation.  For a more comprehensive and detailed guide, take a look at the **Backup and Restore section** in this README markdown
+> In case you want to preserve your data from the previous installation (official or MagiskOnWSA), you can backup `%LOCALAPPDATA%\Packages\MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe\LocalCache\userdata.vhdx` before uninstallation and restore it after installation.  For a more comprehensive and detailed guide, take a look at the **Backup and Restore section** in this README markdown
 
 1. Go to the [Releases page](https://github.com/YT-Advanced/WSA-Script/releases/latest)
 2. In the latest release, go to the Assets section and download the Windows Subsystem For Android™ version of your choosing (do not download "Source code")
@@ -198,7 +198,7 @@
    - If you previously have a MagiskOnWSA installation, it will automatically uninstall the previous one while preserving all user data and install the new one, so don't worry about your data.
    - If the popup windows disappear without asking administrative permission and Windows Subsystem For Android™ is not installed successfully, you should manually run Install.ps1 as administrator:
       
-      - Press Win+x and select Windows™ Terminal (Admin)
+      - Press `Win+X` and select **Windows™ Terminal (Admin)**
       
       - Input the command below and press enter, replacing {X:\path\to\your\extracted\folder} including the {} with the path of the extracted folder
         ```Powershell
@@ -255,7 +255,7 @@
 1. [Download the latest build](https://github.com/YT-Advanced/WSA-Script/releases/latest) (that you want to update to)
 2. Make sure Windows Subsystem For Android is not running (Click on "Turn off" in the WSA Settings and wait for the spinning loader to disappear)
 2. Using 7-Zip, WinRAR or any other tool of choice, open the .zip file 
-3. Within the .zip archive open the subfolder (Example: WSA_2xxx.xxxxx.xx.x_xx_Release-Nightly-with-magisk-xxxxxxx-MindTheGapps-xx.x-RemovedAmazon)
+3. Within the .zip archive open the subfolder (Example: WSA_2xxx.xxxxx.xx.x_x64_Release-Nightly-with-magisk-xxxxxxx-MindTheGapps-13.0-as-Pixel-5-RemovedAmazon)
 4. Select all the files that are within this subfolder and extract them to the current folder where the file for Windows Subsystem For Android are (the folder you extracted, and installed WSA from)
 5. When prompted to replace folders, select "Do this for all current items" and click on "Yes" 
 6. When prompted to replace files, click on "Replace the files in the destination"
