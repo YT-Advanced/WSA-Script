@@ -468,7 +468,7 @@ Now run WSA and your serdata should hopefully be restored
 
 [<img src="https://img.shields.io/badge/-Fix%20Internet%20security%20settings%20blocked%20from%20opening-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Fixes/InternetSecuritySettingsBlock.md)
 
-[<img src="https://img.shields.io/badge/-Cannot%20sign%20in%20to%20Google%20Account-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/Google Play Issues.md)
+[<img src="https://img.shields.io/badge/-Cannot%20sign%20in%20to%20Google%20Account-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/Google%20Play%20Issues.md)
 
 </details>  
 
