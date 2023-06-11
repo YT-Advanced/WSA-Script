@@ -17,23 +17,7 @@
         <permission name="android.permission.POST_NOTIFICATIONS" fixed="false"/>
         <permission name="android.permission.READ_EXTERNAL_STORAGE" fixed="true"/>
     </exception>
-    
-    <exception
-        package="com.google.android.apps.restore">
-        <permission name="android.permission.ACCESS_FINE_LOCATION" fixed="true"/>
-        <permission name="android.permission.READ_CALL_LOG" fixed="true"/>
-        <permission name="android.permission.READ_CONTACTS" fixed="true"/>
-        <permission name="android.permission.READ_EXTERNAL_STORAGE" fixed="true"/>
-        <permission name="android.permission.WRITE_CALL_LOG" fixed="true"/>
-        <permission name="android.permission.WRITE_CONTACTS" fixed="true"/>
-        <permission name="android.permission.WRITE_EXTERNAL_STORAGE" fixed="true"/>
-        <permission name="android.permission.POST_NOTIFICATIONS" fixed="false"/>
-        <permission name="android.permission.ACCESS_COARSE_LOCATION" fixed="true"/>
-        <permission name="android.permission.READ_MEDIA_AUDIO" fixed="true"/>
-        <permission name="android.permission.READ_MEDIA_VIDEO" fixed="true"/>
-        <permission name="android.permission.READ_MEDIA_IMAGES" fixed="true"/>
-    </exception>
-    
+        
     <exception
         package="com.google.android.gms">
         <permission name="android.permission.GET_ACCOUNTS" fixed="true"/>
