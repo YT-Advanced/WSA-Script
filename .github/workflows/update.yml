@@ -31,6 +31,7 @@ jobs:
           import time
           env_file = os.getenv('GITHUB_ENV')
           link = ""
+          insider = ""
           print("Check WSA Retail Version")
           status = True
           while status:
