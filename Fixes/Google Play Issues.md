@@ -8,17 +8,4 @@
 ---
 
 ## Solution:
-
-### Internet is working on other app in WSA?
-
-######  Step 1: 
-Turn WSA off through the Windows Subsystem For Android Settings app
-
-###### Step 2:
-Open up your favourite VPN and connect to a server. You can use any VPN for this. VPNs recommended: ProtonVPN, AtlasVPN
-
-###### Step 3:
-Turn on WSA and open Play Store.
-
-###### Step 4:
-You should now be able to log in to Google Play and hopefully download apps!
+### If you are using VPN, please disconnect it because VPN may make WSA fail to connect to VirtWifi.
