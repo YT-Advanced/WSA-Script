@@ -1,5 +1,3 @@
-# WSAGuides
-
 ## Issues:
 <img src="https://user-images.githubusercontent.com/68629435/213985345-a6fc6e97-63f3-4741-8965-8d62a0d6b824.png"/>
 
