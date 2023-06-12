@@ -1,7 +1,7 @@
 # Sideloading using the Files app
 Starting with WSA version 2305, you can sideload APK files using the Files app. This guide will show you how.
 
-**NOTE:** This guide is only applicable for WSA versions 2305 and above. If you're using an older version, you will need to use [ADB](https://github.com/MustardChef/WSABuilds/blob/master/Guides/ADB-Sideloading.md) or one of the [listed APK installers](https://github.com/MustardChef/WSABuilds/blob/master/Guides/Sideloading.md).
+**NOTE:** This guide is only applicable for WSA versions 2305 and above. If you're using an older version, you will need to use [ADB](https://github.com/YT-Advanced/WSA-Script/blob/main/docs/Guides/ADB-Sideloading.md) or one of the [listed APK installers](https://github.com/YT-Advanced/WSA-Script/blob/main/docs/Guides/Sideloading.md).
 
 Also note that APK files will need to be stored somewhere in your user directory. As of now, it's not possible to install APKs from another partition or external storage device. So you will need to copy them to your user folder before installing.
 

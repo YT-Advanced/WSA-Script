@@ -186,7 +186,7 @@
 > **Note** : 
 > If you want to download WSA with Magisk Delta, please go to [![Action Tab](https://github.com/YT-Advanced/WSA-Script/actions/workflows/custom_build.yml/badge.svg)](https://github.com/YT-Advanced/WSA-Script/actions/workflows/custom_build.yml) and download the package from the Action. 
 
-3. Check integrity of downloaded file by [Follow this guide](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/Checksum.md)
+3. Check integrity of downloaded file by [Follow this guide](Guides/Checksum.md)
 4. Extract the zip file
 5. Delete the zip file
 6. Move the newly extracted folder to a suitable location (Documents folder is a good choice), as you will need to keep the folder on your PC to use MagiskOnWSA
@@ -411,25 +411,25 @@ Now run WSA and your serdata should hopefully be restored
 &nbsp;
 
 ### Install KernelSU Manager:
-[<img src="https://img.shields.io/badge/-How%20to%20install%20KernelSU%20Manager-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/KernelSU.md)
+[<img src="https://img.shields.io/badge/-How%20to%20install%20KernelSU%20Manager-474154?style=for-the-badge&logoColor=white&logo=github" />](Guides/KernelSU.md)
 
 ### Install BusyBox:
-[<img src="https://img.shields.io/badge/-How%20to%20install%20BusyBox-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/BusyBox.md)
+[<img src="https://img.shields.io/badge/-How%20to%20install%20BusyBox-474154?style=for-the-badge&logoColor=white&logo=github" />](Guides/BusyBox.md)
 
 ### Check Integrity Guide:
-[<img src="https://img.shields.io/badge/-HOW%20TO%20CHECK%20INTEGRITY%20OF%20DOWNLOAD%20PACKAGES-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/Checksum.md)
+[<img src="https://img.shields.io/badge/-HOW%20TO%20CHECK%20INTEGRITY%20OF%20DOWNLOAD%20PACKAGES-474154?style=for-the-badge&logoColor=white&logo=github" />](Guides/Checksum.md)
 
 ### GPU Guide:
-[<img src="https://img.shields.io/badge/-How%20to%20Change%20the%20GPU%20Used-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/ChangingGPU.md)
+[<img src="https://img.shields.io/badge/-How%20to%20Change%20the%20GPU%20Used-474154?style=for-the-badge&logoColor=white&logo=github" />](Guides/ChangingGPU.md)
 
 ### Sideload Guide:
-[<img src="https://img.shields.io/badge/-How%20to%20Sideload%20apps-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/Sideloading.md)
+[<img src="https://img.shields.io/badge/-How%20to%20Sideload%20apps-474154?style=for-the-badge&logoColor=white&logo=github" />](Guides/Sideloading.md)
 
 ### Moving WSA to another drive or partition:
-[<img src="https://img.shields.io/badge/-How%20to%20Move%20WSA%20to%20another%20drive%20or%20partition-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/MoveToExtDrive.md)
+[<img src="https://img.shields.io/badge/-How%20to%20Move%20WSA%20to%20another%20drive%20or%20partition-474154?style=for-the-badge&logoColor=white&logo=github" />](Guides/MoveToExtDrive.md)
 
 ### LocalHost Loopback Guide:
-[<img src="https://img.shields.io/badge/-How%20to%20connect%20WSA%20to%20the%20localhost-474154?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Guides/LocalHostLoopback.md)
+[<img src="https://img.shields.io/badge/-How%20to%20connect%20WSA%20to%20the%20localhost-474154?style=for-the-badge&logoColor=white&logo=github" />](Guides/LocalHostLoopback.md)
 
 </details> 
 
@@ -440,35 +440,35 @@ Now run WSA and your serdata should hopefully be restored
 
 ### Common Issues:
 
-[<img src="https://img.shields.io/badge/-Fix%20Install.ps1%20Issue-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/FixInstallps1.md)
+[<img src="https://img.shields.io/badge/-Fix%20Install.ps1%20Issue-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/FixInstallps1.md)
 
-[<img src="https://img.shields.io/badge/-Fix%20Install.ps1%20Failed%20to%20update-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/nstallPs1FailedToUpdate.md)
+[<img src="https://img.shields.io/badge/-Fix%20Install.ps1%20Failed%20to%20update-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/nstallPs1FailedToUpdate.md)
 
-[<img src="https://img.shields.io/badge/-Fix Virtualization and Virtual Machine Platform Error-%23EF2D5E?style=for-the-badge&logoColor=white&logo=github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/FixVirtError.md)
+[<img src="https://img.shields.io/badge/-Fix Virtualization and Virtual Machine Platform Error-%23EF2D5E?style=for-the-badge&logoColor=white&logo=github" />](Fixes/FixVirtError.md)
 
-[<img src="https://img.shields.io/badge/-Fix%20Internet%20Issues-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/FixInternet.md)
+[<img src="https://img.shields.io/badge/-Fix%20Internet%20Issues-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/FixInternet.md)
       
-[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073CF0-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/Fix%20Error%200x80073CF0.md)
+[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073CF0-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/Fix%20Error%200x80073CF0.md)
 
-[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073CFD-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/Fix%20Error%200x80073CFD.md)
+[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073CFD-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/Fix%20Error%200x80073CFD.md)
 
-[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073CF6-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/Fix%20Error%200x80073CF6.md)
+[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073CF6-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/Fix%20Error%200x80073CF6.md)
 
-[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073CF9-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/Fix%20Error%200x80073CF9.md)
+[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073CF9-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/Fix%20Error%200x80073CF9.md)
 
-[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073D10-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/Fix%20Error%200x80073D10.md)
+[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073D10-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/Fix%20Error%200x80073D10.md)
 
-[<img src="https://img.shields.io/badge/-Fix%20Path%20Too%20Long-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/FixPathTooLong.md)
+[<img src="https://img.shields.io/badge/-Fix%20Path%20Too%20Long-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/FixPathTooLong.md)
 
-[<img src="https://img.shields.io/badge/-Fix%20Missing%20Icons%20Issue-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/MissingIcons.md)
+[<img src="https://img.shields.io/badge/-Fix%20Missing%20Icons%20Issue-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/MissingIcons.md)
 
-[<img src="https://img.shields.io/badge/-Fix%20Target%20Machine%20Actively%20Refused%20Connection-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Fixes/TargetMachineActivelyRefusedConnection.md)
+[<img src="https://img.shields.io/badge/-Fix%20Target%20Machine%20Actively%20Refused%20Connection-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/TargetMachineActivelyRefusedConnection.md)
 
-[<img src="https://img.shields.io/badge/-Fix%20Target%20Machine%20Actively%20Refused%20Connection-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Fixes/TargetMachineActivelyRefusedConnection.md)
+[<img src="https://img.shields.io/badge/-Fix%20Target%20Machine%20Actively%20Refused%20Connection-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/TargetMachineActivelyRefusedConnection.md)
 
-[<img src="https://img.shields.io/badge/-Fix%20Internet%20security%20settings%20blocked%20from%20opening-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/master/Fixes/InternetSecuritySettingsBlock.md)
+[<img src="https://img.shields.io/badge/-Fix%20Internet%20security%20settings%20blocked%20from%20opening-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/InternetSecuritySettingsBlock.md)
 
-[<img src="https://img.shields.io/badge/-Cannot%20sign%20in%20to%20Google%20Account-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](https://github.com/YT-Advanced/WSA-Script/blob/main/Fixes/Google%20Play%20Issues.md)
+[<img src="https://img.shields.io/badge/-Cannot%20sign%20in%20to%20Google%20Account-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/Google%20Play%20Issues.md)
 
 </details>  
 
