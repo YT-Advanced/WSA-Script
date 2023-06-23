@@ -89,12 +89,4 @@
         <permission name="com.google.android.providers.talk.permission.READ_ONLY" fixed="true"/>
         <permission name="com.google.android.providers.talk.permission.WRITE_ONLY" fixed="true"/>
     </exception>
-
-    <exception
-        package="com.google.android.syncadapters.contacts">
-        <permission name="android.permission.READ_CONTACTS" fixed="true"/>
-        <permission name="android.permission.WRITE_CONTACTS" fixed="true"/>
-        <permission name="android.permission.GET_ACCOUNTS" fixed="true"/>
-        <permission name="android.permission.POST_NOTIFICATIONS" fixed="false"/>
-    </exception>
 </exceptions>
