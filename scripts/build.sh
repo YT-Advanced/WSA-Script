@@ -372,7 +372,7 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     echo "Extract MindTheGapps"
     mkdir -p "$WORK_DIR/gapps" || abort
     if [ -f "$GAPPS_PATH" ]; then
-        if ! unzip "$GAPPS_PATH" "system/*" -x "system/addon.d/*" "system/product/app/*Exchange*/*" "system/product/etc/default-permissions/*mtg*" "system/product/etc/permissions/*dialer*" "system/product/etc/sysconfig/*build*" "system/product/framework/*" "system/product/lib*/*" "system/product/priv-app/AndroidAuto*/*" "system/system_ext/priv-app/SetupWizard/*" -d "$WORK_DIR/gapps"; then
+        if ! unzip "$GAPPS_PATH" "system/*" -x "system/addon.d/*" "system/product/app/*Exchange*/*" "system/product/app/*CalendarSync*" "system/product/etc/default-permissions/*mtg*" "system/product/etc/permissions/*dialer*" "system/product/etc/sysconfig/*build*" "system/product/framework/*" "system/product/lib*/*" "system/product/priv-app/AndroidAuto*/*" "system/system_ext/priv-app/SetupWizard/*" -d "$WORK_DIR/gapps"; then
             abort "Unzip MindTheGapps failed, package is corrupted?"
         fi
         mv "$WORK_DIR/gapps/system/"* "$WORK_DIR/gapps" || abort
