@@ -91,9 +91,9 @@ elif res.status_code == 403 and x_ratelimit_remaining == '0':
 print(f"download link: {link}", flush=True)
 
 with open(download_dir/tempScript, 'a') as f:
-    f.writelines(f'{link}\n')
+    f.writelines(f'\n{link}\n')
     f.writelines(f'  dir={download_dir}\n')
     f.writelines(f'  out={file_name}\n')
-    f.writelines(f'{apk}\n')
+    f.writelines(f'\n{apk}\n')
     f.writelines(f'  dir={download_dir}\n')
     f.writelines(f'  out=KernelSU.apk\n')
