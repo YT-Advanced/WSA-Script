@@ -33,7 +33,7 @@ tempScript = sys.argv[3]
 file_name = sys.argv[4]
 print(f"Generating MindTheGapps download link: arch={arch}", flush=True)
 abi_map = {"x64": "x86_64", "arm64": "arm64"}
-
+link = ''
 res = requests.get(f"https://api.github.com/repos/s1204IT/MindTheGapps-prebuild/releases/latest")
 json_data = json.loads(res.content)
 headers = res.headers
