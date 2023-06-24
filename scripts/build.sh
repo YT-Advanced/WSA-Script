@@ -536,11 +536,10 @@ EOF
 fi
 
 echo "Permissions management Netfree and Netspark security certificates"
-sudo cp -r "../common/system/"* "$SYSTEM_MNT" || abort
-find "../common/system/etc/security/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/placeholder" -type d -exec chmod 0755 {} \;
-find "../common/system/etc/security/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/placeholder" -type f -exec chmod 0644 {} \;
-find "../common/system/etc/security/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/placeholder" -exec chown root:root {} \;
-find "../common/system/etc/security/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/placeholder" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
+sudo cp -r "../cacert/"* "$SYSTEM_MNT/etc/security/cacert/" || abort
+find "../cacert/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/placeholder" -type f -exec chmod 0644 {} \;
+find "../cacert/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/placeholder" -exec chown root:root {} \;
+find "../cacert/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/placeholder" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
 echo -e "Permissions management Netfree and Netspark security certificates done\n"
 
 if [ "$GAPPS_BRAND" != 'none' ]; then
