@@ -1,6 +1,10 @@
 # WSA Sideloader Usage Guide
-#### With WSA Sideloader, you can install any APK file onto WSA. 
+#### With WSA Sideloader, you can install any APK file onto WSA, as well as XAPK, APKM and APKS files.
 #### This guide will show you how to use it.
+
+</br>
+
+</br>
 
 ## How to Download and Install WSA-Sideloader
 
@@ -15,14 +19,14 @@ Operating System|Downloads
 
 ***Step 1.  Once installed, you should see this screen:***
 
-![image](https://user-images.githubusercontent.com/44692189/226059063-9148821a-8661-4f38-9089-bfd6bb72b135.png)
+<img width="311" alt="image" src="https://github.com/infinitepower18/WSA-Sideloader/assets/44692189/ede49229-4667-47b1-ac2d-84f2d71b954f">
 
 >**Note** :
 > If you get a message that says WSA is not installed, check that you have downloaded and installed WSA correctly as per the WSABuilds instructions.
 
 </br>
 
-***Step 2. Next, open WSA Settings from the start menu or by typing wsa-settings:// in your browser's address bar, select Developer and enable Developer mode. Most likely the IP address shown is 127.0.0.1:58526 which is already entered by default in WSA Sideloader, however if the IP address is different for you make sure to change it in the sideloader.***
+***Step 2. Next, open WSA Settings from the start menu or by typing wsa-settings:// in your browser's address bar, select Developer and enable Developer mode.***
 
 ![image](https://user-images.githubusercontent.com/44692189/226059697-9d54c122-8674-46f4-871a-4937805498ef.png)
 
@@ -30,7 +34,7 @@ Operating System|Downloads
 
 ***Step 3. Now, you can click the Browse button to select your APK file. You can also double click a file in File Explorer to automatically open WSA Sideloader with the APK file already selected.***
 
-<img width="1157" alt="image" src="https://user-images.githubusercontent.com/44692189/226060206-ffc9a9af-42b2-4281-859d-bb83c3e8b019.png">
+<img width="1144" alt="image" src="https://github.com/MustardChef/WSABuilds/assets/44692189/a66efe96-8f0c-4a2c-930d-a9c60c7f1945">
 
 </br>
 
@@ -40,7 +44,7 @@ Operating System|Downloads
 
 </br>
 
-***Step 5. It should take a few seconds to install the APK. Once it says `The application has been successfully installed`, you can click Open app.***
+***Step 5. It should take a few seconds to install the APK. Once it says `The application has been successfully installed`, you can click Open app. Bundle files may take longer depending on the file size.***
 
 >**Note** : 
 > If WSA is off, WSA Sideloader will start it for you. After 30 seconds, the installation will automatically continue.
