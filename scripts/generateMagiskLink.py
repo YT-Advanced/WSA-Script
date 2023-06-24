@@ -58,6 +58,6 @@ elif magisk_ver == "alpha":
 print(f"download link: {magisk_link}", flush=True)
 
 with open(download_dir/tempScript, 'a') as f:
-    f.writelines(f'{magisk_link}\n')
+    f.writelines(f'\n{magisk_link}\n')
     f.writelines(f'  dir={download_dir}\n')
     f.writelines(f'  out=magisk-{magisk_ver}.zip\n')
