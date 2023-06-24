@@ -33,7 +33,6 @@ tempScript = sys.argv[3]
 file_name = sys.argv[4]
 print(f"Generating MindTheGapps download link: arch={arch}", flush=True)
 abi_map = {"x64": "x86_64", "arm64": "arm64"}
-link = ''
 res = requests.get(f"https://api.github.com/repos/s1204IT/MindTheGapps-prebuild/releases/latest")
 json_data = json.loads(res.content)
 headers = res.headers
@@ -41,7 +40,7 @@ x_ratelimit_remaining = headers["x-ratelimit-remaining"]
 if res.status_code == 200:
     assets = json_data["assets"]
     for asset in assets:
-        if re.match(f'.*13\\.0\\.0.{abi_map[arch]}.*\.zip$', asset["name"]) and asset["content_type"] == "application/zip":
+        if re.match(f'.*13\\.0\\.0.{abi_map[arch]}.*\.zip$', asset["name"]) and asset["content_type"] != "application/octet-stream":
             link = asset["browser_download_url"]
             break
 elif res.status_code == 403 and x_ratelimit_remaining == '0':
