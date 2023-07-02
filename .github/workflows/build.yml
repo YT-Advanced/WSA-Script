@@ -106,10 +106,6 @@ jobs:
          'compact vdisk' >> system_ext.txt
          'detach vdisk' >> system_ext.txt
          $p = Start-Process -NoNewWindow -Wait -PassThru "diskpart.exe" "/s system_ext.txt"
-         Write-Host ("diskpart exit with code " + $p.ExitCode)
-         if ($p.ExitCode -ne 0) {
-             exit 1
-         }
 
       - name: Compact System Image
         shell: pwsh
@@ -119,10 +115,6 @@ jobs:
          'compact vdisk' >> system.txt
          'detach vdisk' >> system.txt
          $p = Start-Process -NoNewWindow -Wait -PassThru "diskpart.exe" "/s system.txt"
-         Write-Host ("diskpart exit with code " + $p.ExitCode)
-         if ($p.ExitCode -ne 0) {
-             exit 1
-         }
 
       - name: Compact Vendor Image
         shell: pwsh
@@ -130,12 +122,8 @@ jobs:
          ('select vdisk file="${{ github.workspace }}\output\${{ needs.build.outputs.zipname }}\vendor.vhdx"') > vendor.txt
          'attach vdisk readonly' >> vendor.txt
          'compact vdisk' >> vendor.txt
-         'detach vdisk' >> system_ext.txt
+         'detach vdisk' >> vendor.txt
          $p = Start-Process -NoNewWindow -Wait -PassThru "diskpart.exe" "/s vendor.txt"
-         Write-Host ("diskpart exit with code " + $p.ExitCode)
-         if ($p.ExitCode -ne 0) {
-             exit 1
-         }
 
       - name: Compact Product Image
         shell: pwsh
@@ -145,10 +133,6 @@ jobs:
          'compact vdisk' >> product.txt
          'detach vdisk' >> product.txt
          $p = Start-Process -NoNewWindow -Wait -PassThru "diskpart.exe" "/s product.txt"
-         Write-Host ("diskpart exit with code " + $p.ExitCode)
-         if ($p.ExitCode -ne 0) {
-             exit 1
-         }
 
       - name: Remove unused artifact ❌
         uses: geekyeggo/delete-artifact@v2
