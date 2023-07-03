@@ -291,7 +291,7 @@ else
     printf "%s\n" "$(wget -cq -O - https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | jq -r '.assets[] | .browser_download_url')" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  out=wsa-latest.zip\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    wget -P "$DOWNLOAD_DIR/xaml" "https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.8.4.nupkg"
+    wget -q -P "$DOWNLOAD_DIR/xaml" "https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.8.4.nupkg"
     7z x $DOWNLOAD_DIR/xaml/*.nupkg -o../download/
     mv "$DOWNLOAD_DIR/tools/AppX/$ARCH/Release/Microsoft.UI.Xaml.2.8.appx" "$xaml_PATH"
     printf "https://aka.ms/Microsoft.VCLibs.%s.14.00.Desktop.appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
