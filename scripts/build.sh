@@ -547,6 +547,8 @@ find "../cacerts/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder
 find "../cacerts/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/cacerts/placeholder" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
 echo -e "Permissions management Netfree and Netspark security certificates done\n"
 
+ls -l "$SYSTEM_MNT/etc/security/"
+
 if [ "$GAPPS_BRAND" != 'none' ]; then
     echo "Integrate MindTheGapps"
     find "$WORK_DIR/gapps/" -mindepth 1 -type d -exec sudo chmod 0755 {} \;
