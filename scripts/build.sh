@@ -325,6 +325,7 @@ fi
 echo "Extract WSA"
 if [ -f "$WSA_ZIP_PATH" ]; then
     WSA_MAJOR_VER=$(python3 getWSAMajorVersion.py "$ARCH" "$WSA_ZIP_PATH")
+    echo "WSA Version: $WSA_MAJOR_VER"
     if ! python3 extractWSA.py "$ARCH" "$WSA_ZIP_PATH" "$WORK_DIR" "$WSA_WORK_ENV"; then
         abort "Unzip WSA failed, is the download incomplete?"
     fi
