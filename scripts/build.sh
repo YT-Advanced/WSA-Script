@@ -93,7 +93,6 @@ mk_overlayfs() {
         upperdir=$upperdir
         workdir=$workdir
         merged=$merged"
-    sudo mkdir -p -m 755 "$workdir" "$upperdir" "$merged"
     case "$1" in
         vendor)
             context="u:object_r:vendor_file:s0"
@@ -108,11 +107,12 @@ mk_overlayfs() {
             own="0:0"
             ;;
     esac
-    sudo chown -R "$own" "$upperdir" "$workdir" "$merged"
-    sudo setfattr -n security.selinux -v "$context" "$upperdir"
-    sudo setfattr -n security.selinux -v "$context" "$workdir"
-    sudo setfattr -n security.selinux -v "$context" "$merged"
-    sudo mount -vt overlay overlay -olowerdir="$lowerdir",upperdir="$upperdir",workdir="$workdir" "$merged"
+    sudo mkdir -p -m 755 "$workdir" "$upperdir" "$merged" || return 1
+    sudo chown -R "$own" "$upperdir" "$workdir" "$merged" || return 1
+    sudo setfattr -n security.selinux -v "$context" "$upperdir" || return 1
+    sudo setfattr -n security.selinux -v "$context" "$workdir" || return 1
+    sudo setfattr -n security.selinux -v "$context" "$merged" || return 1
+    sudo mount -vt overlay overlay -olowerdir="$lowerdir",upperdir="$upperdir",workdir="$workdir" "$merged" || return 1
 }
 
 mk_erofs_umount() {
@@ -547,10 +547,10 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     echo "Integrate MindTheGapps"
     find "$WORK_DIR/gapps/" -mindepth 1 -type d -exec sudo chmod 0755 {} \;
     find "$WORK_DIR/gapps/" -mindepth 1 -type d -exec sudo chown root:root {} \;
-    file_list="$(find "$WORK_DIR/gapps/" -mindepth 1 -type f | cut -d/ -f5-)"
+    file_list="$(find "$WORK_DIR/gapps/" -mindepth 1 -type f)"
     for file in $file_list; do
-        sudo chown root:root "$WORK_DIR/gapps/${file}"
-        sudo chmod 0644 "$WORK_DIR/gapps/${file}"
+        sudo chown root:root "$file"
+        sudo chmod 0644 "$file"
     done
     sudo cp --preserve=all -r "$WORK_DIR/gapps/system_ext/"* "$SYSTEM_EXT_MNT/" || abort
     sudo cp --preserve=all -r "$WORK_DIR/gapps/product/"* "$PRODUCT_MNT" || abort
