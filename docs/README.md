@@ -458,6 +458,8 @@ Now run WSA and your serdata should hopefully be restored
 
 [<img src="https://img.shields.io/badge/-Fix%20Error%200x80073D10-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/Fix%20Error%200x80073D10.md)
 
+[<img src="https://img.shields.io/badge/-Fix%20Error%200x80073CFB-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/Fix%20Error%200x80073CFB.md)
+
 [<img src="https://img.shields.io/badge/-Fix%20Path%20Too%20Long-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/FixPathTooLong.md)
 
 [<img src="https://img.shields.io/badge/-Fix%20Missing%20Icons%20Issue-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/MissingIcons.md)
