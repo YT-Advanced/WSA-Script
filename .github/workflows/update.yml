@@ -82,7 +82,7 @@ jobs:
           file.close()
           print("Check MindTheGapps Version")
           currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/gapps.appversion").text
-          latestver = json.loads(requests.get(f"https://api.github.com/repos/Howard20181/MindTheGappsBuilder/releases/latest").content)['name']
+          latestver = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/MindTheGappsBuilder/releases/latest").content)['name']
           latestver = latestver.replace('\n', '')
           currentver = currentver.replace('\n', '')
           if currentver != latestver:
