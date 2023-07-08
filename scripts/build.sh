@@ -19,7 +19,6 @@
 #
 
 # shellcheck disable=SC2034
-HOST_ARCH=$(uname -m)
 cd "$(dirname "$0")" || exit 1
 WORK_DIR=$(mktemp -d -t wsa-build-XXXXXXXXXX_) || exit 1
 
@@ -132,7 +131,7 @@ mk_overlayfs() {
 }
 
 mk_erofs_umount() {
-    sudo "../bin/$HOST_ARCH/mkfs.erofs" -zlz4hc -T1230768000 --chunksize=4096 --exclude-regex="lost+found" "$2".erofs "$1" || abort "Failed to make erofs image from $1"
+    sudo "../bin/EROFS/mkfs.erofs" -zlz4hc -T1230768000 --chunksize=4096 --exclude-regex="lost+found" "$2".erofs "$1" || abort "Failed to make erofs image from $1"
     sudo umount -v "$1"
     sudo rm -f "$2"
     sudo mv "$2".erofs "$2"
@@ -362,8 +361,8 @@ if [ "$GAPPS_BRAND" != "none" ] || [ "$ROOT_SOL" = "magisk" ]; then
         fi
         # shellcheck disable=SC1090
         source "$WSA_WORK_ENV" || abort
-        sudo chmod +x "../linker/$HOST_ARCH/linker64" || abort
-        sudo patchelf --set-interpreter "../linker/$HOST_ARCH/linker64" "$WORK_DIR/magisk/magiskpolicy" || abort
+        sudo chmod +x "../linker/linker64" || abort
+        sudo patchelf --set-interpreter "../linker/linker64" "$WORK_DIR/magisk/magiskpolicy" || abort
         chmod +x "$WORK_DIR/magisk/magiskpolicy" || abort
     else
         echo "The Magisk zip package does not exist, rename it to magisk-debug.zip and put it in the download folder."
@@ -416,10 +415,10 @@ if [[ "$WSA_MAJOR_VER" -lt 2306 ]]; then
     sudo mkdir -p -m 755 "$ROOT_MNT_RO" || abort
     sudo chown "0:0" "$ROOT_MNT_RO" || abort
     sudo setfattr -n security.selinux -v "u:object_r:rootfs:s0" "$ROOT_MNT_RO" || abort
-    sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/system.img" "$ROOT_MNT_RO" || abort 1
-    sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RO" || abort 1
-    sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_MNT_RO" || abort 1
-    sudo "../bin/$HOST_ARCH/fuse.erofs" "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_MNT_RO" || abort 1
+    sudo "../bin/EROFS/fuse.erofs" "$WORK_DIR/wsa/$ARCH/system.img" "$ROOT_MNT_RO" || abort 1
+    sudo "../bin/EROFS/fuse.erofs" "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RO" || abort 1
+    sudo "../bin/EROFS/fuse.erofs" "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_MNT_RO" || abort 1
+    sudo "../bin/EROFS/fuse.erofs" "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_MNT_RO" || abort 1
     echo -e "done\n"
     echo "Create overlayfs for EROFS"
     mk_overlayfs system "$ROOT_MNT_RO" "$SYSTEM_MNT_RW" "$ROOT_MNT" || abort
@@ -427,15 +426,14 @@ if [[ "$WSA_MAJOR_VER" -lt 2306 ]]; then
     mk_overlayfs product "$PRODUCT_MNT_RO" "$PRODUCT_MNT_RW" "$PRODUCT_MNT" || abort
     mk_overlayfs system_ext "$SYSTEM_EXT_MNT_RO" "$SYSTEM_EXT_MNT_RW" "$SYSTEM_EXT_MNT" || abort
     echo -e "Create overlayfs for EROFS done\n"
-elif [[ "$WSA_MAJOR_VER" -ge 2306 ]]; then
+else
     echo "Remove read-only flag for read-only EXT4 image"
     ro_ext4_img_to_rw "$WORK_DIR/wsa/$ARCH/system_ext.img" || abort
     ro_ext4_img_to_rw "$WORK_DIR/wsa/$ARCH/product.img" || abort
     ro_ext4_img_to_rw "$WORK_DIR/wsa/$ARCH/system.img" || abort
     ro_ext4_img_to_rw "$WORK_DIR/wsa/$ARCH/vendor.img" || abort
     echo -e "Remove read-only flag for read-only EXT4 image done\n"
-fi
-if [[ "$WSA_MAJOR_VER" -ge 2306 ]]; then
+    
     echo "Calculate the required space"
     EXTRA_SIZE=10240
 
@@ -533,7 +531,7 @@ EOF
     sudo find "$ROOT_MNT/debug_ramdisk" -type f -exec setfattr -n security.selinux -v "u:object_r:magisk_file:s0" {} \; || abort
     echo "/debug_ramdisk(/.*)?    u:object_r:magisk_file:s0" | sudo tee -a "$VENDOR_MNT/etc/selinux/vendor_file_contexts"
     echo '/data/adb/magisk(/.*)?   u:object_r:magisk_file:s0' | sudo tee -a "$VENDOR_MNT/etc/selinux/vendor_file_contexts"
-    sudo LD_LIBRARY_PATH="../linker/$HOST_ARCH" "$WORK_DIR/magisk/magiskpolicy" --load "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --save "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --magisk || abort
+    sudo LD_LIBRARY_PATH="../linker" "$WORK_DIR/magisk/magiskpolicy" --load "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --save "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --magisk || abort
     NEW_INITRC_DIR=$SYSTEM_MNT/etc/init/hw
     sudo tee -a "$SYSTEM_MNT/etc/init/hw/init.rc" <<EOF >/dev/null
 on post-fs-data
@@ -661,7 +659,7 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     find "$WORK_DIR/gapps/system_ext/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_EXT_MNT/priv-app/placeholder" -type d -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     find "$WORK_DIR/gapps/system_ext/etc/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_EXT_MNT/etc/placeholder" -type d -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     find "$WORK_DIR/gapps/system_ext/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_EXT_MNT/priv-app/placeholder" -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
-    sudo LD_LIBRARY_PATH="../linker/$HOST_ARCH" "$WORK_DIR/magisk/magiskpolicy" --load "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --save "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" "allow gmscore_app gmscore_app vsock_socket { create connect write read }" "allow gmscore_app device_config_runtime_native_boot_prop file read" "allow gmscore_app system_server_tmpfs dir search" "allow gmscore_app system_server_tmpfs file open" "allow gmscore_app system_server_tmpfs filesystem getattr" "allow gmscore_app gpu_device dir search" "allow gmscore_app media_rw_data_file filesystem getattr" || abort
+    sudo LD_LIBRARY_PATH="../linker/" "$WORK_DIR/magisk/magiskpolicy" --load "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --save "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" "allow gmscore_app gmscore_app vsock_socket { create connect write read }" "allow gmscore_app device_config_runtime_native_boot_prop file read" "allow gmscore_app system_server_tmpfs dir search" "allow gmscore_app system_server_tmpfs file open" "allow gmscore_app system_server_tmpfs filesystem getattr" "allow gmscore_app gpu_device dir search" "allow gmscore_app media_rw_data_file filesystem getattr" || abort
     echo -e "Integrate MindTheGapps done\n"
 fi
 
