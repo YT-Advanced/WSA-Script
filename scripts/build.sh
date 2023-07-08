@@ -96,6 +96,7 @@ resize_img() {
     fi
     return 0
 }
+
 mk_overlayfs() {
     local context own
     local workdir="$WORK_DIR/worker/$1"
@@ -316,6 +317,10 @@ else
     printf "https://cdn.glitch.global/847a3043-7118-4fd2-8853-fe9756f88702/Microsoft.VCLibs.140.00_14.0.32530.0_%s__8wekyb3d8bbwe.Appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  out=Microsoft.VCLibs.140.00_%s.appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
+    echo -e "Downloading WSA..."
+    aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j5 -c -R -m0 --async-dns=false --check-integrity=true --continue=true --allow-overwrite=true --conditional-get=true -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"
+    WSA_MAJOR_VER=$(python3 getWSAMajorVersion.py "$ARCH" "$WSA_ZIP_PATH")
+    echo -n '' > "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"    
 fi
 WSA_MAJOR_VER=$(python3 getWSAMajorVersion.py "$ARCH" "$WSA_ZIP_PATH")
 if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
