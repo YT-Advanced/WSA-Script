@@ -317,14 +317,11 @@ else
     printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  out=Microsoft.VCLibs.140.00_%s.appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
 fi
-WSA_MAJOR_VER=$(python3 getWSAMajorVersion.py "$ARCH" "$WSA_ZIP_PATH")
 if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
     python3 generateMagiskLink.py "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
 fi
 if [ "$ROOT_SOL" = "kernelsu" ]; then
     update_ksu_zip_name
-    echo -e "\n\nWSA_MAJOR_VER = $WSA_MAJOR_VER\nKERNEL_VER = $KERNEL_VER\n"
-    echo -e "\nPython test: $(python3 getWSAMajorVersion.py "$ARCH" "$WSA_ZIP_PATH")"
     python3 generateKernelSULink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$KERNEL_VER" "$KERNELSU_ZIP_NAME" || abort
     # shellcheck disable=SC1090
     source "$WSA_WORK_ENV" || abort
@@ -340,6 +337,9 @@ if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" 
     echo "We have encountered an error while downloading files."
     exit 1
 fi
+
+echo -e "\n\nWSA_MAJOR_VER = $WSA_MAJOR_VER\nKERNEL_VER = $KERNEL_VER\n"
+echo -e "\nPython test: $(python3 getWSAMajorVersion.py "$ARCH" "$WSA_ZIP_PATH")"
 
 echo "Extract WSA"
 if [ -f "$WSA_ZIP_PATH" ]; then
