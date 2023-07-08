@@ -687,18 +687,35 @@ fi
 
 sudo find "$ROOT_MNT" -not -type l -exec touch -amt 200901010000.00 {} \;
 
-echo "Create EROFS images"
-mk_erofs_umount "$VENDOR_MNT" "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RW" || abort
-mk_erofs_umount "$PRODUCT_MNT" "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_MNT_RW" || abort
-mk_erofs_umount "$SYSTEM_EXT_MNT" "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_MNT_RW" || abort
-mk_erofs_umount "$ROOT_MNT" "$WORK_DIR/wsa/$ARCH/system.img" || abort
-echo -e "Create EROFS images done\n"
-echo "Umount images"
-sudo umount -v "$VENDOR_MNT_RO"
-sudo umount -v "$PRODUCT_MNT_RO"
-sudo umount -v "$SYSTEM_EXT_MNT_RO"
-sudo umount -v "$ROOT_MNT_RO"
-echo -e "done\n"
+if [[ "$WSA_MAJOR_VER" -lt 2306 ]]; then
+    echo "Create EROFS images"
+    mk_erofs_umount "$VENDOR_MNT" "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RW" || abort
+    mk_erofs_umount "$PRODUCT_MNT" "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_MNT_RW" || abort
+    mk_erofs_umount "$SYSTEM_EXT_MNT" "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_MNT_RW" || abort
+    mk_erofs_umount "$ROOT_MNT" "$WORK_DIR/wsa/$ARCH/system.img" || abort
+    echo -e "Create EROFS images done\n"
+    echo "Umount images"
+    sudo umount -v "$VENDOR_MNT_RO"
+    sudo umount -v "$PRODUCT_MNT_RO"
+    sudo umount -v "$SYSTEM_EXT_MNT_RO"
+    sudo umount -v "$ROOT_MNT_RO"
+    echo -e "done\n"
+else
+    echo "Umount images"
+    sudo find "$ROOT_MNT" -exec touch -ht 200901010000.00 {} \;
+    sudo umount -v "$VENDOR_MNT"
+    sudo umount -v "$PRODUCT_MNT"
+    sudo umount -v "$SYSTEM_EXT_MNT"
+    sudo umount -v "$ROOT_MNT"
+    echo -e "done\n"
+    echo "Shrink images"
+    resize_img "$WORK_DIR/wsa/$ARCH/system.img" || abort
+    resize_img "$WORK_DIR/wsa/$ARCH/vendor.img" || abort
+    resize_img "$WORK_DIR/wsa/$ARCH/product.img" || abort
+    resize_img "$WORK_DIR/wsa/$ARCH/system_ext.img" || abort
+    echo -e "Shrink images done\n"
+fi
+
 echo "Convert images to vhdx"
 qemu-img convert -q -f raw -o subformat=fixed -O vhdx "$WORK_DIR/wsa/$ARCH/system_ext.img" "$WORK_DIR/wsa/$ARCH/system_ext.vhdx" || abort
 qemu-img convert -q -f raw -o subformat=fixed -O vhdx "$WORK_DIR/wsa/$ARCH/product.img" "$WORK_DIR/wsa/$ARCH/product.vhdx" || abort
