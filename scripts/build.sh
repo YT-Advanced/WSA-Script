@@ -305,8 +305,9 @@ if [ "$DOWN_WSA" != "no" ]; then
     # shellcheck disable=SC1090
     source "$WSA_WORK_ENV" || abort
 else
-    echo -e "Downloading WSA..."
-    wget -q -O ./download/wsa-latest.zip $(wget -cq -O - https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | jq -r '.assets[] | .browser_download_url')
+    printf "%s\n" "$(wget -cq -O - https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | jq -r '.assets[] | .browser_download_url')" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
+    printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
+    printf "  out=wsa-latest.zip\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     wget -q -P "$DOWNLOAD_DIR/xaml" "https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.8.4.nupkg"
     7z x $DOWNLOAD_DIR/xaml/*.nupkg -o../download/
     mv "$DOWNLOAD_DIR/tools/AppX/$ARCH/Release/Microsoft.UI.Xaml.2.8.appx" "$xaml_PATH"
@@ -316,8 +317,10 @@ else
     printf "https://cdn.glitch.global/847a3043-7118-4fd2-8853-fe9756f88702/Microsoft.VCLibs.140.00_14.0.32530.0_%s__8wekyb3d8bbwe.Appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  out=Microsoft.VCLibs.140.00_%s.appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
+    WSA_VER=$(wget -cq -O - https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | jq -r '.tag_name' | sed '')
+    WSA_MAJOR_VER=${WSA_VER:1:4}
+    echo "$WSA_MAJOR_VER"
 fi
-WSA_MAJOR_VER=$(python3 getWSAMajorVersion.py "$ARCH" "$WSA_ZIP_PATH")
 if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
     python3 generateMagiskLink.py "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
 fi
