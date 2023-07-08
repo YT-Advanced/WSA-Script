@@ -306,7 +306,7 @@ if [ "$DOWN_WSA" != "no" ]; then
     source "$WSA_WORK_ENV" || abort
 else
     echo -e "Downloading WSA..."
-    wget -q -O ./download/wsa-WIF.zip $(wget -cq -O - https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | jq -r '.assets[] | .browser_download_url')
+    wget -q -O ./download/wsa-latest.zip $(wget -cq -O - https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | jq -r '.assets[] | .browser_download_url')
     wget -q -P "$DOWNLOAD_DIR/xaml" "https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.8.4.nupkg"
     7z x $DOWNLOAD_DIR/xaml/*.nupkg -o../download/
     mv "$DOWNLOAD_DIR/tools/AppX/$ARCH/Release/Microsoft.UI.Xaml.2.8.appx" "$xaml_PATH"
