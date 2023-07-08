@@ -322,7 +322,7 @@ if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
 fi
 if [ "$ROOT_SOL" = "kernelsu" ]; then
     update_ksu_zip_name
-    echo -e "\n\nWSA_MAJOR_VER = $WSA_MAJOR_VER\nKERNEL_VER = $KEREL_VER\n"
+    echo -e "\n\nWSA_MAJOR_VER = $WSA_MAJOR_VER\nKERNEL_VER = $KERNEL_VER\n"
     python3 generateKernelSULink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$KERNEL_VER" "$KERNELSU_ZIP_NAME" || abort
     # shellcheck disable=SC1090
     source "$WSA_WORK_ENV" || abort
