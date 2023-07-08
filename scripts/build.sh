@@ -96,6 +96,7 @@ resize_img() {
     fi
     return 0
 }
+
 mk_overlayfs() {
     local context own
     local workdir="$WORK_DIR/worker/$1"
@@ -341,9 +342,6 @@ if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" 
     echo "We have encountered an error while downloading files."
     exit 1
 fi
-
-echo -e "\n\nWSA_MAJOR_VER = $WSA_MAJOR_VER\nKERNEL_VER = $KERNEL_VER\n"
-echo -e "\nPython test: $(python3 getWSAMajorVersion.py "$ARCH" "$WSA_ZIP_PATH")"
 
 echo "Extract WSA"
 if [ -f "$WSA_ZIP_PATH" ]; then
