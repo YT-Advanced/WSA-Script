@@ -165,7 +165,6 @@ for filename, values in identities.items():
         with open(os.environ['WSA_WORK_ENV'], 'r') as environ_file:
             env = Prop(environ_file.read())
             env.WSA_VER = wsa_build_ver
-            env.WSA_MAJOR_VER = major_ver
         with open(os.environ['WSA_WORK_ENV'], 'w') as environ_file:
             environ_file.write(str(env))
         out_file_name = f"wsa-{release_type}.zip"
