@@ -233,7 +233,6 @@ while [[ $# -gt 0 ]]; do
         --compress-format   ) COMPRESS_FORMAT="$2"; shift 2 ;;
         --remove-amazon     ) REMOVE_AMAZON="yes"; shift ;;
         --magisk-ver        ) MAGISK_VER="$2"; shift 2 ;;
-        --skip-download-wsa ) DOWN_WSA="no"; shift ;;
         --                  ) shift; break;;
    esac
 done
@@ -300,7 +299,7 @@ update_gapps_zip_name() {
     GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 }
 echo "Generate Download Links"
-if [ "$DOWN_WSA" != "no" ]; then
+if [ "$RELEASE_TYPE" != "latest" ]; then
     python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
     # shellcheck disable=SC1090
     source "$WSA_WORK_ENV" || abort
