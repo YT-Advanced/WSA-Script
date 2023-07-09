@@ -209,7 +209,6 @@ ARGUMENT_LIST=(
     "root-sol:"
     "compress-format:"
     "remove-amazon"
-    "skip-download-wsa"
 )
 
 default
@@ -309,7 +308,7 @@ else
     printf "  out=wsa-latest.zip\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     mkdir -p "$DOWNLOAD_DIR/xaml"
     curl -sO "https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.8.4.nupkg" --output-dir "$DOWNLOAD_DIR/xaml"
-    7z x $DOWNLOAD_DIR/xaml/*.nupkg -o../download/
+    7z x $DOWNLOAD_DIR/xaml/*.nupkg -o../download/ > nul
     mv "$DOWNLOAD_DIR/tools/AppX/$ARCH/Release/Microsoft.UI.Xaml.2.8.appx" "$xaml_PATH"
     printf "https://aka.ms/Microsoft.VCLibs.%s.14.00.Desktop.appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
