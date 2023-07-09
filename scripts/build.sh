@@ -209,7 +209,6 @@ ARGUMENT_LIST=(
     "root-sol:"
     "compress-format:"
     "remove-amazon"
-    "skip-download-wsa"
 )
 
 default
@@ -233,7 +232,6 @@ while [[ $# -gt 0 ]]; do
         --compress-format   ) COMPRESS_FORMAT="$2"; shift 2 ;;
         --remove-amazon     ) REMOVE_AMAZON="yes"; shift ;;
         --magisk-ver        ) MAGISK_VER="$2"; shift 2 ;;
-        --skip-download-wsa ) DOWN_WSA="no"; shift ;;
         --                  ) shift; break;;
    esac
 done
@@ -300,7 +298,7 @@ update_gapps_zip_name() {
     GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 }
 echo "Generate Download Links"
-if [ "$DOWN_WSA" != "no" ]; then
+if [ "$RELEASE_TYPE" != "latest" ]; then
     python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
     # shellcheck disable=SC1090
     source "$WSA_WORK_ENV" || abort
@@ -310,7 +308,7 @@ else
     printf "  out=wsa-latest.zip\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     mkdir -p "$DOWNLOAD_DIR/xaml"
     curl -sO "https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.8.4.nupkg" --output-dir "$DOWNLOAD_DIR/xaml"
-    7z x $DOWNLOAD_DIR/xaml/*.nupkg -o../download/
+    7z x $DOWNLOAD_DIR/xaml/*.nupkg -o../download/ | tail -4
     mv "$DOWNLOAD_DIR/tools/AppX/$ARCH/Release/Microsoft.UI.Xaml.2.8.appx" "$xaml_PATH"
     printf "https://aka.ms/Microsoft.VCLibs.%s.14.00.Desktop.appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
@@ -398,7 +396,6 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
             abort "Unzip MindTheGapps failed, package is corrupted?"
         fi
         mv "$WORK_DIR/gapps/system/"* "$WORK_DIR/gapps" || abort
-        rm -rf "${WORK_DIR:?}/gapps/system" || abort
     else
         abort "The MindTheGapps zip package does not exist."
     fi

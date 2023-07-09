@@ -203,7 +203,7 @@ jobs:
         if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: ca-certificates patchelf e2fsprogs aria2 p7zip-full attr unzip xz-utils qemu-utils python3-venv
+          packages: e2fsprogs attr unzip qemu-utils python3-venv
           version: 1.0
 
       - name: Setup Python3 Virtual Enviroment
@@ -225,12 +225,7 @@ jobs:
         if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
         shell: bash
         run: |
-          if [[ "${{ env.body }}" == *latest* ]]; then
-              mkdir -p download
-              ./scripts/build.sh --skip-download-wsa ${{ env.body }}
-          else
-              ./scripts/build.sh ${{ env.body }}
-          fi
+          ./scripts/build.sh ${{ env.body }}
 
       - name: File Checksum
         if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false' && steps.wsa.outputs.file_ext != '.zip'
