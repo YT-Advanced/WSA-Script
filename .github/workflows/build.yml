@@ -43,7 +43,7 @@ jobs:
       - name: Install Ubuntu Dependencies 🧑‍🏭
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: ca-certificates e2fsprogs curl attr unzip qemu-utils python3-venv
+          packages: e2fsprogs attr unzip qemu-utils python3-venv
           version: 1.0
 
       - name: Build WSA ${{ matrix.arch }} with GAPPS ${{ matrix.root }} 🏗️
