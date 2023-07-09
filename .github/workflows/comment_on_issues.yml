@@ -203,7 +203,7 @@ jobs:
         if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: ca-certificates e2fsprogs attr unzip qemu-utils python3-venv
+          packages: e2fsprogs attr unzip qemu-utils python3-venv
           version: 1.0
 
       - name: Setup Python3 Virtual Enviroment
