@@ -305,10 +305,10 @@ if [ "$DOWN_WSA" != "no" ]; then
     # shellcheck disable=SC1090
     source "$WSA_WORK_ENV" || abort
 else
-    printf "%s\n" "$(wget -cq -O - https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | jq -r '.assets[] | .browser_download_url')" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
+    printf "%s\n" "$(curl -sL https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | jq -r '.assets[] | .browser_download_url')" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  out=wsa-latest.zip\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    wget -q -P "$DOWNLOAD_DIR/xaml" "https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.8.4.nupkg"
+    curl -sO "https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.8.4.nupkg" --output-dir "$DOWNLOAD_DIR/xaml"
     7z x $DOWNLOAD_DIR/xaml/*.nupkg -o../download/
     mv "$DOWNLOAD_DIR/tools/AppX/$ARCH/Release/Microsoft.UI.Xaml.2.8.appx" "$xaml_PATH"
     printf "https://aka.ms/Microsoft.VCLibs.%s.14.00.Desktop.appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
@@ -317,7 +317,7 @@ else
     printf "https://cdn.glitch.global/847a3043-7118-4fd2-8853-fe9756f88702/Microsoft.VCLibs.140.00_14.0.32530.0_%s__8wekyb3d8bbwe.Appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  out=Microsoft.VCLibs.140.00_%s.appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    WSA_VER=$(wget -cq -O - https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | jq -r '.tag_name' | sed '')
+    WSA_VER=$(curl -sL https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | jq -r '.tag_name')
     WSA_MAJOR_VER=${WSA_VER:1:4}
 fi
 if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
@@ -363,7 +363,6 @@ if [ "$GAPPS_BRAND" != "none" ] || [ "$ROOT_SOL" = "magisk" ]; then
         fi
         # shellcheck disable=SC1090
         source "$WSA_WORK_ENV" || abort
-        sudo chmod +x "../linker/linker64" || abort
         sudo patchelf --set-interpreter "../linker/linker64" "$WORK_DIR/magisk/magiskpolicy" || abort
         chmod +x "$WORK_DIR/magisk/magiskpolicy" || abort
     else

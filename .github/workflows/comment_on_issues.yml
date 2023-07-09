@@ -150,7 +150,7 @@ jobs:
             > https://github.com/YT-Advanced/WSA-Script/releases/latest
             ----
           emoji: heart
-          
+
       - name: Update Comment Insider
         if: env.insider == 'true'
         uses: actions-cool/issues-helper@v3
