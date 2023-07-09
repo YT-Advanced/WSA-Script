@@ -396,7 +396,6 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
             abort "Unzip MindTheGapps failed, package is corrupted?"
         fi
         mv "$WORK_DIR/gapps/system/"* "$WORK_DIR/gapps" || abort
-        rm -rf "${WORK_DIR:?}/gapps/system" || abort
     else
         abort "The MindTheGapps zip package does not exist."
     fi
