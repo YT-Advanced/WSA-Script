@@ -225,6 +225,7 @@ jobs:
         if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
         shell: bash
         run: |
+          mkdir -p download
           ./scripts/build.sh ${{ env.body }}
 
       - name: File Checksum
