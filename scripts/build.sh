@@ -303,7 +303,6 @@ if [ "$RELEASE_TYPE" != "latest" ]; then
     # shellcheck disable=SC1090
     source "$WSA_WORK_ENV" || abort
 else
-    mkdir -p download
     printf "%s\n" "$(curl -sL https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | jq -r '.assets[] | .browser_download_url')" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  out=wsa-latest.zip\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
