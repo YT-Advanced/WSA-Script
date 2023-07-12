@@ -142,9 +142,6 @@ mk_erofs_umount() {
     sudo umount -v "$1"
     sudo rm -f "$2"
     sudo mv "$2".erofs "$2"
-    if [ "$3" ]; then
-        sudo rm -rf "$3"
-    fi
 }
 
 # workaround for Debian
@@ -695,9 +692,9 @@ sudo find "$ROOT_MNT" -not -type l -exec touch -amt 200901010000.00 {} \;
 
 if [ "$SYSTEMIMAGES_FILE_SYSTEM_TYPE" = "erofs" ]; then
     echo "Create EROFS images"
-    mk_erofs_umount "$VENDOR_MNT" "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RW" || abort
-    mk_erofs_umount "$PRODUCT_MNT" "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_MNT_RW" || abort
-    mk_erofs_umount "$SYSTEM_EXT_MNT" "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_MNT_RW" || abort
+    mk_erofs_umount "$VENDOR_MNT" "$WORK_DIR/wsa/$ARCH/vendor.img" || abort
+    mk_erofs_umount "$PRODUCT_MNT" "$WORK_DIR/wsa/$ARCH/product.img" || abort
+    mk_erofs_umount "$SYSTEM_EXT_MNT" "$WORK_DIR/wsa/$ARCH/system_ext.img" || abort
     mk_erofs_umount "$ROOT_MNT" "$WORK_DIR/wsa/$ARCH/system.img" || abort
     echo -e "Create EROFS images done\n"
     echo "Umount images"
