@@ -131,6 +131,12 @@ mk_overlayfs() {
     sudo mount -vt overlay overlay -olowerdir="$lowerdir",upperdir="$upperdir",workdir="$workdir" "$merged" || return 1
 }
 
+check_image_type() {
+    local type
+    type=$(blkid -o value -s TYPE "$1")
+    echo "$type"
+}
+
 mk_erofs_umount() {
     sudo "../bin/EROFS/mkfs.erofs" -zlz4hc -T1230768000 --chunksize=4096 --exclude-regex="lost+found" "$2".erofs "$1" || abort "Failed to make erofs image from $1"
     sudo umount -v "$1"
@@ -409,7 +415,8 @@ vhdx_to_raw_img "$WORK_DIR/wsa/$ARCH/system.vhdx" "$WORK_DIR/wsa/$ARCH/system.im
 vhdx_to_raw_img "$WORK_DIR/wsa/$ARCH/vendor.vhdx" "$WORK_DIR/wsa/$ARCH/vendor.img" || abort
 echo -e "Convert vhdx to RAW image done\n"
 
-if [[ "$WSA_MAJOR_VER" -lt 2306 ]]; then
+SYSTEMIMAGES_FILE_SYSTEM_TYPE=$(check_image_type "$WORK_DIR/wsa/$ARCH/system.img")
+if [[ "$SYSTEMIMAGES_FILE_SYSTEM_TYPE" = "erofs" ]]; then
     echo "Mount images"
     sudo mkdir -p -m 755 "$ROOT_MNT_RO" || abort
     sudo chown "0:0" "$ROOT_MNT_RO" || abort
@@ -425,7 +432,7 @@ if [[ "$WSA_MAJOR_VER" -lt 2306 ]]; then
     mk_overlayfs product "$PRODUCT_MNT_RO" "$PRODUCT_MNT_RW" "$PRODUCT_MNT" || abort
     mk_overlayfs system_ext "$SYSTEM_EXT_MNT_RO" "$SYSTEM_EXT_MNT_RW" "$SYSTEM_EXT_MNT" || abort
     echo -e "Create overlayfs for EROFS done\n"
-else
+elif [ "$SYSTEMIMAGES_FILE_SYSTEM_TYPE" = "ext4" ]; then
     echo "Remove read-only flag for read-only EXT4 image"
     ro_ext4_img_to_rw "$WORK_DIR/wsa/$ARCH/system_ext.img" || abort
     ro_ext4_img_to_rw "$WORK_DIR/wsa/$ARCH/product.img" || abort
@@ -489,6 +496,8 @@ else
     sudo mount -vo loop "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_MNT" || abort
     sudo mount -vo loop "$WORK_DIR/wsa/$ARCH/system_ext.img" "$SYSTEM_EXT_MNT" || abort
     echo -e "done\n"
+else
+    abort "Unknown file system type: $SYSTEMIMAGES_FILE_SYSTEM_TYPE"
 fi
 
 if [ "$REMOVE_AMAZON" ]; then
@@ -684,7 +693,7 @@ fi
 
 sudo find "$ROOT_MNT" -not -type l -exec touch -amt 200901010000.00 {} \;
 
-if [[ "$WSA_MAJOR_VER" -lt 2306 ]]; then
+if [ "$SYSTEMIMAGES_FILE_SYSTEM_TYPE" = "erofs" ]; then
     echo "Create EROFS images"
     mk_erofs_umount "$VENDOR_MNT" "$WORK_DIR/wsa/$ARCH/vendor.img" "$VENDOR_MNT_RW" || abort
     mk_erofs_umount "$PRODUCT_MNT" "$WORK_DIR/wsa/$ARCH/product.img" "$PRODUCT_MNT_RW" || abort
@@ -697,7 +706,7 @@ if [[ "$WSA_MAJOR_VER" -lt 2306 ]]; then
     sudo umount -v "$SYSTEM_EXT_MNT_RO"
     sudo umount -v "$ROOT_MNT_RO"
     echo -e "done\n"
-else
+elif [ "$SYSTEMIMAGES_FILE_SYSTEM_TYPE" = "ext4" ]; then
     echo "Umount images"
     sudo find "$ROOT_MNT" -exec touch -ht 200901010000.00 {} \;
     sudo umount -v "$VENDOR_MNT"
@@ -711,6 +720,8 @@ else
     resize_img "$WORK_DIR/wsa/$ARCH/product.img" || abort
     resize_img "$WORK_DIR/wsa/$ARCH/system_ext.img" || abort
     echo -e "Shrink images done\n"
+else
+    abort "Unknown file system type: $SYSTEMIMAGES_FILE_SYSTEM_TYPE"
 fi
 
 echo "Convert images to vhdx"
