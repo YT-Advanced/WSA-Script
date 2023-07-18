@@ -609,15 +609,15 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
 #!/system/bin/sh
 umask 0777
 echo "\nKernelSU Install Manager"
-if [ ! -e "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)" ]; then
+if [ ! -e "/storage/emulated/0/.ksu_completed_$KERNELSU_VER" ]; then
     echo "\nInstalling KernelSU APK"
     pm install -i android -r /system/data-app/KernelSU.apk
     echo "\nLaunching KernelSU App"
     am start -n me.weishu.kernelsu/.ui.MainActivity
-    touch "/storage/emulated/0/.ksu_completed_\$(getprop ro.build.date.utc)"
+    touch "/storage/emulated/0/.ksu_completed_$KERNELSU_VER"
     echo "\nDone!\n"
 else
-    echo "\nKernelSU is installed.\n"
+    echo "\nLatest KernelSU Manager is installed.\n"
 fi
 EOF
     # Grant access
