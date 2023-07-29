@@ -104,13 +104,15 @@
 #### **14. Install like normal using [the instructions](https://github.com/YT-Advanced/WSA-Script#--installation) in this repository** and most important of all....
 </details>
 
+## Downloads
+
 <table>
 <thead>
   <tr>
-    <th>Badge Text/Colour</th>
-    <th>Differences:</th>
-    <th>Current Version:</th>
-    <th>Date:</th>
+    <th>Click to Download</th>
+    <th>Differences</th>
+    <th>Current Version</th>
+    <th>Date</th>
   </tr>
 </thead>
 <tbody>
