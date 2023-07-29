@@ -104,6 +104,34 @@
 #### **14. Install like normal using [the instructions](https://github.com/YT-Advanced/WSA-Script#--installation) in this repository** and most important of all....
 </details>
 
+<table>
+<thead>
+  <tr>
+    <th>Badge Text/Colour</th>
+    <th>Differences:</th>
+    <th>Current Version:</th>
+    <th>Date:</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><img src="https://img.shields.io/badge/Pre--Release%20Builds-orange?style=for-the-badge&link=https://github.com/YT-Advanced/WSA-Script/releases/tag/WSA-Insider-Version" height="28"></td>
+    <td>Follows the "WSA Preview Program Channel" </br> </br> Builds are generally newer than the "WSA Retail" and "Insider Fast Channel"</td>
+    <td>2306.40000.4.0<br></td>
+    <td>Builds Released: 19/07/2023</td>
+  </tr>
+  <tr>
+    <td><img src="https://img.shields.io/badge/Stable%20Builds-blue?style=for-the-badge&link=https://github.com/YT-Advanced/releases/latest" alt="Image" height="28"></td>
+    <td>Follows the "WSA Retail Channel" <br><br> Builds are generally more stable than the builds in the "WSA Preview Program Channel" </td>
+    <td>2306.40000.4.0<br></td>
+    <td>Builds Released: 19/07/2023</td>
+  </tr>
+  <tr>
+    <td colspan="4"><h4>It is recommend to check this table regularly to see if there is a newer update avaliable for WSA for the Stable Builds and Pre-Release Builds<h4></td>
+  </tr>
+  </tbody>
+</table>
+
 ## Requirements
 
 <center><table>
@@ -471,6 +499,11 @@ Now run WSA and your serdata should hopefully be restored
 [<img src="https://img.shields.io/badge/-Fix%20Internet%20security%20settings%20blocked%20from%20opening-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/InternetSecuritySettingsBlock.md)
 
 [<img src="https://img.shields.io/badge/-Cannot%20sign%20in%20to%20Google%20Account-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/Google%20Play%20Issues.md)
+
+[<img src="https://img.shields.io/badge/-WSA%20Settings%20App%20Crashes%20%2B%20Android%20Apps%20Do%20Not%20Load%20After%20Installation-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/WSA%20Settings%20App%20Crashes%20%2B%20Android%20Apps%20Do%20Not%20Load%20After%20Installation.md
+)
+
+[<img src="https://img.shields.io/badge/-WSA Does Not Load After Install %2B No Splashscreen-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/WSA%20Does%20Not%20Load%20After%20Install%20%2B%20No%20Splashscreen.md)   
 
 </details>  
 
