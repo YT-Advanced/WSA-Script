@@ -705,7 +705,7 @@ if [ "$SYSTEMIMAGES_FILE_SYSTEM_TYPE" = "erofs" ]; then
     echo -e "done\n"
 elif [ "$SYSTEMIMAGES_FILE_SYSTEM_TYPE" = "ext4" ]; then
     echo "Umount images"
-    sudo find "$ROOT_MNT" -exec touch -ht 200901010000.00 {} \;
+    sudo find "$ROOT_MNT" -exec touch -hamt 200901010000.00 {} \;
     sudo umount -v "$VENDOR_MNT"
     sudo umount -v "$PRODUCT_MNT"
     sudo umount -v "$SYSTEM_EXT_MNT"
@@ -755,7 +755,7 @@ else
     fi
 fi
 cp ../installer/Install.ps1 "$WORK_DIR/wsa/$ARCH" || abort
-find "$WORK_DIR/wsa/$ARCH" -not -path "*/uwp*" -not -path "*/Licenses*" -not -path "*/pri*" -not -path "*/xml*" -printf "%P\n" | sed -e 's@/@\\@' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist.txt" || abort
+find "$WORK_DIR/wsa/$ARCH" -not -path "*/uwp*" -not -path "*/Licenses*" -not -path "*/pri*" -not -path "*/xml*" -printf "%P\n" | sed -e 's@/@\\@g' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist.txt" || abort
 find "$WORK_DIR/wsa/$ARCH/pri" -printf "%P\n" | sed -e 's/^/pri\\/' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist-pri.txt" || abort
 find "$WORK_DIR/wsa/$ARCH/xml" -printf "%P\n" | sed -e 's/^/xml\\/' -e '/^$/d' >> "$WORK_DIR/wsa/$ARCH/filelist-pri.txt" || abort
 find "$WORK_DIR/wsa/$ARCH/uwp" -printf "%P\n" | sed -e 's/^/uwp\\/' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist-uwp.txt" || abort
