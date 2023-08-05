@@ -207,5 +207,5 @@ ElseIf ($null -Ne $Installed) {
         Finish
     }
 }
-Write-Output "`r`nAll Done!`r`nPress any key to exit"
+Write-Output "All Done!`r`nPress any key to exit"
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
