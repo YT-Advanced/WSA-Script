@@ -74,7 +74,7 @@ If (-Not (Test-Administrator)) {
         $Proc.WaitForExit()
     }
     If ($null -Eq $Proc -Or $Proc.ExitCode -Ne 0) {
-        Write-Warning "Failed to launch start as Administrator`r`nPress any key to exit"
+        Write-Warning "`r`nFailed to launch start as Administrator`r`nPress any key to exit"
         $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
     }
     exit
@@ -86,7 +86,7 @@ ElseIf (($args.Count -Eq 1) -And ($args[0] -Eq "EVAL")) {
 
 $FileList = Get-Content -Path .\filelist.txt
 If (((Test-Path -Path $FileList) -Eq $false).Count) {
-    Write-Error "Some files are missing in the folder. Please try to build again. Press any key to exit"
+    Write-Error "`r`nSome files are missing in the folder.`r`nPlease try to build again.`r`n`r`nPress any key to exit"
     $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     exit 1
 }
@@ -96,7 +96,7 @@ If (((Test-Path -Path "MakePri.ps1") -And (Test-Path -Path "makepri.exe")) -Eq $
     $null = $ProcMakePri.Handle
     $ProcMakePri.WaitForExit()
     If ($ProcMakePri.ExitCode -Ne 0) {
-        Write-Warning "Failed to merge resources, WSA Seetings will always be in English`r`nPress any key to continue"
+        Write-Warning "`r`nFailed to merge resources, WSA Seetings will always be in English`r`nPress any key to continue"
         $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     }
     $Host.UI.RawUI.WindowTitle = "Installing MagiskOnWSA...."
@@ -113,7 +113,7 @@ if ($PSHOME.contains("8wekyb3d8bbwe")) {
 
 If ($(Get-WindowsOptionalFeature -Online -FeatureName 'VirtualMachinePlatform').State -Ne "Enabled") {
     Enable-WindowsOptionalFeature -Online -NoRestart -FeatureName 'VirtualMachinePlatform'
-    Write-Warning "Need restart to enable virtual machine platform`r`nPress y to restart or press any key to exit"
+    Write-Warning "`r`nNeed restart to enable virtual machine platform`r`nPress y to restart or press any key to exit"
     $Key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     If ("y" -Eq $Key.Character) {
         Restart-Computer -Confirm
@@ -123,33 +123,37 @@ If ($(Get-WindowsOptionalFeature -Online -FeatureName 'VirtualMachinePlatform').
     }
 }
 
-[xml]$Xml = Get-Content ".\AppxManifest.xml";
-$Name = $Xml.Package.Identity.Name;
-Write-Output "Installing $Name version: $($Xml.Package.Identity.Version)"
-$ProcessorArchitecture = $Xml.Package.Identity.ProcessorArchitecture;
-$Dependencies = $Xml.Package.Dependencies.PackageDependency;
-$Dependencies | ForEach-Object {
-    $InstalledVersion = Get-InstalledDependencyVersion -Name $_.Name -ProcessorArchitecture $ProcessorArchitecture;
-    If ( $InstalledVersion -Lt $_.MinVersion ) {
-        If ($env:WT_SESSION) {
-            $env:WT_SESSION = $null
-            Write-Output "Dependency should be installed but Windows Terminal is in use. Restarting to conhost.exe"
-            Start-Process conhost.exe -Args "powershell.exe -ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath'"
-            exit 1
+If (((Test-Path -Path $(Get-Content .\filelist-uwp.txt)) -Eq $true).Count) {
+    [xml]$Xml = Get-Content ".\AppxManifest.xml";
+    $Name = $Xml.Package.Identity.Name;
+    Write-Output "Installing $Name version: $($Xml.Package.Identity.Version)"
+    $ProcessorArchitecture = $Xml.Package.Identity.ProcessorArchitecture;
+    $Dependencies = $Xml.Package.Dependencies.PackageDependency;
+    $Dependencies | ForEach-Object {
+        $InstalledVersion = Get-InstalledDependencyVersion -Name $_.Name -ProcessorArchitecture $ProcessorArchitecture;
+        If ( $InstalledVersion -Lt $_.MinVersion ) {
+            If ($env:WT_SESSION) {
+                $env:WT_SESSION = $null
+                Write-Output "`r`nDependency should be installed but Windows Terminal is in use. Restarting to conhost.exe"
+                Start-Process conhost.exe -Args "powershell.exe -ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath'"
+                exit 1
+            }
+            Write-Output "Dependency package $($_.Name) $ProcessorArchitecture required minimum version: $($_.MinVersion). Installing...."
+            Add-AppxPackage -ForceApplicationShutdown -ForceUpdateFromAnyVersion -Path "uwp\$($_.Name)_$ProcessorArchitecture.appx"
         }
-        Write-Output "Dependency package $($_.Name) $ProcessorArchitecture required minimum version: $($_.MinVersion). Installing...."
-        Add-AppxPackage -ForceApplicationShutdown -ForceUpdateFromAnyVersion -Path "$($_.Name)_$ProcessorArchitecture.appx"
+        Else {
+            Write-Output "Dependency package $($_.Name) $ProcessorArchitecture current version: $InstalledVersion.`r`nNothing to do."
+        }
     }
-    Else {
-        Write-Output "Dependency package $($_.Name) $ProcessorArchitecture current version: $InstalledVersion. Nothing to do."
-    }
+} Else {
+    Write-Warning "`r`nIgnored install WSA dependencies."
 }
 
 $Installed = $null
 $Installed = Get-AppxPackage -Name $Name
 
 If (($null -Ne $Installed) -And (-Not ($Installed.IsDevelopmentMode))) {
-    Write-Warning "There is already one installed WSA. Please uninstall it first.`r`nPress y to uninstall existing WSA or press any key to exit"
+    Write-Warning "`r`nThere is already one installed WSA.`r`nPlease uninstall it first.`r`n`r`nPress y to uninstall existing WSA or press any key to exit"
     $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     If ("y" -Eq $key.Character) {
         Clear-Host
@@ -161,16 +165,16 @@ If (($null -Ne $Installed) -And (-Not ($Installed.IsDevelopmentMode))) {
 }
 
 If (Test-CommandExist WsaClient) {
-    Write-Output "Shutting down WSA...."
+    Write-Output "`r`nShutting down WSA...."
     Start-Process WsaClient -Wait -Args "/shutdown"
 }
 Stop-Process -Name "WsaClient" -ErrorAction SilentlyContinue
-Write-Output "Installing MagiskOnWSA...."
+Write-Output "`r`nInstalling MagiskOnWSA...."
 
 $winver = (Get-WmiObject -class Win32_OperatingSystem).Caption
 if ($winver.Contains("10")) {
     Clear-Host
-    Write-Output "Patching Windows 10 AppxManifest file..."
+    Write-Output "`r`nPatching Windows 10 AppxManifest file..."
     $xml = [xml](Get-Content '.\AppxManifest.xml')
     $nsm = New-Object Xml.XmlNamespaceManager($xml.NameTable)
     $nsm.AddNamespace('rescap', "http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities")
@@ -183,7 +187,7 @@ if ($winver.Contains("10")) {
     $xml.Save(".\AppxManifest.xml")
 
     Clear-Host
-    Write-Output "Downloading modifided DLL file..."
+    Write-Output "`r`nDownloading modifided DLL file..."
     Invoke-WebRequest -Uri https://github.com/cinit/WSAPatch/blob/main/original.dll.win11.22h2/x86_64/winhttp.dll?raw=true -OutFile .\WSAClient\winhttp.dll
     Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/WsaPatch.dll?raw=true -OutFile .\WSAClient\WsaPatch.dll
     Invoke-WebRequest -Uri https://github.com/YT-Advanced/WSA-Script/blob/main/DLL/icu.dll?raw=true -OutFile .\WSAClient\icu.dll
@@ -194,7 +198,7 @@ If ($?) {
     Finish
 }
 ElseIf ($null -Ne $Installed) {
-    Write-Error "Failed to update.`r`nPress any key to uninstall existing installation while preserving user data.`r`nTake in mind that this will remove the Android apps' icon from the start menu.`r`nIf you want to cancel, close this window now."
+    Write-Error "`r`nFailed to update.`r`nPress any key to uninstall existing installation while preserving user data.`r`nTake in mind that this will remove the Android apps' icon from the start menu.`r`nIf you want to cancel, close this window now."
     $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     Clear-Host
     Remove-AppxPackage -PreserveApplicationData -Package $Installed.PackageFullName

@@ -436,7 +436,7 @@ elif [ "$SYSTEMIMAGES_FILE_SYSTEM_TYPE" = "ext4" ]; then
     ro_ext4_img_to_rw "$WORK_DIR/wsa/$ARCH/system.img" || abort
     ro_ext4_img_to_rw "$WORK_DIR/wsa/$ARCH/vendor.img" || abort
     echo -e "Remove read-only flag for read-only EXT4 image done\n"
-    
+
     echo "Calculate the required space"
     EXTRA_SIZE=10240
 
@@ -705,7 +705,7 @@ if [ "$SYSTEMIMAGES_FILE_SYSTEM_TYPE" = "erofs" ]; then
     echo -e "done\n"
 elif [ "$SYSTEMIMAGES_FILE_SYSTEM_TYPE" = "ext4" ]; then
     echo "Umount images"
-    sudo find "$ROOT_MNT" -exec touch -ht 200901010000.00 {} \;
+    sudo find "$ROOT_MNT" -exec touch -hamt 200901010000.00 {} \;
     sudo umount -v "$VENDOR_MNT"
     sudo umount -v "$PRODUCT_MNT"
     sudo umount -v "$SYSTEM_EXT_MNT"
@@ -731,32 +731,34 @@ echo -e "Convert images to vhdx done\n"
 
 echo "Remove signature and add scripts"
 sudo rm -rf "${WORK_DIR:?}"/wsa/"$ARCH"/\[Content_Types\].xml "$WORK_DIR/wsa/$ARCH/AppxBlockMap.xml" "$WORK_DIR/wsa/$ARCH/AppxSignature.p7x" "$WORK_DIR/wsa/$ARCH/AppxMetadata" || abort
-cp "$VCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH" || abort
-cp "$UWPVCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH" || abort
+mkdir "$WORK_DIR/wsa/$ARCH/uwp"
+cp "$VCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH/uwp/" || abort
+cp "$UWPVCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH/uwp/" || abort
 cp "../xml/priconfig.xml" "$WORK_DIR/wsa/$ARCH/xml/" || abort
 if [[ "$ROOT_SOL" = "none" ]] && [[ "$GAPPS_BRAND" = "none" ]] && [[ "$REMOVE_AMAZON" == "yes" ]]; then
-    sed -i -e 's/Start-Process\ "wsa:\/\/com.topjohnwu.magisk"//g' ../installer/Install.ps1
-    sed -i -e 's/Start-Process\ "wsa:\/\/com.android.vending"//g' ../installer/Install.ps1
+    sed -i -e 's@Start-Process\ "wsa://com.topjohnwu.magisk"@@g' ../installer/Install.ps1
+    sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' ../installer/Install.ps1
 else
     if [[ "$ROOT_SOL" == "none" ]]; then
-        sed -i -e 's/Start-Process\ "wsa:\/\/com.topjohnwu.magisk"//g' ../installer/Install.ps1
+        sed -i -e 's@Start-Process "wsa://com.topjohnwu.magisk"@@g' ../installer/Install.ps1
     elif [[ "$ROOT_SOL" = "kernelsu" ]]; then
-        sed -i -e 's/wsa:\/\/com.topjohnwu.magisk/https:\/\/github.com\/YT-Advanced\/WSA-Script\/blob\/HEAD\/docs\/Guides\/KernelSU.md/g' ../installer/Install.ps1
+        sed -i -e 's@wsa://com.topjohnwu.magisk@https://github.com/YT-Advanced/WSA-Script/blob/HEAD/docs/Guides/KernelSU.md@g' ../installer/Install.ps1
     elif [[ "$MAGISK_VER" = "delta" ]]; then
-        sed -i -e 's/com.topjohnwu.magisk/io.github.huskydg.magisk/g' ../installer/Install.ps1
+        sed -i -e 's@com.topjohnwu.magisk@io.github.huskydg.magisk@g' ../installer/Install.ps1
     elif [[ "$MAGISK_VER" = "alpha" ]]; then
-        sed -i -e 's/com.topjohnwu.magisk/io.github.vvb2060.magisk/g' ../installer/Install.ps1
+        sed -i -e 's@com.topjohnwu.magisk@io.github.vvb2060.magisk@g' ../installer/Install.ps1
     fi
     if [[ "$GAPPS_BRAND" = "none" ]] && [[ "$REMOVE_AMAZON" != "yes" ]]; then
-        sed -i -e 's/com.android.vending/com.amazon.venezia/g' ../installer/Install.ps1
+        sed -i -e 's@com.android.vending@com.amazon.venezia@g' ../installer/Install.ps1
     elif [[ "$GAPPS_BRAND" = "none" ]]; then
-        sed -i -e 's/Start-Process\ "wsa:\/\/com.android.vending"//g' ../installer/Install.ps1
+        sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' ../installer/Install.ps1
     fi
 fi
 cp ../installer/Install.ps1 "$WORK_DIR/wsa/$ARCH" || abort
-find "$WORK_DIR/wsa/$ARCH" -not -path "*/pri*" -not -path "*/xml*" -printf "%P\n" | sed -e 's/\//\\/g' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist.txt" || abort
+find "$WORK_DIR/wsa/$ARCH" -not -path "*/uwp*" -not -path "*/Licenses*" -not -path "*/pri*" -not -path "*/xml*" -printf "%P\n" | sed -e 's@/@\\@g' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist.txt" || abort
 find "$WORK_DIR/wsa/$ARCH/pri" -printf "%P\n" | sed -e 's/^/pri\\/' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist-pri.txt" || abort
 find "$WORK_DIR/wsa/$ARCH/xml" -printf "%P\n" | sed -e 's/^/xml\\/' -e '/^$/d' >> "$WORK_DIR/wsa/$ARCH/filelist-pri.txt" || abort
+find "$WORK_DIR/wsa/$ARCH/uwp" -printf "%P\n" | sed -e 's/^/uwp\\/' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist-uwp.txt" || abort
 cp "../bin/$ARCH/makepri.exe" "$WORK_DIR/wsa/$ARCH" || abort
 echo "makepri.exe" >> "$WORK_DIR/wsa/$ARCH/filelist-pri.txt" || abort
 cp ../installer/MakePri.ps1 "$WORK_DIR/wsa/$ARCH" || abort
