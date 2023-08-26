@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- These are configurations that should exist on Google's 2016 Pixel devices. -->
+<config>
+    <!-- Both versions of this string are needed due to a miscommunication. b/29978934 -->
+    <feature name="com.google.android.apps.photos.NEXUS_PRELOAD" />
+    <feature name="com.google.android.apps.photos.nexus_preload" />
+</config>
