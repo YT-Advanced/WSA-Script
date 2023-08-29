@@ -200,7 +200,6 @@ ROOT_SOL_MAP=(
 COMPRESS_FORMAT_MAP=(
     "7z"
     "zip"
-    "xz"
 )
 
 ARGUMENT_LIST=(
@@ -607,7 +606,7 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
     KSU_PRE="$SYSTEM_MNT/bin/ksuinstall"
     sudo tee -a "$KSU_PRE" <<EOF >/dev/null || abort
 #!/system/bin/sh
-umask 0777
+umask 022
 echo "\nKernelSU Install Manager"
 if [ ! -e "/storage/emulated/0/.ksu_completed_$KERNELSU_VER" ]; then
     echo "\nInstalling KernelSU APK"
@@ -796,14 +795,6 @@ if [ "$COMPRESS_FORMAT" = "7z" ]; then
     echo "Compressing with 7z"
     echo "file_ext=.7z" >> "$GITHUB_OUTPUT"
     7z a "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
-elif [ "$COMPRESS_FORMAT" = "xz" ]; then
-    OUTPUT_PATH="$OUTPUT_PATH.tar.xz"
-    echo "file_ext=.tar.xz" >> "$GITHUB_OUTPUT"
-    echo "Compressing with tar xz"
-    if ! (tar -cP -I 'xz -9 -T0' -f "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name"); then
-        echo "Out of memory? Trying again with single threads..."
-        tar -cPJvf "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name" || abort
-    fi
 elif [ "$COMPRESS_FORMAT" = "zip" ]; then
     echo "Compressing with zip later..."
     echo "file_ext=.zip" >> "$GITHUB_OUTPUT"
