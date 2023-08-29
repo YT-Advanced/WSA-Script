@@ -42,8 +42,8 @@ on:
         type: choice
         description: Compression format.
         required: true
-        options: [".zip",".7z",".tar.xz"]
-        default: ".zip"
+        options: [".zip",".7z"]
+        default: ".7z"
       remove_amazon:
         description: "Remove Amazon Appstore from the system"
         required: true
