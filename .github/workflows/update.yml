@@ -154,7 +154,7 @@ jobs:
     strategy:
       matrix:
         arch: [x64, arm64]
-        root: [magisk, none]
+        root: [magisk, kernelsu, none]
         gapps: [MindTheGapps, none]
     permissions: write-all
     needs: check
