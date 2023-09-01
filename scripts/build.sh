@@ -286,10 +286,10 @@ GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 WSA_MAJOR_VER=0
 
 update_ksu_zip_name() {
-    KERNEL_VER="5.15.94.4"
-    if [ "$WSA_MAJOR_VER" -ge "2306" ]; then
-        KERNEL_VER="5.15.104.1"
-    fi
+    KERNEL_VER="5.15.104.2"
+    #if [ "$WSA_MAJOR_VER" -ge "2307" ]; then
+    #    KERNEL_VER="5.15.104.3"
+    #fi
     KERNELSU_ZIP_NAME=kernelsu-$ARCH-$KERNEL_VER.zip
     KERNELSU_PATH=$DOWNLOAD_DIR/$KERNELSU_ZIP_NAME
     KERNELSU_APK_PATH=$DOWNLOAD_DIR/KernelSU.apk
