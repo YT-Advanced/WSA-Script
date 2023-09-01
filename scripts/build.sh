@@ -621,7 +621,7 @@ fi
 EOF
     # Grant access
     sudo chmod 0755 "$KSU_PRE"
-    sudo chown root:root "$KSU_PRE"
+    sudo chown 0:2000 "$KSU_PRE"
     sudo setfattr -n security.selinux -v "u:object_r:system_file:s0" "$KSU_PRE" || abort
     echo -e "Add KernelSU Manager done\n"
 fi
