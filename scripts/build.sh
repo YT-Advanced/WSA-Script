@@ -790,14 +790,15 @@ echo "$artifact_name"
 echo "artifact=$artifact_name" >> "$GITHUB_OUTPUT"
 echo -e "\nFinishing building...."
 mkdir -p "$OUTPUT_DIR"
-OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name.${COMPRESS_FORMAT}"
+OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name"
 mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
 echo "file_ext=.${COMPRESS_FORMAT}" >> "$GITHUB_OUTPUT"
 if [ "$COMPRESS_FORMAT" = "7z" ]; then
     echo "Compressing with 7-Zip"
-    7z a -mx=9 "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
+    7z a -mx=9 "${OUTPUT_PATH:?}.7z" "$WORK_DIR/wsa/$artifact_name" || abort
 else
     echo "Compressing with ZIP"
-    zip -r -9 "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
+    cd "$WORK_DIR/wsa/$artifact_name" || abort
+    zip -r -9 "${OUTPUT_PATH:?}-compressed" "$artifact_name" || abort
 fi
 echo -e "Done\n"
