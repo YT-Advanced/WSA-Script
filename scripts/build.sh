@@ -799,6 +799,6 @@ if [ "$COMPRESS_FORMAT" = "7z" ]; then
 else
     echo "Compressing with ZIP"
     cd "$WORK_DIR/wsa/" || abort
-    zip -r -9 "${OUTPUT_PATH:?}-compressed" "$artifact_name" || abort
+    zip -r -9 "${OUTPUT_PATH:?}-compressed.zip" "$artifact_name" || abort
 fi
 echo -e "Done\n"
