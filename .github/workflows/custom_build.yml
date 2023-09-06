@@ -133,7 +133,7 @@ jobs:
 
       - name: File Checksum ✔️
         working-directory: output
-        run: sha256sum '${{ steps.wsa.outputs.artifact }}${{ inputs.compression }}' | cut -c-64 > sha256-checksum.txt
+        run: sha256sum '${{ steps.wsa.outputs.artifact }}${{ inputs.compression }}' > sha256-checksum.txt
 
       - name: Upload Artifact 📦
         uses: actions/upload-artifact@v3
