@@ -787,7 +787,7 @@ if [ "$REMOVE_AMAZON" = "yes" ]; then
     artifact_name+="-RemovedAmazon"
 fi
 echo "$artifact_name"
-echo "artifact=${artifact_name}-compressed" >> "$GITHUB_OUTPUT"
+echo "artifact=${artifact_name}" >> "$GITHUB_OUTPUT"
 echo -e "\nFinishing building...."
 mkdir -p "$OUTPUT_DIR"
 OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name.$COMPRESS_FORMAT"
