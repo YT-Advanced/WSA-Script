@@ -385,7 +385,7 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     fi
     if [ "$ARCH" = "x64" ]; then
         mv "$WORK_DIR/kernelsu/bzImage" "$WORK_DIR/kernelsu/kernel"
-    elif [ "$ARCH" = "arm64" ]; then
+    else
         mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
     fi
     echo -e "done\n"
@@ -500,9 +500,9 @@ fi
 
 if [ "$REMOVE_AMAZON" ]; then
     echo "Remove Amazon Appstore"
-    rm -f "$WORK_DIR/wsa/$ARCH/apex/mado_release.apex"
+    rm -fv "$WORK_DIR/wsa/$ARCH/apex/mado_release.apex"
     # Stub
-    find "${PRODUCT_MNT:?}"/{apex,etc/*permissions} 2>/dev/null | grep -e mado | sudo xargs rm -rf
+    find "${PRODUCT_MNT:?}"/{apex,etc/*permissions} 2>/dev/null | grep -e mado | sudo xargs rm -rfv
     echo -e "done\n"
 fi
 
@@ -787,20 +787,17 @@ if [ "$REMOVE_AMAZON" = "yes" ]; then
     artifact_name+="-RemovedAmazon"
 fi
 echo "$artifact_name"
-echo "artifact=$artifact_name" >> "$GITHUB_OUTPUT"
+echo "artifact=${artifact_name}" >> "$GITHUB_OUTPUT"
 echo -e "\nFinishing building...."
 mkdir -p "$OUTPUT_DIR"
-OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name"
+OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name.$COMPRESS_FORMAT"
 mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
+echo "file_ext=.${COMPRESS_FORMAT}" >> "$GITHUB_OUTPUT"
 if [ "$COMPRESS_FORMAT" = "7z" ]; then
-    OUTPUT_PATH="$OUTPUT_PATH.7z"
-    echo "Compressing with 7z"
-    echo "file_ext=.7z" >> "$GITHUB_OUTPUT"
-    7z a "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
-elif [ "$COMPRESS_FORMAT" = "zip" ]; then
-    echo "Compressing with zip later..."
-    echo "file_ext=.zip" >> "$GITHUB_OUTPUT"
-    cp -r "$WORK_DIR/wsa/$artifact_name" "$OUTPUT_PATH" || abort
-    touch "$OUTPUT_PATH/apex/.gitkeep" || abort
+    echo "Compressing with 7-Zip"
+    7z a -mx=7 "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
+else
+    echo "Compressing with ZIP"
+    7z a -tzip -mx=7 "${OUTPUT_PATH}" "$WORK_DIR/wsa/$artifact_name" || abort
 fi
 echo -e "Done\n"
