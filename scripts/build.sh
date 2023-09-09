@@ -795,6 +795,7 @@ mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
 echo "file_ext=.${COMPRESS_FORMAT}" >> "$GITHUB_OUTPUT"
 if [ "$COMPRESS_FORMAT" = "7z" ]; then
     echo "Compressing with 7-Zip"
+    OUTPUT_PATH="$OUTPUT_PATH.7z"
     7z a -mx=7 "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
 else
     echo "Compressing with ZIP later..."
