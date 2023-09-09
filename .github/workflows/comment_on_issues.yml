@@ -232,7 +232,7 @@ jobs:
         if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false' && steps.wsa.outputs.file_ext != '.zip'
         working-directory: output
         run: |
-          sha256sum '${{ steps.wsa.outputs.artifact }}${{ steps.wsa.outputs.file_ext }}' >> sha256-checksum.txt
+          sha256sum '${{ steps.wsa.outputs.artifact }}' >> sha256-checksum.txt
 
       - name: Upload to Artifacts
         if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
