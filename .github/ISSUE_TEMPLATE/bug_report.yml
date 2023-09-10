@@ -34,12 +34,6 @@ body:
       required: true
   - type: input
     attributes:
-      label: WSA-Script commit full SHA
-      description:  Don't use 'latest'. Copy and paste full commit SHA, otherwise your issue will be closed. commit SHA，issue
-    validations:
-      required: true
-  - type: input
-    attributes:
       label: Windows version
       description: Win key + R -> "winver"
       placeholder: 10.0.22000.978
