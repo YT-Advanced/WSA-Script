@@ -6,11 +6,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting issues of MagiskOnWSALocal!
+        Thanks for reporting issues of WSA-Script!
 
         To make it easier for us to help you please enter detailed information below.
-        
-        MagiskOnWSALocal
   - type: textarea
     attributes:
       label: Steps to reproduce
@@ -34,34 +32,16 @@ body:
       required: true
   - type: input
     attributes:
-      label: MagiskOnWSALocal commit full SHA/MagiskOnWSALocal 
-      description:  Don't use 'latest'. Copy and paste full commit SHA, otherwise your issue will be closed. commit SHA，issue
-    validations:
-      required: true
-  - type: textarea
-    attributes:
-      label: Linux distribution info/Linux
+      label: Windows version
+      description: Win key + R -> "winver"
+      placeholder: 10.0.22000.978
     validations:
       required: true
   - type: input
     attributes:
-      label: Windows version/Windows
-      placeholder: 10.0.22000.978
-    validations:
-      required: true
-  - type: textarea
-    attributes:
-      label: Build Parameters
-      description: The script prints the build information each time you start a build. It looks like this, please copy and paste it.
-      placeholder: |
-        COMMAND_LINE=--arch x64 --release-type retail --magisk-ver stable --gapps-brand MindTheGapps --gapps-variant pico  --root-sol magisk
-        INFO: Architecture: x64
-        INFO: Release Type: retail
-        INFO: Magisk Version: stable
-        INFO: GApps Brand: MindTheGapps
-        INFO: GApps Variant: pico
-        INFO: Root Solution: magisk
-        Build: RELEASE_TYPE=Retail
+      label: Build Issue number
+      description: Specify the issue number used for the build
+      placeholder: '#13'
     validations:
       required: true
   - type: checkboxes
@@ -69,18 +49,5 @@ body:
     attributes:
       label: Version requirement
       options:
-        - label: I am using latest commit of MagiskOnWSALocal commit 
+        - label: I am using latest commit of WSA-Script commit 
           required: true
-  - type: textarea
-    attributes:
-      label: Logs
-      description: Please copy and paste the error or submit a screenshot. Without log, the issue will be closed.
-      value: |
-        <details>
-        
-        ```
-        # Replace this line with the log
-        ```
-        </details>
-    validations:
-      required: true
