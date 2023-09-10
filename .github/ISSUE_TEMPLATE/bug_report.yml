@@ -34,7 +34,7 @@ body:
       required: true
   - type: input
     attributes:
-      label: WSA-Script commit full SHA/MagiskOnWSALocal 
+      label: WSA-Script commit full SHA
       description:  Don't use 'latest'. Copy and paste full commit SHA, otherwise your issue will be closed. commit SHA，issue
     validations:
       required: true
@@ -49,7 +49,7 @@ body:
     attributes:
       label: Build Issue number
       description: Specify the issue number used for the build
-      placeholder: \#13
+      placeholder: #13
     validations:
       required: true
   - type: checkboxes
