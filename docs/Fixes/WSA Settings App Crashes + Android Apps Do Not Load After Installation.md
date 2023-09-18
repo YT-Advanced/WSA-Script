@@ -8,9 +8,11 @@ https://github.com/MustardChef/WSABuilds/assets/68516357/7333e8b4-7c09-4032-b816
 ---
 ## Solution
 
-**Rename the extracted folder to a shorter name, which can be anything to your choosing </br> (For example: WSA_2XXX.XXXXX.X.X_XXXX_Release-Nightly-with-magisk-XXXXXXX-XXXXXX-MindTheGapps-XX.X-RemovedAmazon ----> WSAExtracted2XXX)
-and Ensure that 'Run.bat' is run as Administrator**
+**Rename the extracted folder to a shorter name, which can be anything to your choosing.**
 
+   - **Before:** WSA_2XXX.XXXXXXX_XXXX_Release-Nightly-with-magisk-XXXXXXX-XXXXXX-MindTheGapps-XX.X-RemovedAmazon 
+
+   - **After:** WSAArchive2XXX
 
 https://github.com/MustardChef/WSABuilds/assets/68516357/7a33df5b-e68b-43b1-9365-9c4d7ff5c2db
 
