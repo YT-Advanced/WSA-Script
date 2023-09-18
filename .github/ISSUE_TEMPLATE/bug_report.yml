@@ -42,8 +42,6 @@ body:
       label: Build Issue number
       description: Specify the issue number used for the build
       placeholder: '#13'
-    validations:
-      required: true
   - type: checkboxes
     id: latest
     attributes:
