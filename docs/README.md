@@ -119,8 +119,8 @@
   <tr>
     <td><a href=https://github.com/YT-Advanced/WSA-Script/releases/tag/WSA-Insider-Version><img src="https://img.shields.io/badge/Pre--Release%20Builds-orange?style=for-the-badge" height="28"></a></td>
     <td>Follows the "WSA Preview Program Channel" </br> </br> Builds are generally newer than the "WSA Retail" and "Insider Fast Channel"</td>
-    <td>2308.40000.1.0<br></td>
-    <td>Builds Released: 08/09/2023</td>
+    <td>2308.40000.3.0<br></td>
+    <td>Builds Released: 18/09/2023</td>
   </tr>
   <tr>
     <td><a href=https://github.com/YT-Advanced/releases/latest><img src="https://img.shields.io/badge/Stable%20Builds-blue?style=for-the-badge" alt="Image" height="28"></a></td>
@@ -505,7 +505,9 @@ Now run WSA and your serdata should hopefully be restored
 [<img src="https://img.shields.io/badge/-WSA%20Settings%20App%20Crashes%20%2B%20Android%20Apps%20Do%20Not%20Load%20After%20Installation-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/WSA%20Settings%20App%20Crashes%20%2B%20Android%20Apps%20Do%20Not%20Load%20After%20Installation.md
 )
 
-[<img src="https://img.shields.io/badge/-WSA Does Not Load After Install %2B No Splashscreen-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/WSA%20Does%20Not%20Load%20After%20Install%20%2B%20No%20Splashscreen.md)   
+[<img src="https://img.shields.io/badge/-WSA Does Not Load After Install %2B No Splashscreen-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/WSA%20Does%20Not%20Load%20After%20Install%20%2B%20No%20Splashscreen.md)
+
+[<img src="https://img.shields.io/badge/-Keyboard%20Is%20Not%20Working-%23EF2D5E?style=for-the-badge&logoColor=white&logo=Github" />](Fixes/Keyboard%20Is%20Not%20Working.md)   
 
 </details>  
 

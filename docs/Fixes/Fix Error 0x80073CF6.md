@@ -1,7 +1,7 @@
 ## Issue: </br> Error 0x80073CF6 when "Run.bat" is executed to install Windows Subystem for Android (WSA)
 ### Preface:
 ##### This issue can arise due to many factors that is preventing the app from being registered. Although there is no definite solution, we can try these steps to try to fix the problem
-
+##### This installation issue may also arise in systems that are using Modified Windows OSes such as ReviOS, Tiny10/11, etc. This is due to the fact that these OSes have been modified to remove certain features that are deemed unnecessary. This may cause issues with the installation of WSA.
 </br>
 
 ```Powershell

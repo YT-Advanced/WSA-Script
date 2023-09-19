@@ -15,7 +15,11 @@
 
 **4. Extract the .zip using WinRAR or a proper archive tool and not the built in Windows .zip extractor** 
 
-**5. Rename the extracted folder to a shorter name, which can be anything to your choosing </br> (WSA_2xxx.xxxxx.xx.x_x64_Release-Nightly-with-magisk-xxxxxxx-MindTheGapps-13.0-as-Pixel-5-RemovedAmazon ----> WSAExtracted2XXX)**
+**5. Rename the extracted folder(s) to a shorter name, which can be anything to your choosing** 
+
+#### For example: 
+- **Before:** WSA_2XXX.XXXXX.X.X_XXXX_Release-Nightly-with-magisk-XXXXXXX-XXXXXX-MindTheGapps-XX.X-RemovedAmazon
+- **After:** WSAExtracted2XXX
 
 **6. Ensure that 'Run.bat' is run as Administrator**
 
