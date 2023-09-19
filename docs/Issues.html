@@ -79,7 +79,7 @@
           "--release-type": {
               "name": "--release-type",
               "description": "WSA Release Channel.",
-              "detailedinfo": "RP means Release Preview, WIS means Insider Slow (Beta), WIF means Insider Fast (Dev).",
+              "detailedinfo": "",
               "required": true,
               "default": "retail",
               "type": "choice",
@@ -94,7 +94,7 @@
           "--magisk-ver": {
               "name": "--magisk-ver",
               "description": "Magisk version.",
-              "detailedinfo": "Delta version by HuskyDG and Alpha by vvb2060. Other version by topjohnwu",
+              "detailedinfo": "",
               "required": true,
               "default": "stable",
               "type": "choice",
@@ -110,7 +110,7 @@
           "--gapps-brand": {
               "name": "--gapps-brand",
               "description": "Google Apps brand.",
-              "detailedinfo": "none for no integration of Google Apps.",
+              "detailedinfo": "None for no integration of Google Apps.",
               "required": true,
               "default": "MindTheGapps",
               "type": "choice",
@@ -122,7 +122,7 @@
           "--root-sol": {
               "name": "--root-sol",
               "description": "Root solution.",
-              "detailedinfo": "none for no integration of root.",
+              "detailedinfo": "None for no integration of root.",
               "required": true,
               "default": "magisk",
               "type": "choice",
@@ -135,7 +135,7 @@
           "--custom-model": {
               "name": "--custom-model",
               "description": "The model which WSA will display as",
-              "detailedinfo": "See the list of device model here: https://support.google.com/pixelphone/thread/213627684",
+              "detailedinfo": "",
               "required": true,
               "default": "redfin",
               "type": "choice",
@@ -257,6 +257,7 @@
 
         if (type == "choice") {
           var par = "";
+          var valname = {"none":"None","x64":"x64","arm64":"ARM64","retail":"Retail","RP":"Release Preview","WIS":"Insider Slow","WIF":"Insider Fast","latest":"Insider Private","stable":"Magisk Stable","beta":"Magisk Beta","canary":"Magisk Canary","debug":"Magisk Debug","delta":"Magisk Delta (HuskyDG)","alpha":"Magisk Alpha (vvb2060)","magisk":"Magisk","kernelsu":"KernelSU","MindTheGapps":"MindTheGapps v13.0","sunfish":"Pixel 4a","bramble":"Pixel 4a (5G)","redfin":"Pixel 5","barbet":"Pixel 5a","raven":"Pixel 6 Pro","oriole":"Pixel 6","bluejay":"Pixel 6a","panther":"Pixel 7","cheetah":"Pixel 7 Pro","lynx":"Pixel 7a","tangorpro":"Pixel Tablet","zip":".zip","7z":".7z"};
           if (req) par = "required";
           html += `<div class="form-group mt-1 mb-2 ${par}"><div class="form-group-header"><label class="color-fg-default text-mono f6" for="${name}">${name}</label></div><div class="form-group-body">`;
           html += `<select class="form-select form-control select-sm input-contrast" id="${name}" required="" name="inputs[${name}]" value="'${dft}'">`;
@@ -265,7 +266,7 @@
           for (var v in opts) {
             var addpar = "";
             if (opts[v] == dft) addpar = 'selected="selected"';
-            html += `<option ${addpar} value="${opts[v]}">${opts[v]}</option>`;
+            html += `<option ${addpar} value="${opts[v]}">${valname[opts[v]]}</option>`;
           }
           html += `</select>`;
           html += `<label class="js-navigation-open Link--primary" title="${info}" data-pjax="#repo-content-pjax-container" data-turbo-frame="repo-content-turbo-frame" href="#">: ${desc}</label>`;
