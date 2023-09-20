@@ -59,13 +59,13 @@ jobs:
           file.close()
           print("Check WSA Insider Version")
           currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/WIF.appversion").text
-          latestver = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest").content)['tag_name']
+          latestver = json.loads(requests.get(f"https://api.github.com/repos/bubbles-wow/WSA-Archive/releases/latest").content)['tag_name']
           latestver = latestver.replace('\n', '')
           currentver = currentver.replace('\n', '')
           if currentver != latestver:
               build = True
               insider = "yes"
-              msg="Update WSA Insider Version from `" + currentver + "` to `" + latestver + "`"
+              msg="Update WSA Insider Version from `v" + currentver + "` to `v" + latestver + "`"
           file = open('WIF.appversion', 'w')
           file.write(latestver)
           file.close()
