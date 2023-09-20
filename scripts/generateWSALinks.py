@@ -143,6 +143,7 @@ def send_req(i, v, out_file_name):
 
 threads = []
 wsa_build_ver = 0
+latest_wsa_filename = ""
 for filename, values in identities.items():
     if re.match(f"Microsoft\.UI\.Xaml\..*_{arch}_.*\.appx", filename):
         out_file_name = f"{values[1]}_{arch}.appx"
@@ -154,11 +155,14 @@ for filename, values in identities.items():
         out_file_name = f"{values[1]}_{arch}.appx"
         out_file = download_dir / out_file_name
     elif re.match(f"MicrosoftCorporationII\.WindowsSubsystemForAndroid_.*\.msixbundle", filename):
+        tmp_wsa_filename = filename
         tmp_wsa_build_ver = re.search(u'\d{4}.\d{5}.\d{1,}.\d{1,}', filename).group()
         if(wsa_build_ver == 0):
+            latest_wsa_filename = tmp_wsa_filename
             wsa_build_ver = tmp_wsa_build_ver
         else:
             if version.parse(wsa_build_ver) < version.parse(tmp_wsa_build_ver):
+                latest_wsa_filename = tmp_wsa_filename
                 wsa_build_ver = tmp_wsa_build_ver
             else:
                 continue
@@ -172,12 +176,17 @@ for filename, values in identities.items():
             environ_file.write(str(env))
         out_file_name = f"wsa-{release_type}.zip"
         out_file = download_dir / out_file_name
+        continue
     else:
         continue
     th = Thread(target=send_req, args=(values[0][0], values[0][1], out_file_name))
     threads.append(th)
     th.daemon = True
     th.start()
+th = Thread(target=send_req, args=(identities[latest_wsa_filename][0][0], identities[latest_wsa_filename][0][1], f"wsa-{release_type}.zip"))
+threads.append(th)
+th.daemon = True
+th.start()
 for th in threads:
     th.join()
 print(f'WSA Build Version={wsa_build_ver}\n', flush=True)
