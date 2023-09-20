@@ -320,7 +320,7 @@ else
     printf "https://cdn.glitch.global/847a3043-7118-4fd2-8853-fe9756f88702/Microsoft.VCLibs.140.00_14.0.32530.0_%s__8wekyb3d8bbwe.Appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  out=Microsoft.VCLibs.140.00_%s.appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    WSA_VER=$(curl -sL https://api.github.com/repos/YT-Advanced/WSAPackage/releases/latest | jq -r '.tag_name')
+    WSA_VER=$(curl -sL https://api.github.com/repos/bubbles-wow/WSA-Archive/releases/latest | jq -r '.tag_name')
     WSA_MAJOR_VER=${WSA_VER:1:4}
 fi
 if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
