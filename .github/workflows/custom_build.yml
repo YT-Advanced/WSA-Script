@@ -54,6 +54,7 @@ jobs:
   custbuild:
     name: Build WSA
     runs-on: ubuntu-latest
+    if: github.event.repository.fork == false
     steps:
       - name: Checkout ♻️
         uses: actions/checkout@v4
