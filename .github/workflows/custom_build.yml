@@ -51,7 +51,7 @@ on:
         type: boolean
 
 jobs:
-  custbuild:
+  build:
     name: Build WSA
     runs-on: ubuntu-latest
     if: github.event.repository.fork == false
