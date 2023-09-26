@@ -7,7 +7,7 @@ on:
         type: choice
         description: Target CPU architecture of WSA.
         required: true
-        options: [x64, arm64, Both]
+        options: [x64, arm64]
         default: x64
       release_type:
         type: choice
@@ -51,37 +51,9 @@ on:
         type: boolean
 
 jobs:
-  matrix:
-    if: github.event.repository.fork == false
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-    steps:
-      - name: Generate build matrix ⌛
-        id: set-matrix
-        uses: actions/github-script@v6
-        with:
-          script: |
-            let matrix = {};
-            let arch = "${{ github.event.inputs.arch }}"
-            switch ( arch ) {
-              case "x64":
-                matrix.arch = ["x64"];
-                break;
-              case "arm64":
-                matrix.arch = ["arm64"];
-                break;
-              default:
-                matrix.arch = ["x64", "arm64"];
-                break;
-            }
-            core.setOutput("matrix",JSON.stringify(matrix));
   custbuild:
     name: Build WSA
     runs-on: ubuntu-latest
-    needs: matrix
-    strategy:
-      matrix: ${{fromJson(needs.matrix.outputs.matrix)}}
     steps:
       - name: Checkout ♻️
         uses: actions/checkout@v4
