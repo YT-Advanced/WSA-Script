@@ -40,7 +40,9 @@ body:
   - type: input
     attributes:
       label: Build Issue number
-      description: Specify the issue number used for the build
+      description: |
+        Specify the issue number used for the build
+        This is NOT place to descript the WSA version!!
       placeholder: '#13'
   - type: checkboxes
     id: latest
