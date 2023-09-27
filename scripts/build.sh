@@ -70,11 +70,6 @@ default() {
     ROOT_SOL=magisk
 }
 
-exit_with_message() {
-    echo "ERROR: $1"
-    exit 1
-}
-
 vhdx_to_raw_img() {
     qemu-img convert -q -f vhdx -O raw "$1" "$2" || return 1
     rm -f "$1" || return 1
@@ -224,7 +219,7 @@ opts=$(
         --name "$(basename "$0")" \
         --options "" \
         -- "$@"
-) || exit_with_message "Failed to parse options, please check your input"
+) || abort "Failed to parse options, please check your input"
 
 eval set --"$opts"
 while [[ $# -gt 0 ]]; do
@@ -255,7 +250,7 @@ check_list() {
             fi
             ((list_count--))
             if (("$list_count" <= 0)); then
-                exit_with_message "Invalid $name: $input"
+                abort "Invalid $name: $input"
             fi
         done
     fi
@@ -289,10 +284,13 @@ GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 WSA_MAJOR_VER=0
 
 update_ksu_zip_name() {
-    KERNEL_VER="5.15.104.2"
-    if [ "$WSA_MAJOR_VER" -ge "2308" ]; then
-        KERNEL_VER="5.15.104.3"
-    fi
+    KERNEL_VER=""
+    case "$WSA_MAJOR_VER" in
+      "2307") KERNEL_VER="5.15.104.2";;
+      "2308") KERNEL_VER="5.15.104.3";;
+      "2309") KERNEL_VER="5.15.104.3";;
+      *) abort "KernelSU is not supported in this WSA version: $WSA_MAJOR_VER"
+    esac
     KERNELSU_ZIP_NAME=kernelsu-$ARCH-$KERNEL_VER.zip
     KERNELSU_PATH=$DOWNLOAD_DIR/$KERNELSU_ZIP_NAME
     KERNELSU_APK_PATH=$DOWNLOAD_DIR/KernelSU.apk
