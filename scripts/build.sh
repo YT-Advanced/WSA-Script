@@ -320,7 +320,7 @@ else
     printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  out=Microsoft.VCLibs.140.00_%s.appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     WSA_VER=$(curl -sL https://api.github.com/repos/bubbles-wow/WSA-Archive/releases/latest | jq -r '.tag_name')
-    WSA_MAJOR_VER=${WSA_VER:0:3}
+    WSA_MAJOR_VER=${WSA_VER:0:4}
 fi
 if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
     python3 generateMagiskLink.py "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
