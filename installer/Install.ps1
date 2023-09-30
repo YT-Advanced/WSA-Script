@@ -49,16 +49,19 @@ Function Test-CommandExist {
 
 function Finish {
     Clear-Host
-    Remove-Item -Force .\disk.txt -ErrorAction SilentlyContinue
     Write-Output "Optimizing VHDX size..."
+    $i = 0
     foreach ($Partition in "system","product","system_ext","vendor") {
+        Remove-Item -Force "$Partition.txt" -ErrorAction SilentlyContinue
         Write-Output "SELECT VDISK FILE=`"$PSScriptRoot\$Partition.vhdx`"`
 ATTACH VDISK READONLY`
 COMPACT VDISK`
-DETACH VDISK" | Add-Content -Path .\disk.txt -Encoding UTF8
+DETACH VDISK" | Add-Content -Path "$Partition.txt" -Encoding UTF8
+        ++$i
+        Write-Progress -Activity "Compacting VHDX : $Partition.vhdx" -PercentComplete ($i / 4 * 100)
+        Start-Process -NoNewWindow -Wait "diskpart.exe" -Args "/s $Partition.txt" -RedirectStandardOutput NUL
+        Remove-Item -Force "$Partition.txt"
     }
-    Start-Process -NoNewWindow -Wait "diskpart.exe" -Args "/s disk.txt" -RedirectStandardOutput NUL
-    Remove-Item -Force .\disk.txt
     Clear-Host
     Start-Process "shell:AppsFolder\MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe!SettingsApp"
     Start-Process "wsa://com.topjohnwu.magisk"
