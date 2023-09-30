@@ -115,7 +115,7 @@ jobs:
 
       - name: File Checksum ✔️
         id: run
-        run: $env:GITHUB_OUTPUT+=";hash=$(Get-FileHash -Path ${{ needs.build.outputs.zipname }}.7z -Algorithm SHA256).Hash.ToLower())"
+        run: ("hash=" + $(Get-FileHash -Path ${{ needs.build.outputs.zipname }}.7z -Algorithm SHA256).Hash.ToLower().ToString()) | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Update build to release 🤌
         uses: softprops/action-gh-release@v1
