@@ -49,10 +49,16 @@ Function Test-CommandExist {
 
 function Finish {
     Clear-Host
-    If (Test-CommandExist Optimize-VHD) {
-        Write-Output "Optimizing VHDX size...."
-        Optimize-VHD ".\*.vhdx" -Mode Full
+    Remove-Item -Force .\disk.txt
+    Write-Output "Optimizing VHDX size..."
+    foreach ($Partition in "system","product","system_ext","vendor") {
+        Write-Output "SELECT VDISK FILE=`"$PSScriptRoot\$Partition.vhdx`"`
+        ATTACH VDISK READONLY`
+        COMPACT VDISK`
+        DETACH VDISK" | Add-Content -Path "$Partition.txt" -Encoding UTF8
     }
+    Start-Process -NoNewWindow -Wait "diskpart.exe" -Args "/s disk.txt" -RedirectStandardOutput NUL
+    Remove-Item -Force .\disk.txt
     Clear-Host
     Start-Process "shell:AppsFolder\MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe!SettingsApp"
     Start-Process "wsa://com.topjohnwu.magisk"
@@ -62,8 +68,7 @@ function Finish {
 
 If (Test-CommandExist pwsh.exe) {
     $pwsh = "pwsh.exe"
-}
-Else {
+} Else {
     $pwsh = "powershell.exe"
 }
 
