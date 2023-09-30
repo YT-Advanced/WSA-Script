@@ -24,6 +24,7 @@ If (((Test-Path -Path $(Get-Content -Path .\filelist-pri.txt)) -Eq $false).Count
 } Else {
     New-Item -Path "." -Name "priinfo" -ItemType "directory"
     Clear-Host
+    $AppxManifestFile = ".\AppxManifest.xml"
     $PriItem = Get-Item ".\pri\*" -Include "*.pri"
     Write-Output "Dumping resources...."
     $i = 0
