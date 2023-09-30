@@ -55,7 +55,7 @@ function Finish {
         Write-Output "SELECT VDISK FILE=`"$PSScriptRoot\$Partition.vhdx`"`
 ATTACH VDISK READONLY`
 COMPACT VDISK`
-DETACH VDISK" | Add-Content -Path "$Partition.txt" -Encoding UTF8
+DETACH VDISK" | Add-Content -Path .\disk.txt -Encoding UTF8
     }
     Start-Process -NoNewWindow -Wait "diskpart.exe" -Args "/s disk.txt" -RedirectStandardOutput NUL
     Remove-Item -Force .\disk.txt
