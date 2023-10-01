@@ -105,6 +105,10 @@ jobs:
              Start-Process -NoNewWindow -Wait "diskpart.exe" -Args "/s $Partition.txt" -RedirectStandardOutput NUL
          }
 
+      - name: Create "apex" directory
+        shell: pwsh
+        run: New-Item -Path apex -ItemType Directory -Force
+
       - name: Remove unused artifact ❌
         uses: geekyeggo/delete-artifact@v2
         with:
