@@ -57,7 +57,6 @@ jobs:
 
           mkdir -p download
           ./scripts/build.sh --arch ${{ inputs.arch }} --release-type $RELEASE_TYPE --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
-          touch output/${{ steps.wsa.outputs.artifact }}/apex/.gitkeep
 
       - name: Pass to Windows 💸
         uses: actions/upload-artifact@v3
