@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     if: github.event_name == 'issues'
+    name: Build WSA and Check comment
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -201,7 +202,7 @@ jobs:
 
       - name: Install Ubuntu Dependencies
         if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
-        uses: awalsh128/cache-apt-pkgs-action@latest
+        uses: awalsh128/cache-apt-pkgs-action@v1
         with:
           packages: e2fsprogs attr unzip qemu-utils python3-venv
           version: 1.0
@@ -220,25 +221,70 @@ jobs:
           }
           deactivate
 
-      - name: Run Build
+      - name: Build WSA
         id: wsa
         if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
-        shell: bash
         run: |
           mkdir -p download
-          ./scripts/build.sh ${{ env.body }}
+          ./scripts/build.sh ${{ env.body }} --after-compress
 
-      - name: File Checksum
-        if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false' && steps.wsa.outputs.file_ext != '.zip'
+      - name: Pass to Windows
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.wsa.outputs.artifact }}
+          path: output
+
+    outputs:
+      artifact: ${{ steps.wsa.outputs.artifact }}
+      file_ext: ${{ steps.wsa.outputs.file_ext }}
+      comment-id: ${{ steps.comment.outputs.comment-id }}
+
+  make-pri:
+    name: Merge PRI resources and Complete issue
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download built artifact
+        uses: actions/download-artifact@v3
+        with:
+          path: output/
+          name: ${{ needs.build.outputs.artifact }}
+
+      - name: Remove unused artifact
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: ${{ needs.build.outputs.artifact }}
+
+      - name: Merge language and density resources
+        run: (Start-Process powershell.exe -NoNewWindow -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory "${{ github.workspace }}\output\${{ needs.build.outputs.artifact }}").WaitForExit()
+
+      - name: Compact Images 💿
+        run: |
+         foreach ($Partition in 'system','product','system_ext','vendor') {
+             Write-Output "Optimizing of $Partition..."
+             Write-Output "SELECT VDISK FILE=`"${{ github.workspace }}\output\${{ needs.build.outputs.artifact }}\$Partition.vhdx`"`
+         ATTACH VDISK READONLY`
+         COMPACT VDISK`
+         DETACH VDISK" | Set-Content -Path "$Partition.txt" -Encoding Ascii
+             Start-Process -NoNewWindow -Wait "diskpart.exe" -Args "/s $Partition.txt" -RedirectStandardOutput NUL
+         }
+
+      - name: Compress 7-Zip and Add checksum
+        if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false' && needs.build.outputs.file_ext == '.7z'
         working-directory: output
         run: |
-          sha256sum '${{ steps.wsa.outputs.artifact }}${{ steps.wsa.outputs.file_ext }}' >> sha256-checksum.txt
+          7z a -t7z ${{ needs.build.outputs.artifact }}.7z ${{ needs.build.outputs.artifact }}\*
+          Remove-Item -Recurse -Force ${{ needs.build.outputs.artifact }}
+          ($(Get-FileHash -Path ${{ needs.build.outputs.artifact }}.7z -Algorithm SHA256).Hash.ToLower().ToString() + "  " + ${{ needs.build.outputs.artifact }}) | Out-File -FilePath sha256-checksum.txt
 
       - name: Upload to Artifacts
         if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.wsa.outputs.artifact }}
+          name: ${{ needs.build.outputs.artifact }}
           path: output
           retention-days: 5
 
@@ -248,7 +294,7 @@ jobs:
         with:
           actions: 'update-comment'
           token: ${{ secrets.GITHUB_TOKEN }}
-          comment-id: ${{ steps.comment.outputs.comment-id }}
+          comment-id: ${{ needs.build.outputs.comment-id }}
           update-mode: replace
           body: |
             Hello ${{ env.issueauth }}.  
@@ -276,7 +322,7 @@ jobs:
         with:
           actions: 'update-comment'
           token: ${{ secrets.GITHUB_TOKEN }}
-          comment-id: ${{ steps.comment.outputs.comment-id }}
+          comment-id: ${{ needs.build.outputs.comment-id }}
           update-mode: replace
           body: |
             Hello ${{ env.issueauth }}.  
@@ -286,6 +332,7 @@ jobs:
           emoji: confused
 
   delete_builds:
+    name: Delete build action
     runs-on: ubuntu-latest
     if: github.event_name == 'issue_comment' && contains('delete builds', github.event.comment.body)
     steps:
