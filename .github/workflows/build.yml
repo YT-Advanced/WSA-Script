@@ -50,11 +50,13 @@ jobs:
         id: wsa
         run: |
           if [[ -z "${{ inputs.insider }}" ]]; then
-              ./scripts/build.sh --arch ${{ inputs.arch }} --release-type retail --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
+              RELEASE_TYPE="retail"
           else
-              mkdir -p download
-              ./scripts/build.sh --arch ${{ inputs.arch }} --release-type latest --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
+              RELEASE_TYPE="latest"
           fi
+
+          mkdir -p download
+          ./scripts/build.sh --arch ${{ inputs.arch }} --release-type $RELEASE_TYPE --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
           touch output/${{ steps.wsa.outputs.artifact }}/apex/.gitkeep
 
       - name: Pass to Windows 💸
@@ -125,4 +127,4 @@ jobs:
           fail_on_unmatched_files: true
           append_body: true
           tag_name: ${{ needs.build.outputs.date }}
-          body: ${{ steps.run.outputs.hash }}   ${{ needs.build.outputs.zipname }}.7z
+          body: ${{ steps.run.outputs.hash }}  ${{ needs.build.outputs.zipname }}.7z
