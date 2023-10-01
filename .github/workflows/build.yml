@@ -46,7 +46,7 @@ jobs:
           packages: e2fsprogs attr unzip qemu-utils python3-venv
           version: 1.0
 
-      - name: Build WSA ${{ matrix.arch }} with GApps ${{ matrix.root }} 🏗️
+      - name: Build WSA ${{ inputs.arch }} with GApps ${{ inputs.root }} 🏗️
         id: wsa
         run: |
           if [[ -z "${{ inputs.insider }}" ]]; then
