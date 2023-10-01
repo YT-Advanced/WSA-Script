@@ -152,7 +152,7 @@ jobs:
         run: |
           7z a -t7z ${{ needs.build.outputs.artifact }}.7z ${{ needs.build.outputs.artifact }}\*
           Remove-Item -Recurse -Force ${{ needs.build.outputs.artifact }}
-          ($(Get-FileHash -Path ${{ needs.build.outputs.artifact }}.7z -Algorithm SHA256).Hash.ToLower().ToString() + "  " + "${{ needs.build.outputs.artifact }}") | Out-File -FilePath sha256-checksum.txt -Encoding UTF8
+          ($(Get-FileHash -Path ${{ needs.build.outputs.artifact }}.7z -Algorithm SHA256).Hash.ToLower().ToString() + "  " + "${{ needs.build.outputs.artifact }}.7z") | Out-File -FilePath sha256-checksum.txt -Encoding UTF8
 
       - name: Upload Artifact 📦
         uses: actions/upload-artifact@v3
