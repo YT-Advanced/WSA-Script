@@ -22,7 +22,7 @@ If (((Test-Path -Path $(Get-Content -Path .\filelist-pri.txt)) -Eq $false).Count
     $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     exit 1
 } Else {
-    New-Item -Path "." -Name "priinfo" -ItemType "directory"
+    New-Item -Path "." -Name "priinfo" -ItemType "directory" | Out-Null
     Clear-Host
     $AppxManifestFile = ".\AppxManifest.xml"
     $PriItem = Get-Item ".\pri\*" -Include "*.pri"
