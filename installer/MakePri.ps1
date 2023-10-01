@@ -23,6 +23,7 @@ If (((Test-Path -Path $(Get-Content -Path .\filelist-pri.txt)) -Eq $false).Count
     exit 1
 } Else {
     New-Item -Path "." -Name "priinfo" -ItemType "directory" | Out-Null
+    Copy-Item .\resources.pri -Destination ".\pri\resources.pri" | Out-Null
     Clear-Host
     $AppxManifestFile = ".\AppxManifest.xml"
     $PriItem = Get-Item ".\pri\*" -Include "*.pri"
