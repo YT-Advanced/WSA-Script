@@ -55,6 +55,7 @@ jobs:
               mkdir -p download
               ./scripts/build.sh --arch ${{ inputs.arch }} --release-type latest --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
           fi
+          touch output/${{ steps.wsa.outputs.artifact }}/apex/.gitkeep
 
       - name: Pass to Windows 💸
         uses: actions/upload-artifact@v3
@@ -104,10 +105,6 @@ jobs:
              DETACH VDISK" | Set-Content -Path "$Partition.txt" -Encoding Ascii
              Start-Process -NoNewWindow -Wait "diskpart.exe" -Args "/s $Partition.txt" -RedirectStandardOutput NUL
          }
-
-      - name: Create "apex" directory
-        shell: pwsh
-        run: New-Item -Path apex -ItemType Directory -Force | Out-Null
 
       - name: Remove unused artifact ❌
         uses: geekyeggo/delete-artifact@v2
