@@ -284,7 +284,7 @@ jobs:
         if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ needs.build.outputs.artifact }}
+          name: ${{ needs.build.outputs.artifact }}-built
           path: output
           retention-days: 5
 
