@@ -208,6 +208,7 @@ ARGUMENT_LIST=(
     "custom-model:"
     "root-sol:"
     "compress-format:"
+    "after-compress"
     "remove-amazon"
 )
 
