@@ -82,7 +82,7 @@ jobs:
           deactivate
 
       - name: Install Ubuntu Dependencies 🧑‍🏭
-        uses: awalsh128/cache-apt-pkgs-action@latest
+        uses: awalsh128/cache-apt-pkgs-action@v1
         with:
           packages: e2fsprogs attr unzip qemu-utils python3-venv
           version: 1.0
@@ -102,15 +102,60 @@ jobs:
 
           mkdir -p download
           echo -e "user_code=$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
-          ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --custom-model ${opts[CUSTOM_MODEL,${{ inputs.custom_model }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]}
+          ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --custom-model ${opts[CUSTOM_MODEL,${{ inputs.custom_model }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]} --after-compress
 
-      - name: File Checksum ✔️
-        if: inputs.compression != '.zip'
+      - name: Pass to Windows 💸
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.wsa.outputs.artifact }}
+          path: output
+
+    outputs:
+      artifact: ${{ steps.wsa.outputs.artifact }}
+
+  make-pri:
+    name: Merge PRI resources
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Checkout ♻️
+        uses: actions/checkout@v4
+
+      - name: Download built artifact ⌛
+        uses: actions/download-artifact@v3
+        with:
+          path: output/
+          name: ${{ needs.build.outputs.artifact }}
+
+      - name: Remove unused artifact ❌
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: ${{ needs.build.outputs.artifact }}
+
+      - name: Merge language and density resources 🧙🏻‍♂️
+        run: (Start-Process powershell.exe -NoNewWindow -PassThru -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory "${{ github.workspace }}\output\${{ needs.build.outputs.artifact }}").WaitForExit()
+
+      - name: Compact Images 💿
+        run: |
+         foreach ($Partition in 'system','product','system_ext','vendor') {
+             Write-Output "Optimizing of $Partition..."
+             Write-Output "SELECT VDISK FILE=`"${{ github.workspace }}\output\${{ needs.build.outputs.artifact }}\$Partition.vhdx`"`
+             ATTACH VDISK READONLY`
+             COMPACT VDISK`
+             DETACH VDISK" | Set-Content -Path "$Partition.txt" -Encoding Ascii
+             Start-Process -NoNewWindow -Wait "diskpart.exe" -Args "/s $Partition.txt" -RedirectStandardOutput NUL
+         }
+
+      - name: Compress 7-Zip and Add checksum ✔️
+        if: inputs.compression == '.7z'
         working-directory: output
-        run: sha256sum '${{ steps.wsa.outputs.artifact }}${{ inputs.compression }}' > sha256-checksum.txt
+        run: |
+          7z a -t7z ${{ needs.build.outputs.artifact }}.7z ${{ needs.build.outputs.artifact }}\*
+          Remove-Item -Recurse -Force ${{ needs.build.outputs.artifact }}
+          ($(Get-FileHash -Path ${{ needs.build.outputs.artifact }}.7z -Algorithm SHA256).Hash.ToLower().ToString() + "  " + "${{ needs.build.outputs.artifact }}.7z") | Out-File -FilePath sha256-checksum.txt -Encoding UTF8
 
       - name: Upload Artifact 📦
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.wsa.outputs.artifact }}-compressed
+          name: ${{ needs.build.outputs.artifact }}-compressed
           path: output

@@ -45,23 +45,9 @@ Function Test-CommandExist {
     try { if (Get-Command $Command) { RETURN $true } }
     Catch { RETURN $false }
     Finally { $ErrorActionPreference = $OldPreference }
-} #end function Test-CommandExist
+}
 
 function Finish {
-    Clear-Host
-    Write-Output "Optimizing VHDX size..."
-    $i = 0
-    foreach ($Partition in "system","product","system_ext","vendor") {
-        Remove-Item -Force "$Partition.txt" -ErrorAction SilentlyContinue
-        Write-Output "SELECT VDISK FILE=`"$PSScriptRoot\$Partition.vhdx`"`
-ATTACH VDISK READONLY`
-COMPACT VDISK`
-DETACH VDISK" | Add-Content -Path "$Partition.txt" -Encoding UTF8
-        ++$i
-        Write-Progress -Activity "Compacting VHDX : $Partition.vhdx" -PercentComplete ($i / 4 * 100)
-        Start-Process -NoNewWindow -Wait "diskpart.exe" -Args "/s $Partition.txt" -RedirectStandardOutput NUL
-        Remove-Item -Force "$Partition.txt"
-    }
     Clear-Host
     Start-Process "shell:AppsFolder\MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe!SettingsApp"
     Start-Process "wsa://com.topjohnwu.magisk"
@@ -86,8 +72,7 @@ If (-Not (Test-Administrator)) {
         $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
     }
     exit
-}
-ElseIf (($args.Count -Eq 1) -And ($args[0] -Eq "EVAL")) {
+} ElseIf (($args.Count -Eq 1) -And ($args[0] -Eq "EVAL")) {
     Start-Process $pwsh -NoNewWindow -Args "-ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath'"
     exit
 }
@@ -97,17 +82,6 @@ If (((Test-Path -Path $FileList) -Eq $false).Count) {
     Write-Error "`r`nSome files are missing in the folder.`r`nPlease try to build again.`r`n`r`nPress any key to exit"
     $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     exit 1
-}
-
-If (((Test-Path -Path "MakePri.ps1") -And (Test-Path -Path "makepri.exe")) -Eq $true) {
-    $ProcMakePri = Start-Process $pwsh -PassThru -NoNewWindow -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory $PSScriptRoot
-    $null = $ProcMakePri.Handle
-    $ProcMakePri.WaitForExit()
-    If ($ProcMakePri.ExitCode -Ne 0) {
-        Write-Warning "`r`nFailed to merge resources, WSA Seetings will always be in English`r`nPress any key to continue"
-        $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-    }
-    $Host.UI.RawUI.WindowTitle = "Installing MagiskOnWSA...."
 }
 
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"

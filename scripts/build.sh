@@ -208,6 +208,7 @@ ARGUMENT_LIST=(
     "custom-model:"
     "root-sol:"
     "compress-format:"
+    "after-compress"
     "remove-amazon"
 )
 
@@ -230,6 +231,7 @@ while [[ $# -gt 0 ]]; do
         --custom-model      ) CUSTOM_MODEL="$2"; shift 2;;
         --root-sol          ) ROOT_SOL="$2"; shift 2 ;;
         --compress-format   ) COMPRESS_FORMAT="$2"; shift 2 ;;
+        --after-compress    ) AFTER_COMPRESS="yes"; shift ;;
         --remove-amazon     ) REMOVE_AMAZON="yes"; shift ;;
         --magisk-ver        ) MAGISK_VER="$2"; shift 2 ;;
         --                  ) shift; break;;
@@ -784,6 +786,7 @@ fi
 artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}${name3}
 if [ "$REMOVE_AMAZON" = "yes" ]; then
     artifact_name+="-RemovedAmazon"
+    touch "$WORK_DIR/wsa/$ARCH/apex/.gitkeep"
 fi
 echo "$artifact_name"
 echo "artifact=${artifact_name}" >> "$GITHUB_OUTPUT"
@@ -792,7 +795,7 @@ mkdir -p "$OUTPUT_DIR"
 OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name"
 mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
 echo "file_ext=.${COMPRESS_FORMAT}" >> "$GITHUB_OUTPUT"
-if [ "$COMPRESS_FORMAT" = "7z" ]; then
+if [[ "$COMPRESS_FORMAT" = "7z" && -z $AFTER_COMPRESS ]]; then
     echo "Compressing with 7-Zip"
     OUTPUT_PATH="$OUTPUT_PATH.7z"
     7z a -mx=7 "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort

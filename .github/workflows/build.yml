@@ -50,12 +50,13 @@ jobs:
         id: wsa
         run: |
           if [[ -z "${{ inputs.insider }}" ]]; then
-              ./scripts/build.sh --arch ${{ inputs.arch }} --release-type retail --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
+              RELEASE_TYPE="retail"
           else
-              mkdir -p download
-              ./scripts/build.sh --arch ${{ inputs.arch }} --release-type latest --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
+              RELEASE_TYPE="latest"
           fi
-          touch output/${{ steps.wsa.outputs.artifact }}/apex/.gitkeep
+
+          mkdir -p download
+          ./scripts/build.sh --arch ${{ inputs.arch }} --release-type $RELEASE_TYPE --magisk-ver stable --gapps-brand ${{ inputs.gapps }} --root-sol ${{ inputs.root }} --custom-model redfin --remove-amazon --compress-format zip
 
       - name: Pass to Windows 💸
         uses: actions/upload-artifact@v3
@@ -91,11 +92,9 @@ jobs:
           name: ${{ needs.build.outputs.zipname }}
 
       - name: Merge language and density resources 🧙🏻‍♂️
-        shell: pwsh
-        run: (Start-Process pwsh.exe -NoNewWindow -PassThru -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory "${{ github.workspace }}\output\${{ needs.build.outputs.zipname }}").WaitForExit()
+        run: (Start-Process powerhshell.exe -NoNewWindow -PassThru -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory "${{ github.workspace }}\output\${{ needs.build.outputs.zipname }}").WaitForExit()
 
       - name: Compact Images 💿
-        shell: pwsh
         run: |
          foreach ($Partition in 'system','product','system_ext','vendor') {
              Write-Output "Optimizing of $Partition..."
@@ -116,7 +115,7 @@ jobs:
 
       - name: File Checksum ✔️
         id: run
-        run: ("hash=" + $(Get-FileHash -Path ${{ needs.build.outputs.zipname }}.7z -Algorithm SHA256).Hash.ToLower().ToString()) | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        run: ("hash=" + $(Get-FileHash -Path ${{ needs.build.outputs.zipname }}.7z -Algorithm SHA256).Hash.ToLower().ToString()) | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding UTF8 -Append
 
       - name: Update build to release 🤌
         uses: softprops/action-gh-release@v1
@@ -125,4 +124,4 @@ jobs:
           fail_on_unmatched_files: true
           append_body: true
           tag_name: ${{ needs.build.outputs.date }}
-          body: ${{ steps.run.outputs.hash }}   ${{ needs.build.outputs.zipname }}.7z
+          body: ${{ steps.run.outputs.hash }}  ${{ needs.build.outputs.zipname }}.7z
