@@ -273,7 +273,7 @@ jobs:
          }
 
       - name: Compress 7-Zip and Add checksum
-        if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false' && needs.build.outputs.file_ext == '.7z'
+        if: success() && needs.build.outputs.file_ext == '.7z'
         working-directory: output
         run: |
           7z a -t7z ${{ needs.build.outputs.artifact }}.7z ${{ needs.build.outputs.artifact }}\*
@@ -281,7 +281,7 @@ jobs:
           ($(Get-FileHash -Path ${{ needs.build.outputs.artifact }}.7z -Algorithm SHA256).Hash.ToLower().ToString() + "  " + "${{ needs.build.outputs.artifact }}.7z") | Out-File -FilePath sha256-checksum.txt -Encoding UTF8
 
       - name: Upload to Artifacts
-        if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
+        if: success()
         uses: actions/upload-artifact@v3
         with:
           name: ${{ needs.build.outputs.artifact }}-built
@@ -289,7 +289,7 @@ jobs:
           retention-days: 5
 
       - name: Update Comment Finish
-        if: env.issues == 'true' && env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
+        if: success()
         uses: actions-cool/issues-helper@v3
         with:
           actions: 'update-comment'
@@ -309,7 +309,7 @@ jobs:
           emoji: hooray
 
       - name: Close Issues
-        if: env.issues == 'true' && env.iscustom == 'true' && success()
+        if: success()
         uses: actions-cool/issues-helper@v3
         with:
           actions: 'close-issue'
@@ -317,7 +317,7 @@ jobs:
           issue-number: ${{ env.issuenumber }}
 
       - name: Update Comment Fail
-        if: env.issues == 'true' && env.iscustom == 'true' && failure()
+        if: failure()
         uses: actions-cool/issues-helper@v3
         with:
           actions: 'update-comment'
