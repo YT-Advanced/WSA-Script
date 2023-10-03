@@ -6,6 +6,7 @@ on:
 
 jobs:
   check:
+    name: Check update
     if: github.repository == 'YT-Advanced/WSA-Script'
     runs-on: ubuntu-latest
     steps:
