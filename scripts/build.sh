@@ -288,7 +288,6 @@ WSA_MAJOR_VER=0
 update_ksu_zip_name() {
     KERNEL_VER=""
     case "$WSA_MAJOR_VER" in
-      "2307") KERNEL_VER="5.15.104.2";;
       "2308") KERNEL_VER="5.15.104.3";;
       "2309") KERNEL_VER="5.15.104.3";;
       *) abort "KernelSU is not supported in this WSA version: $WSA_MAJOR_VER"
@@ -302,6 +301,7 @@ update_gapps_zip_name() {
     GAPPS_ZIP_NAME=MindTheGapps-$ARCH-13.0.zip
     GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 }
+
 echo "Generate Download Links"
 if [ "$RELEASE_TYPE" != "latest" ]; then
     python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
@@ -614,13 +614,13 @@ echo "\nKernelSU Install Manager"
 if [ ! -e "/storage/emulated/0/.ksu_completed_$KERNELSU_VER" ]; then
     echo "\nInstalling KernelSU APK"
     pm install -i android -r /system/data-app/KernelSU.apk
-    echo "\nLaunching KernelSU App"
-    am start -n me.weishu.kernelsu/.ui.MainActivity
     touch "/storage/emulated/0/.ksu_completed_$KERNELSU_VER"
     echo "\nDone!\n"
 else
     echo "\nLatest KernelSU Manager is installed.\n"
 fi
+echo "\nLaunching KernelSU App\n"
+am start -n me.weishu.kernelsu/.ui.MainActivity
 EOF
     # Grant access
     sudo chmod 0755 "$KSU_PRE"
