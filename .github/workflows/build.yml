@@ -12,7 +12,7 @@ on:
         type: string
 jobs:
   build:
-    name: Build WSA
+    name: Build WSA ${{ inputs.arch }} with ${{ inputs.root }} and ${{ inputs.gapps }} as Pixel 5 (Insider is ${{ inputs.indider }})
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ♻️
