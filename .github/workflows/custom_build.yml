@@ -150,7 +150,7 @@ jobs:
         if: inputs.compression == '.7z'
         working-directory: output
         run: |
-          7z a -t7z ${{ needs.build.outputs.artifact }}.7z ${{ needs.build.outputs.artifact }}\*
+          7z a -t7z -mx=7 -m0=LZMA2 -mmt=64 -ms=on -- ${{ needs.build.outputs.artifact }}.7z ${{ needs.build.outputs.artifact }}\*
           Remove-Item -Recurse -Force ${{ needs.build.outputs.artifact }}
           ($(Get-FileHash -Path ${{ needs.build.outputs.artifact }}.7z -Algorithm SHA256).Hash.ToLower().ToString() + "  " + "${{ needs.build.outputs.artifact }}.7z") | Out-File -FilePath sha256-checksum.txt -Encoding UTF8
 
