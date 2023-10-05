@@ -16,50 +16,41 @@
 # Copyright (C) 2023 LSPosed Contributors
 #
 
-$Host.UI.RawUI.WindowTitle = "Merging resources...."
-If (((Test-Path -Path $(Get-Content -Path .\filelist-pri.txt)) -Eq $false).Count) {
-    Write-Error "Some files are missing in the folder. Please try to build again. Press any key to exit"
-    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-    exit 1
-} Else {
-    New-Item -Path "." -Name "priinfo" -ItemType "directory" | Out-Null
-    Copy-Item .\resources.pri -Destination ".\pri\resources.pri" | Out-Null
-    Clear-Host
-    $AppxManifestFile = ".\AppxManifest.xml"
-    $PriItem = Get-Item ".\pri\*" -Include "*.pri"
-    Write-Output "Dumping resources...."
-    $i = 0
-    $Processes = ForEach ($Item in $PriItem) {
-        Start-Process -PassThru -WindowStyle Hidden makepri.exe -Args "dump /if $($Item | Resolve-Path -Relative) /o /es .\pri\resources.pri /of .\priinfo\$($Item.Name).xml /dt detailed"
-        ++$i
-        $Completed = ($i / $PriItem.count) * 100
-        Write-Progress -Activity "Dumping resources" -Status "Dumping $($Item.Name):" -PercentComplete $Completed
-    }
-    $Processes | Wait-Process
-    Write-Progress -Activity "Dumping resources" -Status "Ready" -Completed
-    Clear-Host
-    Write-Output "Creating pri from dumps...."
-    $ProcNewFromDump = Start-Process -PassThru -NoNewWindow makepri.exe -Args "new /pr .\priinfo /cf .\xml\priconfig.xml /of .\resources.pri /mn $AppxManifestFile /o"
-    $null = $ProcNewFromDump.Handle
-    $ProcNewFromDump.WaitForExit()
-    Remove-Item 'priinfo' -Recurse
-    If ($ProcNewFromDump.ExitCode -Ne 0) {
-        Write-Error "Failed to create resources from priinfos"
-        exit 1
-    }
+$MakePri = "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\makepri.exe"
 
-    $ProjectXml = [xml](Get-Content $AppxManifestFile)
-    $ProjectResources = $ProjectXml.Package.Resources;
-    $(Get-Item .\xml\* -Exclude "priconfig.xml" -Include "*.xml") | ForEach-Object {
-        $($([xml](Get-Content $_)).Package.Resources.Resource) | ForEach-Object {
-            $ProjectResources.AppendChild($($ProjectXml.ImportNode($_, $true)))
-        }
-    }
-    $ProjectXml.Save($AppxManifestFile)
-    Remove-Item 'pri' -Recurse
-    Remove-Item 'xml' -Recurse
-    Remove-Item 'makepri.exe'
-    Remove-Item 'filelist-pri.txt'
-    Remove-Item $PSCommandPath -Force
-    exit 0
+$Host.UI.RawUI.WindowTitle = "Merging resources...."
+New-Item -Path "." -Name "priinfo" -ItemType "directory" | Out-Null
+Copy-Item .\resources.pri -Destination ".\pri\resources.pri" | Out-Null
+Clear-Host
+$AppxManifestFile = ".\AppxManifest.xml"
+$PriItem = Get-Item ".\pri\*" -Include "*.pri"
+Write-Output "Dumping resources...."
+$Processes = ForEach ($Item in $PriItem) {
+    Start-Process -PassThru -WindowStyle Hidden $MakePri -Args "dump /if $($Item | Resolve-Path -Relative) /o /es .\pri\resources.pri /of .\priinfo\$($Item.Name).xml /dt detailed"
 }
+$Processes | Wait-Process
+
+Clear-Host
+Write-Output "Creating pri from dumps...."
+$ProcNewFromDump = Start-Process -PassThru -NoNewWindow $MakePri -Args "new /pr .\priinfo /cf .\xml\priconfig.xml /of .\resources.pri /mn $AppxManifestFile /o"
+$null = $ProcNewFromDump.Handle
+$ProcNewFromDump.WaitForExit()
+Remove-Item 'priinfo' -Recurse
+If ($ProcNewFromDump.ExitCode -Ne 0) {
+    Write-Error "Failed to create resources from priinfos"
+    exit 1
+}
+
+$ProjectXml = [xml](Get-Content $AppxManifestFile)
+$ProjectResources = $ProjectXml.Package.Resources;
+$(Get-Item .\xml\* -Exclude "priconfig.xml" -Include "*.xml") | ForEach-Object {
+    $($([xml](Get-Content $_)).Package.Resources.Resource) | ForEach-Object {
+        $ProjectResources.AppendChild($($ProjectXml.ImportNode($_, $true)))
+    }
+}
+$ProjectXml.Save($AppxManifestFile)
+
+Remove-Item 'pri' -Recurse
+Remove-Item 'xml' -Recurse
+Remove-Item $PSCommandPath -Force
+exit 0
