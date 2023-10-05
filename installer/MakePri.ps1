@@ -18,7 +18,6 @@
 
 $MakePri = "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\makepri.exe"
 
-$Host.UI.RawUI.WindowTitle = "Merging resources...."
 New-Item -Path "." -Name "priinfo" -ItemType "directory" | Out-Null
 Copy-Item .\resources.pri -Destination ".\pri\resources.pri" | Out-Null
 Clear-Host
