@@ -758,7 +758,6 @@ else
 fi
 cp ../installer/Install.ps1 "$WORK_DIR/wsa/$ARCH" || abort
 find "$WORK_DIR/wsa/$ARCH" -not -path "*/uwp*" -not -path "*/pri*" -not -path "*/xml*" -printf "%P\n" | sed -e 's@/@\\@g' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist.txt" || abort
-find "$WORK_DIR/wsa/$ARCH/uwp" -printf "%P\n" | sed -e 's/^/uwp\\/' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist-uwp.txt" || abort
 cp ../installer/MakePri.ps1 "$WORK_DIR/wsa/$ARCH" || abort
 cp ../installer/Run.bat "$WORK_DIR/wsa/$ARCH" || abort
 echo -e "Remove signature and Add scripts done\n"

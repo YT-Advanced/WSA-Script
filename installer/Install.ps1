@@ -99,13 +99,12 @@ If ($(Get-WindowsOptionalFeature -Online -FeatureName 'VirtualMachinePlatform').
     $Key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     If ("y" -Eq $Key.Character) {
         Restart-Computer -Confirm
-    }
-    Else {
+    } Else {
         exit 1
     }
 }
 
-If (((Test-Path -Path $(Get-Content .\filelist-uwp.txt)) -Eq $true).Count) {
+if ((Test-Path -Path 'uwp') -eq $true) {
     [xml]$Xml = Get-Content ".\AppxManifest.xml";
     $Name = $Xml.Package.Identity.Name;
     Write-Output "Installing $Name version: $($Xml.Package.Identity.Version)"
@@ -113,21 +112,20 @@ If (((Test-Path -Path $(Get-Content .\filelist-uwp.txt)) -Eq $true).Count) {
     $Dependencies = $Xml.Package.Dependencies.PackageDependency;
     $Dependencies | ForEach-Object {
         $InstalledVersion = Get-InstalledDependencyVersion -Name $_.Name -ProcessorArchitecture $ProcessorArchitecture;
-        If ( $InstalledVersion -Lt $_.MinVersion ) {
-            If ($env:WT_SESSION) {
+        if ( $InstalledVersion -Lt $_.MinVersion ) {
+            if ($env:WT_SESSION) {
                 $env:WT_SESSION = $null
                 Write-Output "`r`nDependency should be installed but Windows Terminal is in use. Restarting to conhost.exe"
                 Start-Process conhost.exe -Args "powershell.exe -ExecutionPolicy Bypass -Command Set-Location '$PSScriptRoot'; &'$PSCommandPath'"
                 exit 1
             }
-            Write-Output "Dependency package $($_.Name) $ProcessorArchitecture required minimum version: $($_.MinVersion). Installing...."
+            Write-Output "Dependency package $($_.Name) $ProcessorArchitecture required minimum version: $($_.MinVersion). Installing..."
             Add-AppxPackage -ForceApplicationShutdown -ForceUpdateFromAnyVersion -Path "uwp\$($_.Name)_$ProcessorArchitecture.appx"
-        }
-        Else {
+        } else {
             Write-Output "Dependency package $($_.Name) $ProcessorArchitecture current version: $InstalledVersion.`r`nNothing to do."
         }
     }
-} Else {
+} else {
     Write-Warning "`r`nIgnored install WSA dependencies."
 }
 
