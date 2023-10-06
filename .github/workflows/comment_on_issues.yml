@@ -232,13 +232,14 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: output
-          key: ${{ steps.wsa.outputs.artifact }}
+          key: ${{ steps.wsa.outputs.artifact }}-${{ steps.wsa.outputs.date }}
           enableCrossOsArchive: true
 
     outputs:
       artifact: ${{ steps.wsa.outputs.artifact }}
       file_ext: ${{ steps.wsa.outputs.file_ext }}
       comment-id: ${{ steps.comment.outputs.comment-id }}
+      date: ${{ steps.wsa.outputs.date }}
 
   make-pri:
     name: Merge PRI resources and Complete issue
@@ -252,7 +253,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: output
-          key: ${{ needs.build.outputs.artifact }}
+          key: ${{ needs.build.outputs.artifact }}-${{ needs.build.outputs.date }}
           enableCrossOsArchive: true
           fail-on-cache-miss: true
 
@@ -274,8 +275,7 @@ jobs:
         if: success() && needs.build.outputs.file_ext == '.7z'
         working-directory: output
         run: |
-          7z a -t7z ${{ needs.build.outputs.artifact }}.7z ${{ needs.build.outputs.artifact }}\*
-          Remove-Item -Recurse -Force ${{ needs.build.outputs.artifact }}
+          7z a -t7z -mx=6 -m0=LZMA2 -ms=on -mmt=8 -sdel -- ${{ needs.build.outputs.artifact }}.7z ${{ needs.build.outputs.artifact }}\*
           ($(Get-FileHash -Path ${{ needs.build.outputs.artifact }}.7z -Algorithm SHA256).Hash.ToLower().ToString() + "  " + "${{ needs.build.outputs.artifact }}.7z") | Out-File -FilePath sha256-checksum.txt -Encoding UTF8
 
       - name: Upload to Artifacts
