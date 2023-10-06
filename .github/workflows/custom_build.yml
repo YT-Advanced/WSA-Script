@@ -105,7 +105,7 @@ jobs:
           ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-ver $MAGISK_VER --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --custom-model ${opts[CUSTOM_MODEL,${{ inputs.custom_model }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]} --after-compress
 
       - name: Pass to Windows 💸
-        uses: actions/upload-artifact@v3
+        uses: .github/actions/upload-artifact
         with:
           name: ${{ steps.wsa.outputs.artifact }}
           path: output
@@ -122,7 +122,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download built artifact ⌛
-        uses: actions/download-artifact@v3
+        uses: ./.github/actions/download-artifact
         with:
           path: output/
           name: ${{ needs.build.outputs.artifact }}
