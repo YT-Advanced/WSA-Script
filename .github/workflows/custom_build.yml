@@ -124,7 +124,7 @@ jobs:
       - name: Download built artifact ⌛
         uses: ./.github/actions/download-artifact
         with:
-          path: output/
+          path: ./
           name: ${{ needs.build.outputs.artifact }}
 
       - name: Remove unused artifact ❌
