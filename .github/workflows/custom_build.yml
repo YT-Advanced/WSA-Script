@@ -108,6 +108,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: output
+          enableCrossOsArchive: true
           key: ${{ steps.wsa.outputs.artifact }}
 
     outputs:
@@ -125,6 +126,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: output/
+          enableCrossOsArchive: true
           key: ${{ needs.build.outputs.artifact }}
           fail-on-cache-miss: true
 
