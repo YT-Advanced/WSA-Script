@@ -1,5 +1,4 @@
 name: Auto Build function (Use for call only)
-run-name: ${{ inputs.arch }}_${{ inputs.root }}_${{ inputs.gapps }} (Insider is ${{ inputs.indider }})
 on:
  workflow_call:
     inputs:
@@ -13,7 +12,7 @@ on:
         type: string
 jobs:
   build:
-    name: Build WSA
+    name: ${{ inputs.arch }}_${{ inputs.root }}_${{ inputs.gapps }} (Insider is ${{ inputs.indider }})
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ♻️
@@ -63,21 +62,22 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: output
-          key: ${{ steps.wsa.outputs.artifact }}
+          key: ${{ steps.wsa.outputs.artifact }}-${{ steps.wsa.outputs.date }}
           enableCrossOsArchive: true
 
       - name: Prepare release tag 🏷️
         id: date
         run: |
            if [[ -z "${{ inputs.insider }}" ]]; then
-              echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
+              echo "tag=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
            else
-              echo "date=WSA-Insider-Version" >> $GITHUB_OUTPUT
+              echo "tag=WSA-Insider-Version" >> $GITHUB_OUTPUT
            fi
 
     outputs:
       zipname: ${{ steps.wsa.outputs.artifact }}
-      date: ${{ steps.date.outputs.date }}
+      date: ${{ steps.wsa.outputs.date }}
+      tag: ${{ steps.date.outputs.tag }}
 
   make-pri:
     name: Merge PRI resources
@@ -91,7 +91,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: output
-          key: ${{ needs.build.outputs.artifact }}
+          key: ${{ needs.build.outputs.artifact }}-${{ needs.build.outputs.date }}
           enableCrossOsArchive: true
           fail-on-cache-miss: true
 
@@ -114,12 +114,11 @@ jobs:
         with:
           name: ${{ needs.build.outputs.zipname }}
 
-      - name: Compress artifact 📦
-        run: 7z a -t7z ${{ needs.build.outputs.zipname }}.7z .\output\${{ needs.build.outputs.zipname }}\*
-
-      - name: File Checksum ✔️
+      - name: Compress with 7-Zip and Set checksum 📦
         id: run
-        run: ("hash=" + $(Get-FileHash -Path ${{ needs.build.outputs.zipname }}.7z -Algorithm SHA256).Hash.ToLower().ToString()) | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding UTF8 -Append
+        run: |
+          7z a -t7z -mx=6 -m0=LZMA2 -ms=on -mmt=8 -del -- ${{ needs.build.outputs.zipname }}.7z .\output\${{ needs.build.outputs.zipname }}\*
+          ("hash=" + $(Get-FileHash -Path ${{ needs.build.outputs.zipname }}.7z -Algorithm SHA256).Hash.ToLower().ToString()) | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding UTF8 -Append
 
       - name: Update build to release 🤌
         uses: softprops/action-gh-release@v1
@@ -127,5 +126,5 @@ jobs:
           files: ${{ needs.build.outputs.zipname }}.7z
           fail_on_unmatched_files: true
           append_body: true
-          tag_name: ${{ needs.build.outputs.date }}
+          tag_name: ${{ needs.build.outputs.tag }}
           body: ${{ steps.run.outputs.hash }}  ${{ needs.build.outputs.zipname }}.7z
