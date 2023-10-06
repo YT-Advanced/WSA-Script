@@ -108,12 +108,12 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: output
-          key: ${{ steps.wsa.outputs.artifact }}-${{ steps.wsa.outputs.built }}
+          key: ${{ steps.wsa.outputs.artifact }}-${{ steps.wsa.outputs.date }}
           enableCrossOsArchive: true
 
     outputs:
       artifact: ${{ steps.wsa.outputs.artifact }}
-      built: ${{ steps.wsa.outputs.built }}
+      date: ${{ steps.wsa.outputs.date }}
 
   make-pri:
     name: Merge PRI resources
@@ -127,7 +127,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: output
-          key: ${{ needs.build.outputs.artifact }}-${{ needs.build.outputs.built }}
+          key: ${{ needs.build.outputs.artifact }}-${{ needs.build.outputs.date }}
           enableCrossOsArchive: true
           fail-on-cache-miss: true
 
