@@ -46,7 +46,7 @@ $(Get-Item .\xml\* -Exclude "priconfig.xml" -Include "*.xml") | ForEach-Object {
 }
 $ProjectXml.Save($AppxManifestFile)
 
-Remove-Item 'pri' -Recurseb -Force
+Remove-Item 'pri' -Recurse -Force
 Remove-Item 'xml' -Recurse -Force
 Remove-Item $PSCommandPath -Force
 exit 0
