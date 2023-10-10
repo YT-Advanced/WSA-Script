@@ -48,5 +48,6 @@ $ProjectXml.Save($AppxManifestFile)
 
 Remove-Item 'pri' -Recurse -Force
 Remove-Item 'xml' -Recurse -Force
+Remove-Item 'filelist-pri.txt' -Recurse -Force
 Remove-Item $PSCommandPath -Force
 exit 0
