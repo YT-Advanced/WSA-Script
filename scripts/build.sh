@@ -787,7 +787,7 @@ echo "$artifact_name"
 echo -e "\nFinishing building...."
 mkdir -p "$OUTPUT_DIR"
 OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name"
-mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
+mv "$WORK_DIR/wsa/$ARCH" "$OUTPUT_PATH/$artifact_name" || abort
 echo -e "Done\n"
 {
   echo "artifact=${artifact_name}"
