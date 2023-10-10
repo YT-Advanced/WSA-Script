@@ -240,6 +240,7 @@ jobs:
       artifact: ${{ steps.wsa.outputs.artifact }}
       file_ext: ${{ steps.wsa.outputs.file_ext }}
       arch: ${{ steps.wsa.outputs.arch }}
+      built: ${{ steps.wsa.outputs.built }}
       comment-id: ${{ steps.comment.outputs.comment-id }}
       iscustom: ${{ env.iscustom }}
       released: ${{ env.released }}
@@ -257,7 +258,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: output
-          key: ${{ needs.build.outputs.artifact }}
+          key: ${{ needs.build.outputs.artifact }}-${{ needs.build.outputs.built }}
           enableCrossOsArchive: true
           fail-on-cache-miss: true
 
