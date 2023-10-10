@@ -242,7 +242,7 @@ jobs:
       arch: ${{ steps.wsa.outputs.arch }}
       comment-id: ${{ steps.comment.outputs.comment-id }}
       iscustom: ${{ env.iscustom }}
-      released: ${{ evn.released }}
+      released: ${{ env.released }}
 
   make-pri:
     if: needs.build.outputs.iscustom == 'true' && needs.build.outputs.released == 'false'
