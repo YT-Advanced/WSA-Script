@@ -791,7 +791,7 @@ echo -e "\nFinishing building...."
 mkdir -p "$OUTPUT_DIR"
 OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name"
 mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
-echo "arch=$ARCH" >> "$GITHUB_OUTPUT"
+echo "arch=${ARCH}" >> "$GITHUB_OUTPUT"
 echo "file_ext=.${COMPRESS_FORMAT}" >> "$GITHUB_OUTPUT"
 echo "built=$(date -u +%Y%m%d%H%M%S)" >> "$GITHUB_OUTPUT"
 if [[ "$COMPRESS_FORMAT" = "7z" && -z $AFTER_COMPRESS ]]; then
