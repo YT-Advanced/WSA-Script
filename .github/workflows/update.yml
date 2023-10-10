@@ -152,7 +152,7 @@ jobs:
       INSIDER_BUILD: ${{ env.INSIDER }}
 
   build:
-    name: Build WSA
+    name: ${{ matrix.arch }}-${{ matrix.root }}-${{ matrix.gapps }}-${{ inputs.indider }} # 'insider' is 'yes' or 'no'
     strategy:
       matrix:
         arch: [x64, arm64]

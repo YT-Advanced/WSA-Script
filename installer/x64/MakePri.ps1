@@ -20,22 +20,19 @@ $MakePri = "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\makepri.
 
 New-Item -Path "." -Name "priinfo" -ItemType "directory" | Out-Null
 Copy-Item .\resources.pri -Destination ".\pri\resources.pri" | Out-Null
-Clear-Host
 $AppxManifestFile = ".\AppxManifest.xml"
 $PriItem = Get-Item ".\pri\*" -Include "*.pri"
-Write-Output "Dumping resources...."
-$Processes = ForEach ($Item in $PriItem) {
-    Start-Process -PassThru -WindowStyle Hidden $MakePri -Args "dump /if $($Item | Resolve-Path -Relative) /o /es .\pri\resources.pri /of .\priinfo\$($Item.Name).xml /dt detailed"
+Write-Output "Dumping resources..."
+foreach ($Item in $PriItem) {
+    Start-Process -PassThru $MakePri -Args "dump /if $($Item | Resolve-Path -Relative) /o /es .\pri\resources.pri /of .\priinfo\$($Item.Name).xml /dt detailed"
 }
-$Processes | Wait-Process
 
-Clear-Host
 Write-Output "Creating pri from dumps...."
-$ProcNewFromDump = Start-Process -PassThru -NoNewWindow $MakePri -Args "new /pr .\priinfo /cf .\xml\priconfig.xml /of .\resources.pri /mn $AppxManifestFile /o"
+$ProcNewFromDump = Start-Process -PassThru $MakePri -Args "new /pr .\priinfo /cf .\xml\priconfig.xml /of .\resources.pri /mn $AppxManifestFile /o"
 $null = $ProcNewFromDump.Handle
 $ProcNewFromDump.WaitForExit()
-Remove-Item 'priinfo' -Recurse
-If ($ProcNewFromDump.ExitCode -Ne 0) {
+Remove-Item 'priinfo' -Recurse -Force
+if ($ProcNewFromDump.ExitCode -ne 0) {
     Write-Error "Failed to create resources from priinfos"
     exit 1
 }
@@ -49,7 +46,8 @@ $(Get-Item .\xml\* -Exclude "priconfig.xml" -Include "*.xml") | ForEach-Object {
 }
 $ProjectXml.Save($AppxManifestFile)
 
-Remove-Item 'pri' -Recurse
-Remove-Item 'xml' -Recurse
+Remove-Item 'pri' -Recurse -Force
+Remove-Item 'xml' -Recurse -Force
+Remove-Item 'filelist-pri.txt' -Force
 Remove-Item $PSCommandPath -Force
 exit 0

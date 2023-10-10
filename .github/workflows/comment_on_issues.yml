@@ -201,14 +201,14 @@ jobs:
           emoji: eyes
 
       - name: Install Ubuntu Dependencies
-        if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
+        if: env.iscustom == 'true' && success() && env.released == 'false'
         uses: awalsh128/cache-apt-pkgs-action@v1
         with:
           packages: e2fsprogs attr unzip qemu-utils python3-venv
           version: 1.0
 
       - name: Setup Python3 Virtual Enviroment
-        if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
+        if: env.iscustom == 'true' && success() && env.released == 'false'
         working-directory: scripts
         run: |
           PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
@@ -223,12 +223,13 @@ jobs:
 
       - name: Build WSA
         id: wsa
-        if: env.iscustom == 'true' && success() && env.released == 'false' && env.insider == 'false'
+        if: env.iscustom == 'true' && success() && env.released == 'false'
         run: |
           mkdir -p download
           ./scripts/build.sh ${{ env.body }} --after-compress
 
       - name: Pass to Windows
+        if: env.iscustom == 'true' && success() && env.released == 'false'
         uses: actions/cache/save@v3
         with:
           path: output
@@ -238,10 +239,14 @@ jobs:
     outputs:
       artifact: ${{ steps.wsa.outputs.artifact }}
       file_ext: ${{ steps.wsa.outputs.file_ext }}
+      arch: ${{ steps.wsa.outputs.arch }}
+      built: ${{ steps.wsa.outputs.built }}
       comment-id: ${{ steps.comment.outputs.comment-id }}
-      date: ${{ steps.wsa.outputs.date }}
+      iscustom: ${{ env.iscustom }}
+      released: ${{ env.released }}
 
   make-pri:
+    if: needs.build.outputs.iscustom == 'true' && needs.build.outputs.released == 'false'
     name: Merge PRI resources and Complete issue
     runs-on: windows-latest
     needs: build
@@ -253,14 +258,21 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: output
-          key: ${{ needs.build.outputs.artifact }}-${{ needs.build.outputs.date }}
+          key: ${{ needs.build.outputs.artifact }}-${{ needs.build.outputs.built }}
           enableCrossOsArchive: true
           fail-on-cache-miss: true
 
       - name: Merge language and density resources
-        run: (Start-Process pwsh.exe -NoNewWindow -PassThru -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory "${{ github.workspace }}\output\${{ needs.build.outputs.artifact }}").WaitForExit()
+        if: success()
+        run: |
+          if ("${{ needs.build.outputs.arch }}" -eq "x64") {
+            (Start-Process pwsh.exe -NoNewWindow -PassThru -Args "-ExecutionPolicy Bypass -File MakePri.ps1" -WorkingDirectory "${{ github.workspace }}\output\${{ needs.build.outputs.artifact }}").WaitForExit()
+          } else {
+            Copy-Item -Force "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\arm64\makepri.exe" "${{ github.workspace }}\output\${{ needs.build.outputs.artifact }}"
+          }
 
       - name: Compact Images 💿
+        if: success()
         run: |
          foreach ($Partition in 'system','product','system_ext','vendor') {
              Write-Output "Optimizing of $Partition..."

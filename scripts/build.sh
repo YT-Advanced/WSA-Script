@@ -508,7 +508,7 @@ if [ "$REMOVE_AMAZON" ]; then
 fi
 
 echo "Add device administration features"
-sudo sed -ie '/cts/a \    <feature name="android.software.device_admin" />' -e '/print/i \    <feature name="android.software.managed_users" />' "$VENDOR_MNT/etc/permissions/windows.permissions.xml"
+sudo sed -i -e '/cts/a \    <feature name="android.software.device_admin" />' -e '/print/i \    <feature name="android.software.managed_users" />' "$VENDOR_MNT/etc/permissions/windows.permissions.xml"
 sudo setfattr -n security.selinux -v "u:object_r:vendor_configs_file:s0" "$VENDOR_MNT/etc/permissions/windows.permissions.xml" || abort
 echo -e "done\n"
 
@@ -756,9 +756,11 @@ else
         sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' ../installer/Install.ps1
     fi
 fi
-cp ../installer/Install.ps1 "$WORK_DIR/wsa/$ARCH" || abort
+cp "../installer/$ARCH/Install.ps1" "$WORK_DIR/wsa/$ARCH" || abort
 find "$WORK_DIR/wsa/$ARCH" -not -path "*/uwp*" -not -path "*/pri*" -not -path "*/xml*" -printf "%P\n" | sed -e 's@/@\\@g' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist.txt" || abort
-cp ../installer/MakePri.ps1 "$WORK_DIR/wsa/$ARCH" || abort
+find "$WORK_DIR/wsa/$ARCH/pri" -printf "%P\n" | sed -e 's/^/pri\\/' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist-pri.txt" || abort
+find "$WORK_DIR/wsa/$ARCH/xml" -printf "%P\n" | sed -e 's/^/xml\\/' -e '/^$/d' >> "$WORK_DIR/wsa/$ARCH/filelist-pri.txt" || abort
+cp "../installer/$ARCH/MakePri.ps1" "$WORK_DIR/wsa/$ARCH" || abort
 cp ../installer/Run.bat "$WORK_DIR/wsa/$ARCH" || abort
 echo -e "Remove signature and Add scripts done\n"
 
@@ -784,13 +786,10 @@ if [ "$REMOVE_AMAZON" = "yes" ]; then
     touch "$WORK_DIR/wsa/$ARCH/apex/.gitkeep"
 fi
 echo "$artifact_name"
-echo "artifact=${artifact_name}" >> "$GITHUB_OUTPUT"
 echo -e "\nFinishing building...."
 mkdir -p "$OUTPUT_DIR"
 OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name"
 mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
-echo "file_ext=.${COMPRESS_FORMAT}" >> "$GITHUB_OUTPUT"
-echo "date=$(date -u +%Y%m%d%H%M%S)" >> "$GITHUB_OUTPUT"
 if [[ "$COMPRESS_FORMAT" = "7z" && -z $AFTER_COMPRESS ]]; then
     echo "Compressing with 7-Zip"
     OUTPUT_PATH="$OUTPUT_PATH.7z"
@@ -800,3 +799,9 @@ else
     cp -r "$WORK_DIR/wsa/$artifact_name" "$OUTPUT_PATH" || abort
 fi
 echo -e "Done\n"
+{
+  echo "artifact=${artifact_name}"
+  echo "arch=${ARCH}"
+  echo "file_ext=.${COMPRESS_FORMAT}"
+  echo "built=$(date -u +%Y%m%d%H%M%S)"
+} >> "$GITHUB_OUTPUT"
