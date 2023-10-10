@@ -241,9 +241,11 @@ jobs:
       file_ext: ${{ steps.wsa.outputs.file_ext }}
       arch: ${{ steps.wsa.outputs.arch }}
       comment-id: ${{ steps.comment.outputs.comment-id }}
+      iscustom: ${{ env.iscustom }}
+      released: ${{ evn.released }}
 
   make-pri:
-    if: env.iscustom == 'true' && && env.released == 'false' && env.insider == 'false'
+    if: needs.build.outputs.iscustom == 'true' && needs.build.outputs.released == 'false'
     name: Merge PRI resources and Complete issue
     runs-on: windows-latest
     needs: build
