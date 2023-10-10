@@ -786,14 +786,16 @@ if [ "$REMOVE_AMAZON" = "yes" ]; then
     touch "$WORK_DIR/wsa/$ARCH/apex/.gitkeep"
 fi
 echo "$artifact_name"
-echo "artifact=${artifact_name}" >> "$GITHUB_OUTPUT"
 echo -e "\nFinishing building...."
 mkdir -p "$OUTPUT_DIR"
 OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name"
 mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
-echo "arch=${ARCH}" >> "$GITHUB_OUTPUT"
-echo "file_ext=.${COMPRESS_FORMAT}" >> "$GITHUB_OUTPUT"
-echo "built=$(date -u +%Y%m%d%H%M%S)" >> "$GITHUB_OUTPUT"
+{
+  echo "artifact=${artifact_name}"
+  echo "arch=${ARCH}"
+  echo "file_ext=.${COMPRESS_FORMAT}"
+  echo "built=$(date -u +%Y%m%d%H%M%S)"
+} >> "$GITHUB_OUTPUT"
 if [[ "$COMPRESS_FORMAT" = "7z" && -z $AFTER_COMPRESS ]]; then
     echo "Compressing with 7-Zip"
     OUTPUT_PATH="$OUTPUT_PATH.7z"
