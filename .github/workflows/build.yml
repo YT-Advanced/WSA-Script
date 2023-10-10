@@ -62,7 +62,7 @@ jobs:
       - name: Pass to Windows 💸
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.wsa.outputs.artifact }}
+          name: ${{ steps.wsa.outputs.artifact }}-${{ steps.wsa.outputs.built }}
           path: output
 
       - name: Prepare release tag 🏷️
@@ -77,6 +77,7 @@ jobs:
     outputs:
       zipname: ${{ steps.wsa.outputs.artifact }}
       date: ${{ steps.date.outputs.date }}
+      built: ${{ steps.wsa.outputs.built }}
 
   make-pri:
     name: Merge PRI resources
@@ -90,7 +91,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: output
-          name: ${{ needs.build.outputs.zipname }}
+          name: ${{ needs.build.outputs.zipname }}-${{ needs.build.outputs.built }}
 
       - name: Merge language and density resources 🧙🏻‍♂️
         run: |
