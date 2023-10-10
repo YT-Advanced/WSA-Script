@@ -1,5 +1,4 @@
 name: Auto Build function (Use for call only)
-run-name: ${{ inputs.arch }}_${{ inputs.root }}_${{ inputs.gapps }} (Insider is ${{ inputs.indider }})
 on:
  workflow_call:
     inputs:
