@@ -226,7 +226,7 @@ jobs:
         if: env.iscustom == 'true' && success() && env.released == 'false'
         run: |
           mkdir -p download
-          ./scripts/build.sh ${{ env.body }} --after-compress
+          ./scripts/build.sh ${{ env.body }}
 
       - name: Pass to Windows
         if: env.iscustom == 'true' && success() && env.released == 'false'
