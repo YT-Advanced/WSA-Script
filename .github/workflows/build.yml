@@ -92,6 +92,11 @@ jobs:
           path: output
           name: ${{ needs.build.outputs.zipname }}-${{ needs.build.outputs.built }}
 
+      - name: Remove unused artifact ❌
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: ${{ needs.build.outputs.zipname }}-${{ needs.build.outputs.built }}
+
       - name: Merge language and density resources 🧙🏻‍♂️
         run: |
           if ("${{ inputs.arch }}" -eq "x64") {
@@ -109,11 +114,6 @@ jobs:
              DETACH VDISK" | Set-Content -Path "$Partition.txt" -Encoding Ascii
              Start-Process -NoNewWindow -Wait "diskpart.exe" -Args "/s $Partition.txt" -RedirectStandardOutput NUL
          }
-
-      - name: Remove unused artifact ❌
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: ${{ needs.build.outputs.zipname }}
 
       - name: Compress artifact 📦
         run: 7z a -t7z ${{ needs.build.outputs.zipname }}.7z .\output\${{ needs.build.outputs.zipname }}\*
