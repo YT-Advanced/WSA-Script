@@ -145,18 +145,18 @@ threads = []
 wsa_build_ver = 0
 latest_wsa_filename = ""
 for filename, values in identities.items():
-    if re.match(f"Microsoft\.UI\.Xaml\..*_{arch}_.*\.appx", filename):
+    if re.match(f"Microsoft.UI.Xaml..*_{arch}_.*.appx", filename):
         out_file_name = f"{values[1]}_{arch}.appx"
         out_file = download_dir / out_file_name
-    elif re.match(f"Microsoft\.VCLibs\..+\.UWPDesktop_.*_{arch}_.*\.appx", filename):
+    elif re.match(f"Microsoft.VCLibs..+.UWPDesktop_.*_{arch}_.*.appx", filename):
         out_file_name = f"{values[1]}_{arch}.appx"
         out_file = download_dir / out_file_name
-    elif re.match(f"Microsoft\.VCLibs\..+_.*_{arch}_.*\.appx", filename):
+    elif re.match(f"Microsoft.VCLibs..+_.*_{arch}_.*.appx", filename):
         out_file_name = f"{values[1]}_{arch}.appx"
         out_file = download_dir / out_file_name
-    elif re.match(f"MicrosoftCorporationII\.WindowsSubsystemForAndroid_.*\.msixbundle", filename):
+    elif re.match(f"MicrosoftCorporationII.WindowsSubsystemForAndroid_.*.msixbundle", filename):
         tmp_wsa_filename = filename
-        tmp_wsa_build_ver = re.search(u'\d{4}.\d{5}.\d{1,}.\d{1,}', filename).group()
+        tmp_wsa_build_ver = re.search(r"\d{4}.\d{5}.\d{1,}.\d{1,}", filename).group()
         if(wsa_build_ver == 0):
             latest_wsa_filename = tmp_wsa_filename
             wsa_build_ver = tmp_wsa_build_ver

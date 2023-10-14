@@ -40,7 +40,7 @@ x_ratelimit_remaining = headers["x-ratelimit-remaining"]
 if res.status_code == 200:
     assets = json_data["assets"]
     for asset in assets:
-        if re.match(f'.*13\\.0\\.0.{abi_map[arch]}.*\.zip$', asset["name"]):
+        if re.match(f'.*13\\.0\\.0.{abi_map[arch]}.*.zip$', asset["name"]):
             link = asset["browser_download_url"]
             break
 elif res.status_code == 403 and x_ratelimit_remaining == '0':
