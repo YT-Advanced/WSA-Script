@@ -738,22 +738,22 @@ cp "$VCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH/uwp/" || abort
 cp "$UWPVCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH/uwp/" || abort
 cp "../xml/priconfig.xml" "$WORK_DIR/wsa/$ARCH/xml/" || abort
 if [[ "$ROOT_SOL" = "none" ]] && [[ "$GAPPS_BRAND" = "none" ]] && [[ "$REMOVE_AMAZON" == "yes" ]]; then
-    sed -i -e 's@Start-Process\ "wsa://com.topjohnwu.magisk"@@g' ../installer/$ARCH/Install.ps1
-    sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' ../installer/$ARCH/Install.ps1
+    sed -i -e 's@Start-Process\ "wsa://com.topjohnwu.magisk"@@g' "../installer/$ARCH/Install.ps1"
+    sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' "../installer/$ARCH/Install.ps1"
 else
     if [[ "$ROOT_SOL" == "none" ]]; then
-        sed -i -e 's@Start-Process "wsa://com.topjohnwu.magisk"@@g' ../installer/$ARCH/Install.ps1
+        sed -i -e 's@Start-Process "wsa://com.topjohnwu.magisk"@@g' "../installer/$ARCH/Install.ps1"
     elif [[ "$ROOT_SOL" = "kernelsu" ]]; then
-        sed -i -e 's@wsa://com.topjohnwu.magisk@https://github.com/YT-Advanced/WSA-Script/blob/HEAD/docs/Guides/KernelSU.md@g' ../installer/$ARCH/Install.ps1
+        sed -i -e 's@wsa://com.topjohnwu.magisk@https://github.com/YT-Advanced/WSA-Script/blob/HEAD/docs/Guides/KernelSU.md@g' "../installer/$ARCH/Install.ps1"
     elif [[ "$MAGISK_VER" = "delta" ]]; then
-        sed -i -e 's@com.topjohnwu.magisk@io.github.huskydg.magisk@g' ../installer/$ARCH/Install.ps1
+        sed -i -e 's@com.topjohnwu.magisk@io.github.huskydg.magisk@g' "../installer/$ARCH/Install.ps1"
     elif [[ "$MAGISK_VER" = "alpha" ]]; then
-        sed -i -e 's@com.topjohnwu.magisk@io.github.vvb2060.magisk@g' ../installer/$ARCH/Install.ps1
+        sed -i -e 's@com.topjohnwu.magisk@io.github.vvb2060.magisk@g' "../installer/$ARCH/Install.ps1"
     fi
     if [[ "$GAPPS_BRAND" = "none" ]] && [[ "$REMOVE_AMAZON" != "yes" ]]; then
-        sed -i -e 's@com.android.vending@com.amazon.venezia@g' ../installer/$ARCH/Install.ps1
+        sed -i -e 's@com.android.vending@com.amazon.venezia@g' "../installer/$ARCH/Install.ps1"
     elif [[ "$GAPPS_BRAND" = "none" ]]; then
-        sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' ../installer/$ARCH/Install.ps1
+        sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' "../installer/$ARCH/Install.ps1"
     fi
 fi
 cp "../installer/$ARCH/Install.ps1" "$WORK_DIR/wsa/$ARCH" || abort
