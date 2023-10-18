@@ -85,12 +85,12 @@ Sometimes Windows Firewall and other Firewall tools and software may be the caus
 > You may not have as many entries for "Windows Subsystem for Android™", as shown in the screenshots provded. These are just for illustration purposes and Firewall entries may look different on your device.    
 
 
-   <summary><h4>Bitdefender Users (with Bitdefender's inbuilt firewall enabled)<h4></summary>
+   <summary><h4>Antivirus Users<h4></summary>
 
-It is a known issue that Bitdefender's firewall can prevent the internet for Windows Subystem for Linux (WSL) and Windows Susbsystem for Android (WSA) from working.
-There is currently no easy solution that I know of ( but there may be workarounds floating on the internet which involve whitelisting certain processes to fix these issues), for WSA and WSL, that can fix these issues other than the Bitdefender team fixing this at their end or the user having to turn off their firewall when using WSA or WSL.
+It is a known issue that some antivirus firewall such as those built-in to ESET, Bitdefender, AVG and many others, can prevent the internet for Windows Susbsystem for Android (WSA) from working.
+It is highly recommended to disable the firewall provided by these Antivirus/Antimalware tools and fallback to Windows Firewall, to see if the internet starts working.
 
-Source: From my own experience and [this](https://community.bitdefender.com/en/discussion/91237/bitdefender-blocking-wsl2-traffic-solution-to-a-thread-that-was-left-unresolved) 
+Source: From [this](https://community.bitdefender.com/en/discussion/91237/bitdefender-blocking-wsl2-traffic-solution-to-a-thread-that-was-left-unresolved) 
 
 
 </details> 
@@ -129,7 +129,7 @@ Your Internet should now be fixed!
 ---
 
 <details>     
-   <summary><h3>Fix #4: Disabling Advanced Networking from WSA Settings<h3></summary>
+   <summary><h3>Fix #4: Enabling and Disabling Advanced Networking from WSA Settings<h3></summary>
 
 1. Go to the Start Menu and search for Windows Subsystem for Android™
 2. Depending on your WSA version, the Advanced Networking setting is located in different places witin the WSA Settings app
