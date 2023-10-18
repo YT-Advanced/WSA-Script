@@ -167,6 +167,14 @@ jobs:
             ----
           emoji: heart
 
+      - name: Close Issues
+        if: env.insider == 'true'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'close-issue'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ env.issuenumber }}
+
       - name: Update Comment Error
         if: env.issues == 'true' && env.iscustom == 'false'
         uses: actions-cool/issues-helper@v3
