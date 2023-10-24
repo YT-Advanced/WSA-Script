@@ -119,8 +119,8 @@
   <tr>
     <td><a href=https://github.com/YT-Advanced/WSA-Script/releases/tag/WSA-Insider-Version><img src="https://img.shields.io/badge/Pre--Release%20Builds-orange?style=for-the-badge" height="28"></a></td>
     <td>Follows the "WSA Preview Program Channel" </br> </br> Builds are generally newer than the "WSA Retail" and "Insider Fast Channel"</td>
-    <td>2309.40000.8.0<br></td>
-    <td>Builds Released: 18/10/2023</td>
+    <td>2309.40000.10.0<br></td>
+    <td>Builds Released: 24/10/2023</td>
   </tr>
   <tr>
     <td><a href=https://github.com/YT-Advanced/releases/latest><img src="https://img.shields.io/badge/Stable%20Builds-blue?style=for-the-badge" alt="Image" height="28"></a></td>
