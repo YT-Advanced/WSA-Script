@@ -14,7 +14,7 @@
       
 #### **1. Star this repos (I will happy if you do that)**
 
-#### **2. Check the version from [Releases](https://github.com/YT-Advanced/WSA-Scrpt/releases/) first. If it does not have the version you want, continue to follow this guide. If it does, then feel free to use those prebuild WSA builds**
+#### **2. Check the version from [Releases](https://github.com/YT-Advanced/WSA-Script/releases/) first. If it does not have the version you want, continue to follow this guide. If it does, then feel free to use those prebuild WSA builds**
 
 #### **3. Open [this page directly](https://YT-Advanced.github.io/WSA-Script) then choose the option that you want to build**
 
