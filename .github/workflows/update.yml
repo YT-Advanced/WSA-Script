@@ -15,7 +15,7 @@ jobs:
 
       - name: Install Dependencies 🧑‍🏭
         run: |
-          pip3 install beautifulsoup4 lxml
+          pip3 install requests packaging
 
       - name: Create branch if not found 🏗️
         run: |
@@ -24,37 +24,53 @@ jobs:
       - name: Get app version ✅
         shell: python
         run: |
-          import requests
-          from bs4 import BeautifulSoup
-          import re
           import os
+          import html
           import json
           import time
+          import requests
+          from xml.dom import minidom
+          from packaging import version
           env_file = os.getenv('GITHUB_ENV')
           link = ""
           insider = ""
           print("Check WSA Retail Version")
           status = True
           while status:
-            res = requests.post("https://store.rg-adguard.net/api/GetFiles", f"type=CategoryId&url=858014f3-3934-4abe-8078-4aa193e74ca8&ring=Retail&lang=en-US", headers={
-                "content-type": "application/x-www-form-urlencoded"
-            }, verify=False) # source site has expired cert
-            if (res.status_code != 504):
+            try:
+              cookie_content = requests.get("https://raw.githubusercontent.com/YT-Advanced/WSA-Script/main/xml/GetCookie.xml").text.format("")
+              response = requests.post("https://fe3.delivery.mp.microsoft.com/ClientWebService/client.asmx", data=cookie_content, headers={'Content-Type': 'application/soap+xml; charset=utf-8'})
+              doc = minidom.parseString(response.text)
+              cookie = doc.getElementsByTagName('EncryptedData')[0].firstChild.nodeValue
+              catagory_id = "858014f3-3934-4abe-8078-4aa193e74ca8"
+              catagory_id_content = requests.get("https://raw.githubusercontent.com/YT-Advanced/WSA-Script/main/xml/WUIDRequest.xml").text.format("", cookie, catagory_id, "retail")
+              response = requests.post("https://fe3.delivery.mp.microsoft.com/ClientWebService/client.asmx", data=catagory_id_content, headers={'Content-Type': 'application/soap+xml; charset=utf-8'})
+              doc = minidom.parseString(html.unescape(response.text))
+              latestver = "0.0.0.0"
+              for node in doc.getElementsByTagName('ExtendedUpdateInfo')[0].getElementsByTagName('Updates')[0].getElementsByTagName('Update'):
+                node_xml = node.getElementsByTagName('Xml')[0]
+                node_files = node_xml.getElementsByTagName('Files')
+                if not node_files:
+                    continue
+                else:
+                    for node_file in node_files[0].getElementsByTagName('File'):
+                      if node_file.hasAttribute('InstallerSpecificIdentifier') and node_file.hasAttribute('FileName') and node_xml.getElementsByTagName('ExtendedProperties')[0].attributes['PackageIdentityName'].value == "MicrosoftCorporationII.WindowsSubsystemForAndroid":
+                        tmpversion = node_file.attributes['InstallerSpecificIdentifier'].value.split('_')[1]
+                        if version.parse(tmpversion) > version.parse(latestver):
+                          latestver = tmpversion
               status = False
-            else:
-              time.sleep(3)
-          html = BeautifulSoup(res.content, "lxml")
-          latestver = html.find("a", string=re.compile("MicrosoftCorporationII\.WindowsSubsystemForAndroid_.*\.msixbundle")).text
-          latestver = latestver.replace('MicrosoftCorporationII.WindowsSubsystemForAndroid_', '')
-          latestver = latestver.replace('_neutral_~_8wekyb3d8bbwe.msixbundle', '')
+            except:
+              print("Error, retrying in 5 seconds...")
+              time.sleep(5)
+              continue
           currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/wsa.appversion").text
           latestver = latestver.replace('\n', '')
           currentver = currentver.replace('\n', '')
           build = False
           msg = ""
           if currentver != latestver:
-              build = True
-              msg="Update WSA Version from `v" + currentver + "` to `v" + latestver + "`"
+            build = True
+            msg="Update WSA Version from `v" + currentver + "` to `v" + latestver + "`"
           file = open('wsa.appversion', 'w')
           file.write(latestver)
           file.close()
@@ -64,9 +80,9 @@ jobs:
           latestver = latestver.replace('\n', '')
           currentver = currentver.replace('\n', '')
           if currentver != latestver:
-              build = True
-              insider = "yes"
-              msg="Update WSA Insider Version from `v" + currentver + "` to `v" + latestver + "`"
+            build = True
+            insider = "yes"
+            msg="Update WSA Insider Version from `v" + currentver + "` to `v" + latestver + "`"
           file = open('WIF.appversion', 'w')
           file.write(latestver)
           file.close()
@@ -76,8 +92,8 @@ jobs:
           latestver = latestver.replace('\n', '')
           currentver = currentver.replace('\n', '')
           if currentver != latestver:
-              build = True
-              msg="Update Magisk Version from `v" + currentver + "` to `v" + latestver + "`"
+            build = True
+            msg="Update Magisk Version from `v" + currentver + "` to `v" + latestver + "`"
           file = open('magisk.appversion', 'w')
           file.write(latestver)
           file.close()
@@ -87,17 +103,18 @@ jobs:
           latestver = latestver.replace('\n', '')
           currentver = currentver.replace('\n', '')
           if currentver != latestver:
-              build = True
-              msg="Update MindTheGapps Version from `v" + currentver + "` to `v" + latestver + "`"
+            build = True
+            msg="Update MindTheGapps Version from `v" + currentver + "` to `v" + latestver + "`"
           file = open('gapps.appversion', 'w')
           file.write(latestver)
           file.close()
           if (build):
-              with open(env_file, "a") as wr:
-                  wr.write("SHOULD_BUILD=yes\nMSG=" + msg + "\nINSIDER=" + insider)
+            with open(env_file, "a") as wr:
+              wr.write("SHOULD_BUILD=yes\nMSG=" + msg + "\nINSIDER=" + insider)
           else:
-              with open(env_file, "a") as wr:
-                  wr.write("SHOULD_BUILD=no")
+            with open(env_file, "a") as wr:
+              wr.write("SHOULD_BUILD=no")
+          
 
       - name: Update App version 🔗
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
