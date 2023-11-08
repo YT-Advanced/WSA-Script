@@ -31,6 +31,7 @@ jobs:
           import requests
           from xml.dom import minidom
           from packaging import version
+          requests.packages.urllib3.disable_warnings()
           env_file = os.getenv('GITHUB_ENV')
           link = ""
           insider = ""
@@ -39,12 +40,12 @@ jobs:
           while status:
             try:
               cookie_content = requests.get("https://raw.githubusercontent.com/YT-Advanced/WSA-Script/main/xml/GetCookie.xml").text.format("")
-              response = requests.post("https://fe3.delivery.mp.microsoft.com/ClientWebService/client.asmx", data=cookie_content, headers={'Content-Type': 'application/soap+xml; charset=utf-8'})
+              response = requests.post("https://fe3.delivery.mp.microsoft.com/ClientWebService/client.asmx", data=cookie_content, headers={'Content-Type': 'application/soap+xml; charset=utf-8'}, verify=False)
               doc = minidom.parseString(response.text)
               cookie = doc.getElementsByTagName('EncryptedData')[0].firstChild.nodeValue
               catagory_id = "858014f3-3934-4abe-8078-4aa193e74ca8"
               catagory_id_content = requests.get("https://raw.githubusercontent.com/YT-Advanced/WSA-Script/main/xml/WUIDRequest.xml").text.format("", cookie, catagory_id, "retail")
-              response = requests.post("https://fe3.delivery.mp.microsoft.com/ClientWebService/client.asmx", data=catagory_id_content, headers={'Content-Type': 'application/soap+xml; charset=utf-8'})
+              response = requests.post("https://fe3.delivery.mp.microsoft.com/ClientWebService/client.asmx", data=catagory_id_content, headers={'Content-Type': 'application/soap+xml; charset=utf-8'}, verify=False)
               doc = minidom.parseString(html.unescape(response.text))
               latestver = "0.0.0.0"
               for node in doc.getElementsByTagName('ExtendedUpdateInfo')[0].getElementsByTagName('Updates')[0].getElementsByTagName('Update'):
