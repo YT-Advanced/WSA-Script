@@ -53,7 +53,6 @@ def MagiskandGappsChecker(type):
     # Write for pushing later
     file = open('../' + type + '.appversion', 'w')
     file.write(currentver)
-    file.close()
     if new_version_found:
         return 0;
 
@@ -70,10 +69,16 @@ def MagiskandGappsChecker(type):
     # Check if version is the same or not
     if (currentver != latestver):
         print("New version found: " + latestver)
-        subprocess.Popen(git, shell=True, stdout=None, stderr=None, executable='/bin/bash').wait()
         new_version_found = True
+        # Write appversion content
+        subprocess.Popen(git, shell=True, stdout=None, stderr=None, executable='/bin/bash').wait()
+        file.seek(0)
+        file.truncate()
+        file.write(latestver)
+        # Write Github Environment
         with open(env_file, "a") as wr:
             wr.write("SHOULD_BUILD=yes\nMSG=" + msg)
+    file.close()
 
 def WSAChecker(user, release_type):
     global new_version_found
@@ -82,7 +87,6 @@ def WSAChecker(user, release_type):
     # Write for pushing later
     file = open('../' + release_type + '.appversion', 'w')
     file.write(currentver)
-    file.close()
 
     if new_version_found:
         return 0;
@@ -150,11 +154,17 @@ def WSAChecker(user, release_type):
     # Check new WSA version
     if version.parse(currentver) < version.parse(wsa_build_ver):
         print("New version found: " + wsa_build_ver)
+        new_version_found = True
+        # Write appversion content
         subprocess.Popen(git, shell=True, stdout=None, stderr=None, executable='/bin/bash').wait()
+        file.seek(0)
+        file.truncate()
+        file.write(wsa_build_ver)
+        # Write Github Environment
         msg = 'Update WSA Version from `v' + currentver + '` to `v' + wsa_build_ver + '`'
         with open(env_file, "a") as wr:
             wr.write("SHOULD_BUILD=yes\nRELEASE_TYPE=" + release_type + "\nMSG=" + msg)
-        new_version_found = True
+    file.close()
 
 # Get user_code (Thanks to @bubbles-wow because of his repository)
 users = {""}
