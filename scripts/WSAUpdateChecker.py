@@ -37,6 +37,8 @@ cat_id = '858014f3-3934-4abe-8078-4aa193e74ca8'
 
 release_type = "WIF"
 
+new_version_found = False
+
 session = Session()
 session.verify = False
 
@@ -45,8 +47,16 @@ git = (
 )
 
 def MagiskandGappsChecker(type):
+    global new_version_found
     # Get current version
     currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/" + type + ".appversion").text.replace('\n', '')
+    # Write for pushing later
+    file = open('../' + type + '.appversion', 'w')
+    file.write(currentver)
+    file.close()
+    if new_version_found:
+        return 0;
+
     # Get latest version
     latestver = ""
     msg = ""
@@ -56,18 +66,28 @@ def MagiskandGappsChecker(type):
     elif (type == "gapps"):
         latestver = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/MindTheGappsBuilder/releases/latest").content)['name']
         msg="Update MindTheGapps Version from `v" + currentver + "` to `v" + latestver + "`"
+
     # Check if version is the same or not
-    if currentver != latestver:
+    if (currentver != latestver):
         print("New version found: " + latestver)
         subprocess.Popen(git, shell=True, stdout=None, stderr=None, executable='/bin/bash').wait()
+        new_version_found = True
         with open(env_file, "a") as wr:
             wr.write("SHOULD_BUILD=yes\nMSG=" + msg)
-        file = open('../' + type + '.appversion', 'w')
-        file.write(latestver)
-        file.close()
         return 1;
 
 def WSAChecker(user, release_type):
+    global new_version_found
+    currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/" + release_type + ".appversion").text.replace('\n', '')
+
+    # Write for pushing later
+    file = open('../' + release_type + '.appversion', 'w')
+    file.write(currentver)
+    file.close()
+
+    if new_version_found:
+        return 0;
+    # Get information
     with open("../xml/GetCookie.xml", "r") as f:
         cookie_content = f.read().format(user)
         f.close()
@@ -119,20 +139,6 @@ def WSAChecker(user, release_type):
                 if fileinfo[0] not in identities:
                     identities[fileinfo[0]] = ([update_identity.attributes['UpdateID'].value,
                                             update_identity.attributes['RevisionNumber'].value], fileinfo[1])
-    info_list = []
-    for value in filenames.values():
-        if value[0].find("_neutral_") != -1:
-            info_list.append(value[0])
-    info_list = sorted(
-        info_list,
-        key=lambda x: (
-            int(x.split("_")[1].split(".")[0]),
-            int(x.split("_")[1].split(".")[1]),
-            int(x.split("_")[1].split(".")[2]),
-            int(x.split("_")[1].split(".")[3])
-        ),
-        reverse=True
-    )
     wsa_build_ver = 0
     for filename, value in identities.items():
         if re.match(f"MicrosoftCorporationII.WindowsSubsystemForAndroid_.*.msixbundle", filename):
@@ -141,17 +147,15 @@ def WSAChecker(user, release_type):
                 wsa_build_ver = tmp_wsa_build_ver
             elif version.parse(wsa_build_ver) < version.parse(tmp_wsa_build_ver):
                 wsa_build_ver = tmp_wsa_build_ver
-
-    currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/" + release_type + ".appversion").text.replace('\n', '')
+     
+    # Check new WSA version
     if version.parse(currentver) < version.parse(wsa_build_ver):
         print("New version found: " + wsa_build_ver)
         subprocess.Popen(git, shell=True, stdout=None, stderr=None, executable='/bin/bash').wait()
         msg = 'Update WSA Version from `v' + currentver + '` to `v' + wsa_build_ver + '`'
-        file = open('../' + release_type + '.appversion', 'w')
-        file.write(wsa_build_ver)
-        file.close()
         with open(env_file, "a") as wr:
             wr.write("SHOULD_BUILD=yes\nRELEASE_TYPE=" + release_type + "\nMSG=" + msg)
+        new_version_found = True
         return 1;
 
 # Get user_code (Thanks to @bubbles-wow because of his repository)
