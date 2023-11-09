@@ -74,7 +74,6 @@ def MagiskandGappsChecker(type):
         new_version_found = True
         with open(env_file, "a") as wr:
             wr.write("SHOULD_BUILD=yes\nMSG=" + msg)
-        return 1;
 
 def WSAChecker(user, release_type):
     global new_version_found
@@ -156,7 +155,6 @@ def WSAChecker(user, release_type):
         with open(env_file, "a") as wr:
             wr.write("SHOULD_BUILD=yes\nRELEASE_TYPE=" + release_type + "\nMSG=" + msg)
         new_version_found = True
-        return 1;
 
 # Get user_code (Thanks to @bubbles-wow because of his repository)
 users = {""}
