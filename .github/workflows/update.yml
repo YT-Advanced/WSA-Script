@@ -15,89 +15,11 @@ jobs:
 
       - name: Install Dependencies 🧑‍🏭
         run: |
-          pip3 install beautifulsoup4 lxml
-
-      - name: Create branch if not found 🏗️
-        run: |
-          git checkout -f update || git switch --discard-changes --orphan update
+          pip3 install requests
 
       - name: Get app version ✅
-        shell: python
-        run: |
-          import requests
-          from bs4 import BeautifulSoup
-          import re
-          import os
-          import json
-          import time
-          env_file = os.getenv('GITHUB_ENV')
-          link = ""
-          insider = ""
-          print("Check WSA Retail Version")
-          status = True
-          while status:
-            res = requests.post("https://store.rg-adguard.net/api/GetFiles", f"type=CategoryId&url=858014f3-3934-4abe-8078-4aa193e74ca8&ring=Retail&lang=en-US", headers={
-                "content-type": "application/x-www-form-urlencoded"
-            }, verify=False) # source site has expired cert
-            if (res.status_code != 504):
-              status = False
-            else:
-              time.sleep(3)
-          html = BeautifulSoup(res.content, "lxml")
-          latestver = html.find("a", string=re.compile("MicrosoftCorporationII\.WindowsSubsystemForAndroid_.*\.msixbundle")).text
-          latestver = latestver.replace('MicrosoftCorporationII.WindowsSubsystemForAndroid_', '')
-          latestver = latestver.replace('_neutral_~_8wekyb3d8bbwe.msixbundle', '')
-          currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/wsa.appversion").text
-          latestver = latestver.replace('\n', '')
-          currentver = currentver.replace('\n', '')
-          build = False
-          msg = ""
-          if currentver != latestver:
-              build = True
-              msg="Update WSA Version from `v" + currentver + "` to `v" + latestver + "`"
-          file = open('wsa.appversion', 'w')
-          file.write(latestver)
-          file.close()
-          print("Check WSA Insider Version")
-          currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/WIF.appversion").text
-          latestver = json.loads(requests.get(f"https://api.github.com/repos/bubbles-wow/WSA-Archive/releases/latest").content)['tag_name']
-          latestver = latestver.replace('\n', '')
-          currentver = currentver.replace('\n', '')
-          if currentver != latestver:
-              build = True
-              insider = "yes"
-              msg="Update WSA Insider Version from `v" + currentver + "` to `v" + latestver + "`"
-          file = open('WIF.appversion', 'w')
-          file.write(latestver)
-          file.close()
-          print("Check Magisk Stable Version")
-          currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/magisk.appversion").text
-          latestver = json.loads(requests.get(f"https://github.com/topjohnwu/magisk-files/raw/master/stable.json").content)['magisk']['version']
-          latestver = latestver.replace('\n', '')
-          currentver = currentver.replace('\n', '')
-          if currentver != latestver:
-              build = True
-              msg="Update Magisk Version from `v" + currentver + "` to `v" + latestver + "`"
-          file = open('magisk.appversion', 'w')
-          file.write(latestver)
-          file.close()
-          print("Check MindTheGapps Version")
-          currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/gapps.appversion").text
-          latestver = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/MindTheGappsBuilder/releases/latest").content)['name']
-          latestver = latestver.replace('\n', '')
-          currentver = currentver.replace('\n', '')
-          if currentver != latestver:
-              build = True
-              msg="Update MindTheGapps Version from `v" + currentver + "` to `v" + latestver + "`"
-          file = open('gapps.appversion', 'w')
-          file.write(latestver)
-          file.close()
-          if (build):
-              with open(env_file, "a") as wr:
-                  wr.write("SHOULD_BUILD=yes\nMSG=" + msg + "\nINSIDER=" + insider)
-          else:
-              with open(env_file, "a") as wr:
-                  wr.write("SHOULD_BUILD=no")
+        working-directory: scripts
+        run: python3 WSAUpdateChecker.py
 
       - name: Update App version 🔗
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
@@ -114,26 +36,26 @@ jobs:
         id: date
         shell: bash
         run: |
-           if [[ -z "${{ env.INSIDER }}" ]]; then
-              echo "date=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
-              echo "prerls=false" >> $GITHUB_OUTPUT
-           else
-              echo "date=WSA-Insider-Version" >> $GITHUB_OUTPUT
+           if [[ "${{ env.RELEASE_TYPE }}" == "WIF" ]]; then
+              echo "tag=WSA-Insider-Version" >> $GITHUB_OUTPUT
               echo "prerls=true" >> $GITHUB_OUTPUT
+           else
+              echo "tag=$(date +'v%Y-%m-%d')" >> $GITHUB_OUTPUT
+              echo "prerls=false" >> $GITHUB_OUTPUT
             fi
 
       - name: Delete Tag (if exist) ❌
-        if: steps.date.outputs.date == 'WSA-Insider-Version'
+        if: steps.date.outputs.tag == 'WSA-Insider-Version'
         uses: dev-drprasad/delete-tag-and-release@v1.0.1
         with:
-          tag_name: ${{ steps.date.outputs.date }}
+          tag_name: ${{ steps.date.outputs.tag }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add text format to release 📝
         if: env.SHOULD_BUILD == 'yes'
         uses: softprops/action-gh-release@v0.1.15
         with:
-          tag_name: ${{ steps.date.outputs.date }}
+          tag_name: ${{ steps.date.outputs.tag }}
           body: "# Changelog\n## ${{ env.MSG }}\n### SHA256 Checksum\n```"
           prerelease: ${{ steps.date.outputs.prerls }}
           draft: false
@@ -149,10 +71,10 @@ jobs:
 
     outputs:
       SHOULD_BUILD: ${{ env.SHOULD_BUILD }}
-      INSIDER_BUILD: ${{ env.INSIDER }}
+      RELEASE_TYPE: ${{ env.RELEASE_TYPE }}
 
   build:
-    name: ${{ matrix.arch }}-${{ matrix.root }}-${{ matrix.gapps }}-${{ inputs.insider }} # 'insider' is 'yes' or 'no'
+    name: ${{ matrix.arch }}-${{ matrix.root }}-${{ matrix.gapps }}
     strategy:
       matrix:
         arch: [x64, arm64]
@@ -166,5 +88,5 @@ jobs:
       arch: ${{ matrix.arch }}
       gapps: ${{ matrix.gapps }}
       root: ${{ matrix.root }}
-      insider: ${{ needs.check.outputs.INSIDER_BUILD }}
+      release_type: ${{ needs.check.outputs.RELEASE_TYPE }}
     secrets: inherit
