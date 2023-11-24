@@ -103,8 +103,7 @@
                   "beta",
                   "canary",
                   "debug",
-                  "delta",
-                  "alpha"
+                  "delta"
               ]
           },
           "--gapps-brand": {
@@ -258,7 +257,7 @@
 
         if (type == "choice") {
           var par = "";
-          var valname = {"none":"None","x64":"x64","arm64":"ARM64","retail":"Retail","RP":"Release Preview","WIS":"Insider Slow (Beta)","WIF":"Insider Fast (Dev)","latest":"WSA Insider","stable":"Magisk Stable","beta":"Magisk Beta","canary":"Magisk Canary","debug":"Magisk Debug","delta":"Magisk Delta (HuskyDG)","alpha":"Magisk Alpha (vvb2060)","magisk":"Magisk","kernelsu":"KernelSU","MindTheGapps":"MindTheGapps v13.0","sunfish":"Pixel 4a","bramble":"Pixel 4a (5G)","redfin":"Pixel 5","barbet":"Pixel 5a","raven":"Pixel 6 Pro","oriole":"Pixel 6","bluejay":"Pixel 6a","panther":"Pixel 7","cheetah":"Pixel 7 Pro","lynx":"Pixel 7a","tangorpro":"Pixel Tablet","felix":"Pixel Fold","zip":".zip","7z":".7z"};
+          var valname = {"none":"None","x64":"x64","arm64":"ARM64","retail":"Retail","RP":"Release Preview","WIS":"Insider Slow (Beta)","WIF":"Insider Fast (Dev)","latest":"WSA Insider","stable":"Magisk Stable","beta":"Magisk Beta","canary":"Magisk Canary","debug":"Magisk Debug","delta":"Magisk Delta (HuskyDG)","magisk":"Magisk","kernelsu":"KernelSU","MindTheGapps":"MindTheGapps v13.0","sunfish":"Pixel 4a","bramble":"Pixel 4a (5G)","redfin":"Pixel 5","barbet":"Pixel 5a","raven":"Pixel 6 Pro","oriole":"Pixel 6","bluejay":"Pixel 6a","panther":"Pixel 7","cheetah":"Pixel 7 Pro","lynx":"Pixel 7a","tangorpro":"Pixel Tablet","felix":"Pixel Fold","zip":".zip","7z":".7z"};
           if (req) par = "required";
           html += `<div class="form-group mt-1 mb-2 ${par}"><div class="form-group-header"><label class="color-fg-default text-mono f6" for="${name}">${name}</label></div><div class="form-group-body">`;
           html += `<select class="form-select form-control select-sm input-contrast" id="${name}" required="" name="inputs[${name}]" value="'${dft}'">`;
