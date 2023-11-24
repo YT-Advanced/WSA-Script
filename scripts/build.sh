@@ -165,7 +165,6 @@ MAGISK_VER_MAP=(
     "debug"
     "release"
     "delta"
-    "alpha"
 )
 
 GAPPS_BRAND_MAP=(
@@ -747,8 +746,6 @@ else
         sed -i -e 's@wsa://com.topjohnwu.magisk@https://github.com/YT-Advanced/WSA-Script/blob/HEAD/docs/Guides/KernelSU.md@g' "../installer/$ARCH/Install.ps1"
     elif [[ "$MAGISK_VER" = "delta" ]]; then
         sed -i -e 's@com.topjohnwu.magisk@io.github.huskydg.magisk@g' "../installer/$ARCH/Install.ps1"
-    elif [[ "$MAGISK_VER" = "alpha" ]]; then
-        sed -i -e 's@com.topjohnwu.magisk@io.github.vvb2060.magisk@g' "../installer/$ARCH/Install.ps1"
     fi
     if [[ "$GAPPS_BRAND" = "none" ]] && [[ "$REMOVE_AMAZON" != "yes" ]]; then
         sed -i -e 's@com.android.vending@com.amazon.venezia@g' "../installer/$ARCH/Install.ps1"
