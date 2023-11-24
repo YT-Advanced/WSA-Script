@@ -343,10 +343,6 @@ Magisk Delta:
 ```pwsh
 Start-Process "wsa://io.github.huskydg.magisk"
 ```
-Magisk Alpha:
-```pwsh
-Start-Process "wsa://io.github.vvb2060.magisk"
-```
 Google Play Store:
 ```pwsh
 Start-Process "wsa://com.android.vending"
