@@ -46,14 +46,6 @@ elif magisk_ver == "delta":
         print("Failed to fetch from GitHub API, fallbacking to jsdelivr...")
         magisk_link = json.loads(requests.get(
             f"https://fastly.jsdelivr.net/gh/HuskyDG/magisk-files@main/canary.json").content)['magisk']['link']
-elif magisk_ver == "alpha":
-    try:
-        magisk_link = json.loads(requests.get(
-            f"https://raw.githubusercontent.com/vvb2060/magisk_files/alpha/alpha.json").content)['magisk']['link']
-    except Exception:
-        print("Failed to fetch from GitHub API, fallbacking to jsdelivr...")
-        magisk_link = json.loads(requests.get(
-            f"https://fastly.jsdelivr.net/gh/vvb2060/magisk_files/alpha.json").content)['magisk']['link']
 
 print(f"download link: {magisk_link}", flush=True)
 
