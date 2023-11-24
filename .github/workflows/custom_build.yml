@@ -24,7 +24,7 @@ on:
         type: choice
         description: Root solution
         required: true
-        options: ["Non-root","KernelSU","Magisk Stable","Magisk Beta","Magisk Canary","Magisk Debug","Magisk Alpha (vvb2060)","Magisk Delta (HuskyDG)"]
+        options: ["Non-root","KernelSU","Magisk Stable","Magisk Beta","Magisk Canary","Magisk Debug","Magisk Delta (HuskyDG)"]
         default: "Magisk Stable"
       gapps_brand:
         type: choice
@@ -90,7 +90,7 @@ jobs:
       - name: Build WSA 🏗️
         id: wsa
         run: |
-          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF" ["RELEASE_TYPE,Insider Private"]="latest" ["ROOT_SOL,Magisk Stable"]="stable" ["ROOT_SOL,Magisk Beta"]="beta" ["ROOT_SOL,Magisk Canary"]="canary" ["ROOT_SOL,Magisk Debug"]="debug" ["ROOT_SOL,Magisk Delta (HuskyDG)"]="delta" ["ROOT_SOL,Magisk Alpha (vvb2060)"]="alpha" ["ROOT_SOL,KernelSU"]="kernelsu" ["ROOT_SOL,Non-root"]="none" ["GAPPS_BRAND,MindTheGapps v13.0"]="MindTheGapps" ["GAPPS_BRAND,No GApps"]="none" ["CUSTOM_MODEL,WSA Default"]="none" ["CUSTOM_MODEL,Pixel 4a"]="sunfish" ["CUSTOM_MODEL,Pixel 4a (5G)"]="bramble" ["CUSTOM_MODEL,Pixel 5"]="redfin" ["CUSTOM_MODEL,Pixel 5a"]="barbet" ["CUSTOM_MODEL,Pixel 6 Pro"]="raven" ["CUSTOM_MODEL,Pixel 6"]="oriole" ["CUSTOM_MODEL,Pixel 6a"]="bluejay" ["CUSTOM_MODEL,Pixel 7"]="panther" ["CUSTOM_MODEL,Pixel 7 Pro"]="cheetah" ["CUSTOM_MODEL,Pixel 7a"]="lynx" ["CUSTOM_MODEL,Pixel Tablet"]="tangorpro" ["CUSTOM_MODEL,Pixel Fold"]="felix" ["REMOVE_AMAZON,true"]="--remove-amazon" ["COMPRESSION,.zip"]="zip" ["COMPRESSION,.7z"]="7z" )
+          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF" ["RELEASE_TYPE,Insider Private"]="latest" ["ROOT_SOL,Magisk Stable"]="stable" ["ROOT_SOL,Magisk Beta"]="beta" ["ROOT_SOL,Magisk Canary"]="canary" ["ROOT_SOL,Magisk Debug"]="debug" ["ROOT_SOL,Magisk Delta (HuskyDG)"]="delta" ["ROOT_SOL,KernelSU"]="kernelsu" ["ROOT_SOL,Non-root"]="none" ["GAPPS_BRAND,MindTheGapps v13.0"]="MindTheGapps" ["GAPPS_BRAND,No GApps"]="none" ["CUSTOM_MODEL,WSA Default"]="none" ["CUSTOM_MODEL,Pixel 4a"]="sunfish" ["CUSTOM_MODEL,Pixel 4a (5G)"]="bramble" ["CUSTOM_MODEL,Pixel 5"]="redfin" ["CUSTOM_MODEL,Pixel 5a"]="barbet" ["CUSTOM_MODEL,Pixel 6 Pro"]="raven" ["CUSTOM_MODEL,Pixel 6"]="oriole" ["CUSTOM_MODEL,Pixel 6a"]="bluejay" ["CUSTOM_MODEL,Pixel 7"]="panther" ["CUSTOM_MODEL,Pixel 7 Pro"]="cheetah" ["CUSTOM_MODEL,Pixel 7a"]="lynx" ["CUSTOM_MODEL,Pixel Tablet"]="tangorpro" ["CUSTOM_MODEL,Pixel Fold"]="felix" ["REMOVE_AMAZON,true"]="--remove-amazon" ["COMPRESSION,.zip"]="zip" ["COMPRESSION,.7z"]="7z" )
 
           if [[ "${{ inputs.root_sol }}" == *Magisk* ]]; then
               MAGISK_VER="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
