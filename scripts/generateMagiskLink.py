@@ -49,9 +49,9 @@ elif magisk_ver == "delta":
 elif magisk_ver == "alpha":
     #try:
     print(requests.get(
-        f"https://install.appcenter.ms/api/v0.1/apps/vvb2060/magisk/distribution_groups/public/releases/latest").content)
+        f"https://install.appcenter.ms/api/v0.1/apps/vvb2060/magisk/distribution_groups/public/releases/latest?is_install_page=true").content)
     magisk_link = json.loads(requests.get(
-        f"https://install.appcenter.ms/api/v0.1/apps/vvb2060/magisk/distribution_groups/public/releases/latest").content)['download_url']
+        f"https://install.appcenter.ms/api/v0.1/apps/vvb2060/magisk/distribution_groups/public/releases/latest?is_install_page=true").content)['download_url']
     #except Exception:
     #    print("Failed to fetch from AppCenter API...")
 print(f"download link: {magisk_link}", flush=True)
