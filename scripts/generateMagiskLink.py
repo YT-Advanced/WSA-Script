@@ -46,7 +46,12 @@ elif magisk_ver == "delta":
         print("Failed to fetch from GitHub API, fallbacking to jsdelivr...")
         magisk_link = json.loads(requests.get(
             f"https://fastly.jsdelivr.net/gh/HuskyDG/magisk-files@main/canary.json").content)['magisk']['link']
-
+elif magisk_ver == "alpha":
+    try:
+        magisk_link = json.loads(requests.get(
+            f"https://install.appcenter.ms/api/v0.1/apps/vvb2060/magisk/distribution_groups/public/releases/latest").content)['download_url']
+    except Exception:
+        print("Failed to fetch from AppCenter API...")
 print(f"download link: {magisk_link}", flush=True)
 
 with open(download_dir/tempScript, 'a') as f:
