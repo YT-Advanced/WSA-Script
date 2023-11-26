@@ -24,6 +24,7 @@ import json
 import requests
 from pathlib import Path
 
+#Android header
 headers = {
     'User-Agent': 'Mozilla/5.0 (Linux; Android 13; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.6045.163 Mobile Safari/537.36',
 }
@@ -52,8 +53,6 @@ elif magisk_ver == "delta":
             f"https://fastly.jsdelivr.net/gh/HuskyDG/magisk-files@main/canary.json", headers=headers).content)['magisk']['link']
 elif magisk_ver == "alpha":
     try:
-        print(requests.get(
-            f"https://install.appcenter.ms/api/v0.1/apps/vvb2060/magisk/distribution_groups/public/releases/latest?is_install_page=true").content)
         magisk_link = json.loads(requests.get(
             f"https://install.appcenter.ms/api/v0.1/apps/vvb2060/magisk/distribution_groups/public/releases/latest?is_install_page=true", headers=headers).content)['download_url']
     except Exception:
