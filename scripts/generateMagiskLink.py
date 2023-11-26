@@ -48,6 +48,8 @@ elif magisk_ver == "delta":
             f"https://fastly.jsdelivr.net/gh/HuskyDG/magisk-files@main/canary.json").content)['magisk']['link']
 elif magisk_ver == "alpha":
     #try:
+    print(requests.get(
+        f"https://install.appcenter.ms/api/v0.1/apps/vvb2060/magisk/distribution_groups/public/releases/latest").content)
     magisk_link = json.loads(requests.get(
         f"https://install.appcenter.ms/api/v0.1/apps/vvb2060/magisk/distribution_groups/public/releases/latest").content)['download_url']
     #except Exception:
