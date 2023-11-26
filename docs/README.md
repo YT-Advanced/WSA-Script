@@ -339,6 +339,10 @@ Official Magisk:
 ```pwsh
 Start-Process "wsa://com.topjohnwu.magisk"
 ```
+Magisk Alpha:
+```pwsh
+Start-Process "wsa://io.github.vvb2060.magisk"
+```
 Magisk Delta:
 ```pwsh
 Start-Process "wsa://io.github.huskydg.magisk"
