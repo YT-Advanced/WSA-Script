@@ -733,8 +733,10 @@ echo -e "Convert images to vhdx done\n"
 
 echo "Remove signature and add scripts"
 sudo rm -rf "${WORK_DIR:?}"/wsa/"$ARCH"/\[Content_Types\].xml "$WORK_DIR/wsa/$ARCH/AppxBlockMap.xml" "$WORK_DIR/wsa/$ARCH/AppxSignature.p7x" "$WORK_DIR/wsa/$ARCH/AppxMetadata" || abort
-if [[ "$ARCH" == "x64" ]]; then
+if [ "$ARCH" = "x64" ]; then
     sudo rm -rf "$WORK_DIR/wsa/$ARCH/arm64/" || abort
+else
+    sudo rm -rf "$WORK_DIR/wsa/$ARCH/amd64/" || abort
 fi
 mkdir "$WORK_DIR/wsa/$ARCH/uwp"
 cp "$VCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH/uwp/" || abort
