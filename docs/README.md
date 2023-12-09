@@ -125,8 +125,8 @@
   <tr>
     <td><a href=https://github.com/YT-Advanced/WSA-Script/releases/latest><img src="https://img.shields.io/badge/Stable%20Builds-blue?style=for-the-badge" alt="Image" height="28"></a></td>
     <td>Follows the "WSA Retail Channel" <br><br> Builds are generally more stable than the builds in the "WSA Preview Program Channel" </td>
-    <td>2310.40000.2.0<br></td>
-    <td>Builds Released: 14/11/2023</td>
+    <td>2311.40000.3.0<br></td>
+    <td>Builds Released: 06/12/2023</td>
   </tr>
   <tr>
     <td colspan="4"><h4>It is recommend to check this table regularly to see if there is a newer update avaliable for WSA for the Stable Builds and Pre-Release Builds<h4></td>
