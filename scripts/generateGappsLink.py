@@ -19,15 +19,15 @@
 #
 
 from datetime import datetime
-import sys
 from os import getenv
+import sys
+
 import requests
 import json
 import re
 from pathlib import Path
 
 token = getenv("API_KEY")
-print(len(token))
 authorization = f'Bearer {token}'
 reqheaders = {
     "Accept": "application/vnd.github.v3+json",
