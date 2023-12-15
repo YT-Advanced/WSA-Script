@@ -26,6 +26,12 @@ import json
 import re
 from pathlib import Path
 
+token = os.environ.get("API_KEY")
+authorization = f'Bearer {token}'
+reqheaders = {
+    "Accept": "application/vnd.github.v3+json",
+    "Authorization" : authorization,
+}
 arch = sys.argv[1]
 arg4 = sys.argv[2]
 download_dir = Path.cwd().parent / "download" if arg4 == "" else Path(arg4)
@@ -33,7 +39,7 @@ tempScript = sys.argv[3]
 file_name = sys.argv[4]
 print(f"Generating MindTheGapps download link: arch={arch}", flush=True)
 abi_map = {"x64": "x86_64", "arm64": "arm64"}
-res = requests.get(f"https://api.github.com/repos/YT-Advanced/MindTheGappsBuilder/releases/latest")
+res = requests.get(f"https://api.github.com/repos/YT-Advanced/MindTheGappsBuilder/releases/latest", headers=reqheaders)
 json_data = json.loads(res.content)
 headers = res.headers
 x_ratelimit_remaining = headers["x-ratelimit-remaining"]
