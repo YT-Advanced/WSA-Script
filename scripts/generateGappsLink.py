@@ -20,13 +20,13 @@
 
 from datetime import datetime
 import sys
-
+from os import getenv
 import requests
 import json
 import re
 from pathlib import Path
 
-token = os.environ.get("API_KEY")
+token = getenv("API_KEY")
 print(len(token))
 authorization = f'Bearer {token}'
 reqheaders = {
