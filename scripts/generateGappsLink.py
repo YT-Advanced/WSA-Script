@@ -48,7 +48,7 @@ if res.status_code == 200:
     assets = json_data["assets"]
     for asset in assets:
         if re.match(f'.*13\\.0\\.0.{abi_map[arch]}.*.zip$', asset["name"]):
-            link = asset["browser_download_url"]
+            link = asset["url"]
             break
 elif res.status_code == 403 and x_ratelimit_remaining == '0':
     message = json_data["message"]

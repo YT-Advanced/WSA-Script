@@ -21,7 +21,7 @@ jobs:
         working-directory: scripts
         run: python3 WSAUpdateChecker.py
         env:
-          API_KEY: ${{ secrets.GITHUB_TOKEN }}
+          API_KEY: ${{ secrets.API_KEY }}
   
       - name: Update App version 🔗
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
