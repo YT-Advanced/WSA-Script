@@ -235,7 +235,9 @@ jobs:
         run: |
           mkdir -p download
           ./scripts/build.sh ${{ env.body }} --after-compress
-
+        env:
+          API_KEY: ${{ secrets.GITHUB_TOKEN }}
+  
       - name: Pass to Windows
         if: env.iscustom == 'true' && success() && env.released == 'false'
         uses: actions/cache/save@v3
