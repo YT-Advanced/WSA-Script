@@ -1,5 +1,5 @@
 import base64
-import os
+from os import getenv
 import html
 import json
 import re
@@ -30,7 +30,7 @@ class Prop(OrderedDict):
         return '\n'.join(f'{item}={self[item]}' for item in self)
 
 logging.captureWarnings(True)
-env_file = os.getenv('GITHUB_ENV')
+env_file = getenv('GITHUB_ENV')
 token = getenv("API_KEY")
 authorization = f'Bearer {token}'
 reqheaders = {
