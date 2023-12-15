@@ -27,6 +27,7 @@ import re
 from pathlib import Path
 
 token = os.environ.get("API_KEY")
+print(len(token))
 authorization = f'Bearer {token}'
 reqheaders = {
     "Accept": "application/vnd.github.v3+json",
