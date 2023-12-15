@@ -340,7 +340,7 @@ if [ "$GAPPS_BRAND" != "none" ]; then
     python3 generateGappsLink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$GAPPS_ZIP_NAME" || abort
 fi
 echo "Download Artifacts"
-if ! aria2c --header="Accept: application/octet-stream" --header="Authorization: Bearer $API_KEY" --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j5 -c -R -m0 --async-dns=false --check-integrity=true --continue=true --allow-overwrite=true --conditional-get=true -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"; then
+if ! aria2c --header="Accept: application/octet-stream" --header="Authorization: Bearer $API_KEY" --header="X-GitHub-Api-Version: 2022-11-28" --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j5 -c -R -m0 --async-dns=false --check-integrity=true --continue=true --allow-overwrite=true --conditional-get=true -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"; then
     echo "We have encountered an error while downloading files."
     exit 1
 fi
