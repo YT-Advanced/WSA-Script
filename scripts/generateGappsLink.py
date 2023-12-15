@@ -64,3 +64,5 @@ with open(download_dir/tempScript, 'a') as f:
     f.writelines(f'{link}\n')
     f.writelines(f'  dir={download_dir}\n')
     f.writelines(f'  out={file_name}\n')
+    f.writelines(f'  header=Accept: application/octet-stream\n')
+    f.writelines(f'  header=Authorization: Bearer {token}\n')
