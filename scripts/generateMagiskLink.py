@@ -38,19 +38,19 @@ if not magisk_ver:
 if magisk_ver == "stable" or magisk_ver == "beta" or magisk_ver == "canary" or magisk_ver == "debug":
     try:
         magisk_link = json.loads(requests.get(
-            f"https://github.com/topjohnwu/magisk-files/raw/master/{magisk_ver}.json", headers=headers).content)['magisk']['link']
+            f"https://github.com/topjohnwu/magisk-files/raw/master/{magisk_ver}.json").content)['magisk']['link']
     except Exception:
         print("Failed to fetch from GitHub API, fallbacking to jsdelivr...")
         magisk_link = json.loads(requests.get(
-            f"https://fastly.jsdelivr.net/gh/topjohnwu/magisk-files@master/{magisk_ver}.json", headers=headers).content)['magisk']['link']
+            f"https://fastly.jsdelivr.net/gh/topjohnwu/magisk-files@master/{magisk_ver}.json").content)['magisk']['link']
 elif magisk_ver == "delta":
     try:
         magisk_link = json.loads(requests.get(
-            f"https://raw.githubusercontent.com/HuskyDG/magisk-files/main/canary.json", headers=headers).content)['magisk']['link']
+            f"https://raw.githubusercontent.com/HuskyDG/magisk-files/main/canary.json").content)['magisk']['link']
     except Exception:
         print("Failed to fetch from GitHub API, fallbacking to jsdelivr...")
         magisk_link = json.loads(requests.get(
-            f"https://fastly.jsdelivr.net/gh/HuskyDG/magisk-files@main/canary.json", headers=headers).content)['magisk']['link']
+            f"https://fastly.jsdelivr.net/gh/HuskyDG/magisk-files@main/canary.json").content)['magisk']['link']
 elif magisk_ver == "alpha":
     try:
         magisk_link = json.loads(requests.get(
