@@ -452,6 +452,7 @@ Now run WSA and your serdata should hopefully be restored
 - [Magisk](https://github.com/topjohnwu/Magisk): The Magic Mask for Android
 - [KernelSU](https://github.com/tiann/KernelSU): A Kernel based root solution for Android
 - [MagiskOnWSALocal](https://github.com/LSPosed/MagiskOnWSALocal): Integrate Magisk root and Google Apps into WSA
+- [WSAOnWin10](https://github.com/A-JiuA/WSAOnWin10): Integrate Magisk root and Google Apps into WSA (Windows Subsystem for Android) and make it run on **Windows 10** with GitHub Actions
 
 ***The repository is provided as a utility.***
 

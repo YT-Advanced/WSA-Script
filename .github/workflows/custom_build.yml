@@ -60,7 +60,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Python 👷
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           check-latest: true
           python-version: '3.x'
@@ -160,7 +160,7 @@ jobs:
           ($(Get-FileHash -Path ${{ needs.build.outputs.artifact }}.7z -Algorithm SHA256).Hash.ToLower().ToString() + "  " + "${{ needs.build.outputs.artifact }}.7z") | Out-File -FilePath sha256-checksum.txt -Encoding UTF8
 
       - name: Upload Artifact 📦
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.build.outputs.artifact }}-compressed
           path: output
