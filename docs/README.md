@@ -23,7 +23,7 @@
 #### **4. Click "Create Issues" Button, the issues page will be generated and open. Then you click "Submit New Issues" (green button) and wait.**
 ![](https://user-images.githubusercontent.com/70064328/236150320-65fdd492-9fc4-4176-b3bd-a3cee8b7753d.png)
 
-#### **5. After about 15 minutes, the bot will reply that the workflow have built successfully (like the picture below), OPEN THE LINK BELOW THE BOT COMMENT**
+#### **5. After about 10 minutes, the bot will reply that the workflow have built successfully (like the picture below), OPEN THE LINK BELOW THE BOT COMMENT**
 ![](https://user-images.githubusercontent.com/70064328/236154819-75dd1997-1999-43fd-a482-050f21e34b72.png)
 
 #### **6. Download the package as artifact**
