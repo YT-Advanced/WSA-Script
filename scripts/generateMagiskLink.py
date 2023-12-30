@@ -38,7 +38,7 @@ if not magisk_branch:
     magisk_branch = "topjohnwu"
 if not magisk_ver:
     magisk_ver = "stable"
-if magisk_branch == "stable" or magisk_ver == "beta" or magisk_ver == "canary" or magisk_ver == "debug":
+if magisk_branch != "vvb2060":
     try:
         magisk_link = json.loads(requests.get(
             f"https://github.com/{magisk_branch}/magisk-files/raw/master/{magisk_ver}.json").content)['magisk']['link']
@@ -46,7 +46,7 @@ if magisk_branch == "stable" or magisk_ver == "beta" or magisk_ver == "canary" o
         print("Failed to fetch from GitHub API, fallbacking to jsdelivr...")
         magisk_link = json.loads(requests.get(
             f"https://fastly.jsdelivr.net/gh/{magisk_branch}/magisk-files@master/{magisk_ver}.json").content)['magisk']['link']
-elif magisk_branch == "vvb2060":
+else:
     try:
         magisk_link = json.loads(requests.get(
             f"https://install.appcenter.ms/api/v0.1/apps/vvb2060/magisk/distribution_groups/public/releases/latest?is_install_page=true", headers=headers).content)['download_url']
