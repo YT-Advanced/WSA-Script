@@ -24,7 +24,7 @@ on:
         type: choice
         description: Root solution
         required: true
-        options: ["Non-root","KernelSU","Magisk Official (topjohnwu)","Magisk Alpha (vvb2060)","Magisk Delta (HuskyDG)"]
+        options: ["Non-root","KernelSU","Magisk Official","Magisk Alpha (vvb2060)","Magisk Delta (HuskyDG)"]
         default: "Magisk Official"
       magisk_channel:
         type: choice
