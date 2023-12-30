@@ -64,6 +64,7 @@ trap abort INT TERM
 default() {
     ARCH=x64
     RELEASE_TYPE=retail
+    MAGISK_BRANCH=topjohnwu
     MAGISK_VER=stable
     GAPPS_BRAND=MindTheGapps
     CUSTOM_MODEL=redfin
@@ -158,6 +159,12 @@ RELEASE_TYPE_MAP=(
     "latest"
 )
 
+MAGISK_BRANCH_MAP=(
+    "topjohnwu"
+    "HuskyDG"
+    "vvb2060"
+)
+
 MAGISK_VER_MAP=(
     "stable"
     "beta"
@@ -203,6 +210,7 @@ COMPRESS_FORMAT_MAP=(
 ARGUMENT_LIST=(
     "arch:"
     "release-type:"
+    "magisk-branch:"
     "magisk-ver:"
     "gapps-brand:"
     "custom-model:"
@@ -233,6 +241,7 @@ while [[ $# -gt 0 ]]; do
         --compress-format   ) COMPRESS_FORMAT="$2"; shift 2 ;;
         --after-compress    ) AFTER_COMPRESS="yes"; shift ;;
         --remove-amazon     ) REMOVE_AMAZON="yes"; shift ;;
+        --magisk-branch     ) MAGISK_BRANCH="$2"; shift 2 ;;
         --magisk-ver        ) MAGISK_VER="$2"; shift 2 ;;
         --                  ) shift; break;;
    esac
@@ -260,6 +269,7 @@ check_list() {
 
 check_list "$ARCH" "Architecture" "${ARCH_MAP[@]}"
 check_list "$RELEASE_TYPE" "Release Type" "${RELEASE_TYPE_MAP[@]}"
+check_list "$MAGISK_BRANCH" "Magisk Branch" "${MAGISK_BRANCH_MAP[@]}"
 check_list "$MAGISK_VER" "Magisk Version" "${MAGISK_VER_MAP[@]}"
 check_list "$GAPPS_BRAND" "GApps Brand" "${GAPPS_BRAND_MAP[@]}"
 check_list "$CUSTOM_MODEL" "Custom Model" "${CUSTOM_MODEL_MAP[@]}"
@@ -325,7 +335,7 @@ else
     WSA_MAJOR_VER=${WSA_VER:0:4}
 fi
 if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
-    python3 generateMagiskLink.py "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
+    python3 generateMagiskLink.py "$MAGISK_BRANCH" "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
 fi
 if [ "$ROOT_SOL" = "kernelsu" ]; then
     update_ksu_zip_name
@@ -751,9 +761,9 @@ else
         sed -i -e 's@Start-Process "wsa://com.topjohnwu.magisk"@@g' "../installer/$ARCH/Install.ps1"
     elif [[ "$ROOT_SOL" = "kernelsu" ]]; then
         sed -i -e 's@wsa://com.topjohnwu.magisk@https://github.com/YT-Advanced/WSA-Script/blob/HEAD/docs/Guides/KernelSU.md@g' "../installer/$ARCH/Install.ps1"
-    elif [[ "$MAGISK_VER" = "delta" ]]; then
+    elif [[ "$MAGISK_BRANCH" = "HuskyDG" ]]; then
         sed -i -e 's@com.topjohnwu.magisk@io.github.huskydg.magisk@g' "../installer/$ARCH/Install.ps1"
-    elif [[ "$MAGISK_VER" = "alpha" ]]; then
+    elif [[ "$MAGISK_BRANCH" = "vvb2060" ]]; then
         sed -i -e 's@com.topjohnwu.magisk@io.github.vvb2060.magisk@g' "../installer/$ARCH/Install.ps1"
     fi
     if [[ "$GAPPS_BRAND" = "none" ]] && [[ "$REMOVE_AMAZON" != "yes" ]]; then
