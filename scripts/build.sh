@@ -210,6 +210,7 @@ COMPRESS_FORMAT_MAP=(
 ARGUMENT_LIST=(
     "arch:"
     "release-type:"
+    "magisk-branch:"
     "magisk-ver:"
     "gapps-brand:"
     "custom-model:"
