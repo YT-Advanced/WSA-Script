@@ -100,7 +100,6 @@ jobs:
 
           if [[ "${{ inputs.root_sol }}" == *Magisk* ]]; then
               MAGISK_BRANCH="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
-              echo "$MAGISK_BRANCH"
               ROOT_SOL="magisk"
           else
               MAGISK_BRANCH="topjohnwu"
@@ -109,7 +108,7 @@ jobs:
 
           mkdir -p download
           echo -e "user_code=$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
-          ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-branch $MAGISK_BRANCH --magisk-ver "${opts[MAGISK_TYPE,${{ inputs.magisk_channel }}]}" --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --custom-model ${opts[CUSTOM_MODEL,${{ inputs.custom_model }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]} --after-compress
+          ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-branch "$MAGISK_BRANCH" --magisk-ver "${opts[MAGISK_TYPE,${{ inputs.magisk_channel }}]}" --gapps-brand ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} --custom-model ${opts[CUSTOM_MODEL,${{ inputs.custom_model }}]} --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]} --after-compress
         env:
           API_KEY: ${{ secrets.API_KEY }}
   
