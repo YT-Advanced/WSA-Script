@@ -100,6 +100,7 @@ jobs:
 
           if [[ "${{ inputs.root_sol }}" == *Magisk* ]]; then
               MAGISK_BRANCH="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
+              echo "$MAGISK_BRANCH"
               ROOT_SOL="magisk"
           else
               MAGISK_BRANCH="topjohnwu"
