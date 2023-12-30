@@ -90,7 +90,7 @@ jobs:
                       body = '${{ env.issuebody }}'
                   else:
                       iscustom = 'false'
-                  if re.match(".*arch.*64.*release-type.*magisk-ver.*gapps-brand.*root-sol.*custom-model.*compress-format.*", body):
+                  if re.match(".*arch.*64.*release-type.*magisk-branch.*magisk-ver.*gapps-brand.*root-sol.*custom-model.*compress-format.*", body):
                       iscustom = 'true'
                       if re.match(".*retail.*stable.*root-sol[\s\S]{0,24}redfin.*remove-amazon", body):
                           released = 'true'
