@@ -81,7 +81,7 @@ jobs:
           def set_output(name, value):
               subprocess.call(["echo '{}={}' >> $GITHUB_ENV".format(name, value)], shell=True)
           if __name__ == '__main__':
-              issues = released = insider = 'false'
+              issues = 'false'
               iscustom = 'true'
               errinfo = body = ''
               try:
@@ -90,12 +90,8 @@ jobs:
                       body = '${{ env.issuebody }}'
                   else:
                       iscustom = 'false'
-                  if re.match(".*arch.*64.*release-type.*magisk-branch.*magisk-ver.*gapps-brand.*root-sol.*custom-model.*compress-format.*", body):
+                  if re.match(".*arch.*64.*release-type.*root-sol.*magisk-branch.*magisk-ver.*gapps-brand.*custom-model.*compress-format.*", body):
                       iscustom = 'true'
-                      if re.match(".*retail.*stable.*root-sol[\s\S]{0,24}redfin.*remove-amazon", body):
-                          released = 'true'
-                      elif re.match(".*latest.*stable.*root-sol[\s\S]{0,24}redfin.*remove-amazon", body):
-                          insider = 'true'
                   else:
                       iscustom = 'false'
                       errinfo = 'Argument is invaild, please update the body of the Issues'
@@ -104,8 +100,6 @@ jobs:
                   errinfo = 'Issues Body error, {}.'.format(e)
               set_output('issues', issues)
               set_output('iscustom', iscustom)
-              set_output('released', released)
-              set_output('insider', insider)
               set_output('errinfo', errinfo)
               set_output('body', body)
 
@@ -119,7 +113,7 @@ jobs:
           labels: 'custom'
 
       - name: Update Comment Begin
-        if: env.issues == 'true' && env.iscustom == 'true' && env.released == 'false' && env.insider == 'false'
+        if: env.issues == 'true' && env.iscustom == 'true'
         uses: actions-cool/issues-helper@v3
         with:
           actions: 'update-comment'
@@ -132,44 +126,6 @@ jobs:
             > ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
             ----
           emoji: heart
-
-      - name: Update Comment Released
-        if: env.released == 'true'
-        uses: actions-cool/issues-helper@v3
-        with:
-          actions: 'update-comment'
-          token: ${{ secrets.GITHUB_TOKEN }}
-          comment-id: ${{ steps.comment.outputs.comment-id }}
-          update-mode: replace
-          body: |
-            Hello ${{ env.issueauth }} .  
-            Your custom WSA build was built and available in the link below:
-            > https://github.com/YT-Advanced/WSA-Script/releases/latest
-            ----
-          emoji: heart
-
-      - name: Update Comment Insider
-        if: env.insider == 'true'
-        uses: actions-cool/issues-helper@v3
-        with:
-          actions: 'update-comment'
-          token: ${{ secrets.GITHUB_TOKEN }}
-          comment-id: ${{ steps.comment.outputs.comment-id }}
-          update-mode: replace
-          body: |
-            Hello ${{ env.issueauth }} .  
-            Your custom WSA build was built and available in the link below:
-            > https://github.com/YT-Advanced/WSA-Script/releases/tag/WSA-Insider-Version
-            ----
-          emoji: heart
-
-      - name: Close Issues
-        if: env.released == 'true' || env.insider == 'true'
-        uses: actions-cool/issues-helper@v3
-        with:
-          actions: 'close-issue'
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ env.issuenumber }}
 
       - name: Update Comment Error
         if: env.issues == 'true' && env.iscustom == 'false'
@@ -205,14 +161,14 @@ jobs:
           emoji: eyes
 
       - name: Install Ubuntu Dependencies
-        if: env.iscustom == 'true' && success() && env.released == 'false'
+        if: env.iscustom == 'true' && success()
         uses: awalsh128/cache-apt-pkgs-action@v1
         with:
           packages: e2fsprogs attr unzip qemu-utils python3-venv
           version: 1.0
 
       - name: Setup Python3 Virtual Enviroment
-        if: env.iscustom == 'true' && success() && env.released == 'false'
+        if: env.iscustom == 'true' && success()
         working-directory: scripts
         run: |
           PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
@@ -227,7 +183,7 @@ jobs:
 
       - name: Build WSA
         id: wsa
-        if: env.iscustom == 'true' && success() && env.released == 'false'
+        if: env.iscustom == 'true' && success()
         run: |
           mkdir -p download
           ./scripts/build.sh ${{ env.body }} --after-compress
@@ -235,7 +191,7 @@ jobs:
           API_KEY: ${{ secrets.API_KEY }}
   
       - name: Pass to Windows
-        if: env.iscustom == 'true' && success() && env.released == 'false'
+        if: env.iscustom == 'true' && success()
         uses: actions/cache/save@v3
         with:
           path: output
@@ -249,10 +205,9 @@ jobs:
       built: ${{ steps.wsa.outputs.built }}
       comment-id: ${{ steps.comment.outputs.comment-id }}
       iscustom: ${{ env.iscustom }}
-      released: ${{ env.released }}
 
   make-pri:
-    if: needs.build.outputs.iscustom == 'true' && needs.build.outputs.released == 'false'
+    if: needs.build.outputs.iscustom == 'true'
     name: Merge PRI resources and Complete issue
     runs-on: windows-latest
     needs: build
