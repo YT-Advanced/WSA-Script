@@ -40,7 +40,7 @@ tempScript = sys.argv[3]
 file_name = sys.argv[4]
 print(f"Generating MindTheGapps download link: arch={arch}", flush=True)
 abi_map = {"x64": "x86_64", "arm64": "arm64"}
-res = requests.get(f"https://api.github.com/repos/YT-Advanced/MindTheGappsBuilder/releases/latest", headers=reqheaders)
+res = requests.get(f"https://api.github.com/repos/MindTheGapps/13.0.0-{abi_map[arch]}/releases/latest", headers=reqheaders)
 json_data = json.loads(res.content)
 headers = res.headers
 x_ratelimit_remaining = headers["x-ratelimit-remaining"]
