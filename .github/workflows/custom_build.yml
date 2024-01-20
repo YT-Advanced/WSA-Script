@@ -113,7 +113,7 @@ jobs:
           API_KEY: ${{ secrets.API_KEY }}
   
       - name: Pass to Windows 💸
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: output
           key: ${{ steps.wsa.outputs.artifact }}-${{ steps.wsa.outputs.built }}
@@ -132,7 +132,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download built artifact ⌛
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: output
           key: ${{ needs.build.outputs.artifact }}-${{ needs.build.outputs.built }}
