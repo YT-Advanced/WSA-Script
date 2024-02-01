@@ -177,6 +177,7 @@ MAGISK_VER_MAP=(
 
 GAPPS_BRAND_MAP=(
     "MindTheGapps"
+    "LiteGapps"
     "none"
 )
 
@@ -291,7 +292,7 @@ UWPVCLibs_PATH="$DOWNLOAD_DIR/Microsoft.VCLibs.140.00.UWPDesktop_$ARCH.appx"
 xaml_PATH="$DOWNLOAD_DIR/Microsoft.UI.Xaml.2.8_$ARCH.appx"
 MAGISK_ZIP=magisk-$MAGISK_VER.zip
 MAGISK_PATH=$DOWNLOAD_DIR/$MAGISK_ZIP
-GAPPS_ZIP_NAME=MindTheGapps-$ARCH-13.0.zip
+GAPPS_ZIP_NAME=$GAPPS_BRAND-$ARCH.zip
 GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 WSA_MAJOR_VER=0
 
@@ -308,7 +309,7 @@ update_ksu_zip_name() {
     KERNELSU_INFO="$KERNELSU_PATH.info"
 }
 update_gapps_zip_name() {
-    GAPPS_ZIP_NAME=MindTheGapps-$ARCH-13.0.zip
+    GAPPS_ZIP_NAME=$GAPPS_BRAND-$ARCH.zip
     GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 }
 
@@ -347,7 +348,7 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
 fi
 if [ "$GAPPS_BRAND" != "none" ]; then
     update_gapps_zip_name
-    python3 generateGappsLink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$GAPPS_ZIP_NAME" || abort
+    python3 generateGappsLink.py "$GAPPS_BRAND" "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$GAPPS_ZIP_NAME" || abort
 fi
 
 echo "Download Artifacts"
@@ -405,15 +406,23 @@ fi
 
 if [ "$GAPPS_BRAND" != 'none' ]; then
     update_gapps_zip_name
-    echo "Extract MindTheGapps"
+    echo "Extract $GAPPS_BRAND"
     mkdir -p "$WORK_DIR/gapps" || abort
     if [ -f "$GAPPS_PATH" ]; then
-        if ! unzip "$GAPPS_PATH" "system/*" -d "$WORK_DIR/gapps"; then
-            abort "Unzip MindTheGapps failed, package is corrupted?"
+        if [ "$GAPPS_BRAND" == "MindTheGapps" ]; then
+            if ! unzip "$GAPPS_PATH" "system/*" -d "$WORK_DIR/gapps"; then
+                abort "Extract $GAPPS_BRAND failed, package is corrupted?"
+            fi
+            mv "$WORK_DIR/gapps/system/"* "$WORK_DIR/gapps" || abort
+        else # LiteGapps
+            if ! unzip -p "$GAPPS_PATH" "files/files.tar.xz" | tar -xJf - -C "$WORK_DIR/gapps" --strip-components=3 "x86_64/33/system"; then
+                abort "Extract $GAPPS_BRAND failed, package is corrupted?"
+            fi
+            rm -rfv "$WORK_DIR/gapps/product/"{etc/permissions/com.google.android.dialer.support.xml,etc/preferred-apps,etc/sysconfig,framework}
+            sudo sed -e '/NOTIFY_PENDING_SYSTEM_UPDATE/i \        <permission name="android.permission.MODIFY_DEFAULT_AUDIO_EFFECTS" />' -i "$WORK_DIR/gapps/product/etc/permissions/litegapps-permissions.xml"
         fi
-        mv "$WORK_DIR/gapps/system/"* "$WORK_DIR/gapps" || abort
     else
-        abort "The MindTheGapps zip package does not exist."
+        abort "The $GAPPS_BRAND zip package does not exist."
     fi
     echo -e "Extract done\n"
 fi
@@ -649,7 +658,9 @@ find "../cacerts/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder
 echo -e "Permissions management Netfree and Netspark security certificates done\n"
 
 if [ "$GAPPS_BRAND" != 'none' ]; then
-    echo "Integrate MindTheGapps"
+    echo "Integrate $GAPPS_BRAND"
+    #if [ "$GAPPS_BRAND" == "LiteGapps" ]; then sudo rm -rfv "$SYSTEM_EXT_MNT/priv-app/UserApp"; fi
+    if [ "$GAPPS_BRAND" == "LiteGapps" ]; then sudo sed -e '/<\/component-override>/a \    <component-override package="com.microsoft.windows.userapp" >\n        <component class="com.microsoft.windows.installer.PackageVerificationReceiver" enabled="false" \/>\n    <\/component-override>' -i "$SYSTEM_EXT_MNT/etc/sysconfig/component-overrides.xml"; fi
     find "$WORK_DIR/gapps/" -mindepth 1 -type d -exec sudo chmod 0755 {} \;
     find "$WORK_DIR/gapps/" -mindepth 1 -type d -exec sudo chown root:root {} \;
     file_list="$(find "$WORK_DIR/gapps/" -mindepth 1 -type f)"
@@ -678,7 +689,7 @@ if [ "$GAPPS_BRAND" != 'none' ]; then
     find "$WORK_DIR/gapps/system_ext/etc/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_EXT_MNT/etc/placeholder" -type d -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     find "$WORK_DIR/gapps/system_ext/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_EXT_MNT/priv-app/placeholder" -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     sudo LD_LIBRARY_PATH="../linker" "$WORK_DIR/magisk/magiskpolicy" --load "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --save "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" "allow gmscore_app gmscore_app vsock_socket { create connect write read }" "allow gmscore_app device_config_runtime_native_boot_prop file read" "allow gmscore_app system_server_tmpfs dir search" "allow gmscore_app system_server_tmpfs file open" "allow gmscore_app system_server_tmpfs filesystem getattr" "allow gmscore_app gpu_device dir search" "allow gmscore_app media_rw_data_file filesystem getattr" || abort
-    echo -e "Integrate MindTheGapps done\n"
+    echo -e "Integrate $GAPPS_BRAND done\n"
 fi
 
 if [[ "$CUSTOM_MODEL" != "none" ]]; then
@@ -791,7 +802,7 @@ fi
 if [ "$GAPPS_BRAND" = "none" ]; then
     name2="-NoGApps"
 else
-    name2=-MindTheGapps-13.0
+    name2="-$GAPPS_BRAND"
 fi
 if [[ "$MODEL_NAME" != "default" ]]; then
     name3="-as-$MODEL_NAME"
