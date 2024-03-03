@@ -115,7 +115,6 @@ ARGUMENT_LIST=(
     "magisk-ver:"
     "magisk-custom"
     "install-gapps"
-    "skip-download-wsa"
 )
 
 default
@@ -157,10 +156,6 @@ while [[ $# -gt 0 ]]; do
             ;;
         --install-gapps)
             HAS_GAPPS=1
-            shift
-            ;;
-        --skip-download-wsa)
-            SKIP_DOWN_WSA=1
             shift
             ;;
         --)
