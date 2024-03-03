@@ -49,8 +49,8 @@ if Path.cwd().joinpath('token').exists():
 magisk_branch = sys.argv[1]
 magisk_ver = sys.argv[2]
 download_dir = Path.cwd().parent / \
-    "download" if sys.argv[2] == "" else Path(sys.argv[2])
-tempScript = sys.argv[3]
+    "download" if sys.argv[3] == "" else Path(sys.argv[3])
+tempScript = sys.argv[4]
 download_files = {}
 print(
     f"Generating Magisk download link: release type={magisk_ver}", flush=True)
