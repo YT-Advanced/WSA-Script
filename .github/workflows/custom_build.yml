@@ -107,7 +107,7 @@ jobs:
 
           mkdir -p download
           echo -e "user_code=$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
-          ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-branch "$MAGISK_BRANCH" --magisk-ver "${opts[MAGISK_TYPE,${{ inputs.magisk_channel }}]}" --root-sol $ROOT_SOL --compress-format ${opts[COMPRESSION,${{ inputs.compression }}]} ${opts[INSTALL_GAPPS,${{ inputs.install_gapps }}]}
+          ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-branch "$MAGISK_BRANCH" --magisk-ver "${opts[MAGISK_TYPE,${{ inputs.magisk_channel }}]}" --root-sol $ROOT_SOL ${opts[INSTALL_GAPPS,${{ inputs.install_gapps }}]}
 #  ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]} --custom-model ${opts[CUSTOM_MODEL,${{ inputs.custom_model }}]} 
       - name: Pass to Windows 💸
         uses: actions/cache/save@v4
