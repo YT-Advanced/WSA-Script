@@ -48,7 +48,6 @@ default() {
     MAGISK_BRANCH=topjohnwu
     MAGISK_VER=stable
     ROOT_SOL=magisk
-    COMPRESS_FORMAT=7z
 }
 
 ARCH_MAP=(
@@ -102,13 +101,7 @@ ROOT_SOL_MAP=(
     "none"
 )
 
-COMPRESS_FORMAT_MAP=(
-    "7z"
-    "zip"
-)
-
 ARGUMENT_LIST=(
-    "compress-format:"
     "arch:"
     "release-type:"
     "root-sol:"
@@ -130,10 +123,6 @@ opts=$(
 eval set --"$opts"
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --compress-format)
-            COMPRESS_FORMAT="$2"
-            shift 2
-            ;;
         --arch)
             ARCH="$2"
             shift 2
@@ -190,7 +179,6 @@ check_list "$RELEASE_TYPE" "Release Type" "${RELEASE_TYPE_MAP[@]}"
 check_list "$MAGISK_BRANCH" "Magisk Branch" "${MAGISK_BRANCH_MAP[@]}"
 check_list "$MAGISK_VER" "Magisk Version" "${MAGISK_VER_MAP[@]}"
 check_list "$ROOT_SOL" "Root Solution" "${ROOT_SOL_MAP[@]}"
-check_list "$COMPRESS_FORMAT" "Compress Format" "${COMPRESS_FORMAT_MAP[@]}"
 check_list "$CUSTOM_MODEL" "Custom Model" "${CUSTOM_MODEL_MAP[@]}"
 
 # shellcheck disable=SC1091
@@ -418,10 +406,10 @@ if [ -z "$HAS_GAPPS" ]; then
 else
     name2=-GApps-${ANDROID_API_MAP[$ANDROID_API]}
 fi
-if [[ "$MODEL_NAME" != "default" ]]; then
-    name3="-as-$MODEL_NAME"
-fi
-artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}${name3}
+#if [[ "$MODEL_NAME" != "default" ]]; then
+#    name3="-as-$MODEL_NAME"
+#fi
+artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}#${name3}
 
 if [ ! -d "$OUTPUT_DIR" ]; then
     mkdir -p "$OUTPUT_DIR"
@@ -431,17 +419,6 @@ mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
 {
   echo "artifact=${artifact_name}"
   echo "arch=${ARCH}"
-  echo "file_ext=.${COMPRESS_FORMAT}"
   echo "built=$(date -u +%Y%m%d%H%M%S)"
 } >> "$GITHUB_OUTPUT"
-if [ -n "$COMPRESS_FORMAT" ]; then
-    FILE_EXT=".$COMPRESS_FORMAT"
-    OUTPUT_PATH="$OUTPUT_PATH$FILE_EXT"
-fi
-if [ "$COMPRESS_FORMAT" = "7z" ]; then
-    echo "Compressing with 7z to $OUTPUT_PATH"
-    7z a "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
-elif [ "$COMPRESS_FORMAT" = "zip" ]; then
-    echo "Compressing with zip later"
-    cp -r "$WORK_DIR/wsa/$ARCH" "$OUTPUT_PATH" || abort
-fi
+cp -r "$WORK_DIR/wsa/$ARCH" "$OUTPUT_PATH" || abort
