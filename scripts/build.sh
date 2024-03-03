@@ -48,7 +48,7 @@ default() {
     MAGISK_BRANCH=topjohnwu
     MAGISK_VER=stable
     ROOT_SOL=magisk
-    COMPRESS_FORMAT=none
+    COMPRESS_FORMAT=7z
 }
 
 ARCH_MAP=(
@@ -105,7 +105,6 @@ ROOT_SOL_MAP=(
 COMPRESS_FORMAT_MAP=(
     "7z"
     "zip"
-    "none"
 )
 
 ARGUMENT_LIST=(
@@ -426,22 +425,22 @@ if [ ! -d "$OUTPUT_DIR" ]; then
     mkdir -p "$OUTPUT_DIR"
 fi
 OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name"
-if [ "$COMPRESS_FORMAT" != "none" ]; then
-    mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
-    if [ -n "$COMPRESS_FORMAT" ]; then
-        FILE_EXT=".$COMPRESS_FORMAT"
-        OUTPUT_PATH="$OUTPUT_PATH$FILE_EXT"
-    fi
-    rm -f "${OUTPUT_PATH:?}" || abort
-    if [ "$COMPRESS_FORMAT" = "7z" ]; then
-        echo "Compressing with 7z to $OUTPUT_PATH"
-        7z a "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
-    elif [ "$COMPRESS_FORMAT" = "zip" ]; then
-        echo "Compressing with zip to $OUTPUT_PATH"
-        7z -tzip a "$OUTPUT_PATH" "$WORK_DIR/wsa/$artifact_name" || abort
-    fi
-else
-    rm -rf "${OUTPUT_PATH:?}" || abort
-    echo "Copying to $OUTPUT_PATH"
+mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
+{
+  echo "artifact=${artifact_name}"
+  echo "arch=${ARCH}"
+  echo "file_ext=.${COMPRESS_FORMAT}"
+  echo "built=$(date -u +%Y%m%d%H%M%S)"
+} >> "$GITHUB_OUTPUT"
+if [ -n "$COMPRESS_FORMAT" ]; then
+    FILE_EXT=".$COMPRESS_FORMAT"
+    OUTPUT_PATH="$OUTPUT_PATH$FILE_EXT"
+fi
+rm -f "${OUTPUT_PATH:?}" || abort
+if [ "$COMPRESS_FORMAT" = "7z" ]; then
+    echo "Compressing with 7z to $OUTPUT_PATH"
+    7z a "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
+elif [ "$COMPRESS_FORMAT" = "zip" ]; then
+    echo "Compressing with zip later"
     cp -r "$WORK_DIR/wsa/$ARCH" "$OUTPUT_PATH" || abort
 fi
