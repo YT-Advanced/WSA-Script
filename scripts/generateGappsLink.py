@@ -51,7 +51,7 @@ print(f"Generating GApps download link: arch={arch}", flush=True)
 abi_map = {"x64": "x86_64", "arm64": "arm64"}
 android_api_map = {"33": "13.0", "34": "14.0"}
 release = android_api_map[android_api]
-res = requests.get(f"https://api.github.com/repos/s1204IT/WSA-Addon/releases/latest", auth=github_auth)
+res = requests.get(f"https://api.github.com/repos/LSPosed/WSA-Addon/releases/latest", auth=github_auth)
 json_data = json.loads(res.content)
 headers = res.headers
 x_ratelimit_remaining = headers["x-ratelimit-remaining"]
