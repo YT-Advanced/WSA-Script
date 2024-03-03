@@ -31,7 +31,7 @@ DOWNLOAD_CONF_NAME=download.list
 PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
 OUTPUT_DIR=../output
 WSA_WORK_ENV="${WORK_DIR:?}/ENV"
-if [ -f "$WSA_WORK_ENV" ]; then rm -f "${WSA_WORK_ENV:?}"; fi
+
 touch "$WSA_WORK_ENV"
 export WSA_WORK_ENV
 abort() {
@@ -265,7 +265,6 @@ if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" 
     -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"; then
     abort "We have encountered an error while downloading files."
 fi
-rm -f "${DOWNLOAD_DIR:?}/$DOWNLOAD_CONF_NAME"
 
 echo "Extracting WSA"
 if [ -f "$WSA_ZIP_PATH" ]; then
@@ -281,7 +280,7 @@ fi
 
 echo "Generating Download Links"
 if [ "$HAS_GAPPS" ] || [ "$ROOT_SOL" = "magisk" ]; then
-    python3 generateMagiskLink.py "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
+    python3 generateMagiskLink.py "$MAGISK_BRANCH" "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
 fi
 if [ "$ROOT_SOL" = "kernelsu" ]; then
     update_ksu_zip_name
@@ -425,9 +424,6 @@ if [[ "$MODEL_NAME" != "default" ]]; then
 fi
 artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}${name3}
 
-if [ -f "$OUTPUT_DIR" ]; then
-    rm -rf ${OUTPUT_DIR:?}
-fi
 if [ ! -d "$OUTPUT_DIR" ]; then
     mkdir -p "$OUTPUT_DIR"
 fi
@@ -443,7 +439,6 @@ if [ -n "$COMPRESS_FORMAT" ]; then
     FILE_EXT=".$COMPRESS_FORMAT"
     OUTPUT_PATH="$OUTPUT_PATH$FILE_EXT"
 fi
-rm -f "${OUTPUT_PATH:?}" || abort
 if [ "$COMPRESS_FORMAT" = "7z" ]; then
     echo "Compressing with 7z to $OUTPUT_PATH"
     7z a "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
