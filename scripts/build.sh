@@ -415,10 +415,9 @@ if [ ! -d "$OUTPUT_DIR" ]; then
     mkdir -p "$OUTPUT_DIR"
 fi
 OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name"
-mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
+mv "$WORK_DIR/wsa/$ARCH" "$OUTPUT_PATH"
 {
   echo "artifact=${artifact_name}"
   echo "arch=${ARCH}"
   echo "built=$(date -u +%Y%m%d%H%M%S)"
 } >> "$GITHUB_OUTPUT"
-cp -r "$WORK_DIR/wsa/$ARCH" "$OUTPUT_PATH" || abort
