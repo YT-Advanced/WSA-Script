@@ -236,18 +236,19 @@ update_ksu_zip_name() {
 }
 
 echo "Generating WSA Download Links"
-if [ "$RELEASE_TYPE" != "latest" ]; then
-    python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
+python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
+
+if [ "$RELEASE_TYPE" == "latest" ]; then
     # shellcheck disable=SC1090
-    source "$WSA_WORK_ENV" || abort
-else
     printf "%s\n" "$(curl -sL https://api.github.com/repos/bubbles-wow/WSA-Archive/releases/latest | jq -r '.assets[] | .browser_download_url')" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
     printf "  out=wsa-latest.zip\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    python3 generateWSALinks.py "$ARCH" "retail" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "1" || abort
     WSA_VER=$(curl -sL https://api.github.com/repos/bubbles-wow/WSA-Archive/releases/latest | jq -r '.tag_name')
     WSA_MAJOR_VER=${WSA_VER:0:4}
+else
+    source "$WSA_WORK_ENV" || abort
 fi
+
 if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j7 -m0 \
     --async-dns=false --check-integrity=true \
     -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"; then
