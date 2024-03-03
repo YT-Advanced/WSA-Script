@@ -409,7 +409,8 @@ fi
 #if [[ "$MODEL_NAME" != "default" ]]; then
 #    name3="-as-$MODEL_NAME"
 #fi
-artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}#${name3}
+artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}
+#${name3}
 
 if [ ! -d "$OUTPUT_DIR" ]; then
     mkdir -p "$OUTPUT_DIR"
