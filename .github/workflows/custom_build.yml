@@ -20,6 +20,12 @@ on:
         description: User code for WSA Insider User (Optional)
         required: false
         default: ""
+      gapps_brand:
+        type: choice
+        description: Google Apps brand
+        required: true
+        options: ["MindTheGapps v13.0","No GApps"]
+        default: "MindTheGapps v13.0"
       root_sol:
         type: choice
         description: Root solution
@@ -44,11 +50,6 @@ on:
         required: true
         options: [".zip",".7z"]
         default: ".7z"
-      install_gapps:
-        description: "Install Google Apps into your system"
-        required: true
-        default: true
-        type: boolean
       remove_amazon:
         description: "Remove Amazon Appstore from the system"
         required: true
@@ -95,7 +96,7 @@ jobs:
       - name: Build WSA 🏗️
         id: wsa
         run: |
-          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF" ["RELEASE_TYPE,Insider Private"]="latest" ["ROOT_SOL,Magisk Official"]="topjohnwu" ["ROOT_SOL,Magisk Delta (HuskyDG)"]="HuskyDG" ["ROOT_SOL,Magisk Alpha (vvb2060)"]="vvb2060" ["ROOT_SOL,KernelSU"]="kernelsu" ["ROOT_SOL,Non-root"]="none" ["MAGISK_TYPE,Magisk Stable"]="stable" ["MAGISK_TYPE,Magisk Beta"]="beta" ["MAGISK_TYPE,Magisk Canary"]="canary" ["MAGISK_TYPE,Magisk Debug"]="debug" ["CUSTOM_MODEL,WSA Default"]="none" ["CUSTOM_MODEL,Pixel 4a"]="sunfish" ["CUSTOM_MODEL,Pixel 4a (5G)"]="bramble" ["CUSTOM_MODEL,Pixel 5"]="redfin" ["CUSTOM_MODEL,Pixel 5a"]="barbet" ["CUSTOM_MODEL,Pixel 6 Pro"]="raven" ["CUSTOM_MODEL,Pixel 6"]="oriole" ["CUSTOM_MODEL,Pixel 6a"]="bluejay" ["CUSTOM_MODEL,Pixel 7"]="panther" ["CUSTOM_MODEL,Pixel 7 Pro"]="cheetah" ["CUSTOM_MODEL,Pixel 7a"]="lynx" ["CUSTOM_MODEL,Pixel Tablet"]="tangorpro" ["CUSTOM_MODEL,Pixel Fold"]="felix" ["INSTALL_GAPPS,true"]="--install-gapps" )
+          declare -A opts=( ["RELEASE_TYPE,Retail"]="retail" ["RELEASE_TYPE,Release Preview"]="RP" ["RELEASE_TYPE,Insider Slow"]="WIS" ["RELEASE_TYPE,Insider Fast"]="WIF" ["RELEASE_TYPE,Insider Private"]="latest" ["ROOT_SOL,Magisk Official"]="topjohnwu" ["ROOT_SOL,Magisk Delta (HuskyDG)"]="HuskyDG" ["ROOT_SOL,Magisk Alpha (vvb2060)"]="vvb2060" ["ROOT_SOL,KernelSU"]="kernelsu" ["ROOT_SOL,Non-root"]="none" ["MAGISK_TYPE,Magisk Stable"]="stable" ["MAGISK_TYPE,Magisk Beta"]="beta" ["MAGISK_TYPE,Magisk Canary"]="canary" ["MAGISK_TYPE,Magisk Debug"]="debug" ["CUSTOM_MODEL,WSA Default"]="none" ["CUSTOM_MODEL,Pixel 4a"]="sunfish" ["CUSTOM_MODEL,Pixel 4a (5G)"]="bramble" ["CUSTOM_MODEL,Pixel 5"]="redfin" ["CUSTOM_MODEL,Pixel 5a"]="barbet" ["CUSTOM_MODEL,Pixel 6 Pro"]="raven" ["CUSTOM_MODEL,Pixel 6"]="oriole" ["CUSTOM_MODEL,Pixel 6a"]="bluejay" ["CUSTOM_MODEL,Pixel 7"]="panther" ["CUSTOM_MODEL,Pixel 7 Pro"]="cheetah" ["CUSTOM_MODEL,Pixel 7a"]="lynx" ["CUSTOM_MODEL,Pixel Tablet"]="tangorpro" ["CUSTOM_MODEL,Pixel Fold"]="felix" ["GAPPS_BRAND,MindTheGapps v13.0"]="--install-gapps" )
 
           if [[ "${{ inputs.root_sol }}" == *Magisk* ]]; then
               MAGISK_BRANCH="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
@@ -107,7 +108,7 @@ jobs:
 
           mkdir -p download
           echo -e "user_code=$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
-          ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-branch "$MAGISK_BRANCH" --magisk-ver "${opts[MAGISK_TYPE,${{ inputs.magisk_channel }}]}" --root-sol $ROOT_SOL ${opts[INSTALL_GAPPS,${{ inputs.install_gapps }}]}
+          ./scripts/build.sh --arch ${{ inputs.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-branch "$MAGISK_BRANCH" --magisk-ver "${opts[MAGISK_TYPE,${{ inputs.magisk_channel }}]}" --root-sol $ROOT_SOL ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]}
 #  ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]} --custom-model ${opts[CUSTOM_MODEL,${{ inputs.custom_model }}]} 
       - name: Pass to Windows 💸
         uses: actions/cache/save@v4
