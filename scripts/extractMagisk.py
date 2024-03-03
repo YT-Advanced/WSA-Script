@@ -64,7 +64,7 @@ with zipfile.ZipFile(magisk_zip) as zip:
     versionName = props.get("version")
     versionCode = props.get("versionCode")
     print(f"Magisk version: {versionName} ({versionCode})", flush=True)
-        if 'WSA_WORK_ENV' in os.environ and Path(os.environ['WSA_WORK_ENV']).is_file():
+    if 'WSA_WORK_ENV' in os.environ and Path(os.environ['WSA_WORK_ENV']).is_file():
         with open(os.environ['WSA_WORK_ENV'], 'r') as environ_file:
             env = Prop(environ_file.read())
             env.MAGISK_VERSION_NAME = versionName
