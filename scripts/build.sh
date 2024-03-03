@@ -112,8 +112,8 @@ ARGUMENT_LIST=(
     "arch:"
     "release-type:"
     "root-sol:"
+    "magisk-branch:"
     "magisk-ver:"
-    "magisk-custom"
     "install-gapps"
 )
 
@@ -146,13 +146,13 @@ while [[ $# -gt 0 ]]; do
             ROOT_SOL="$2"
             shift 2
             ;;
+        --magisk-branch)
+            MAGISK_BRANCH="$2"
+            shift 2
+            ;;
         --magisk-ver)
             MAGISK_VER="$2"
             shift 2
-            ;;
-        --magisk-custom)
-            CUSTOM_MAGISK=1
-            shift
             ;;
         --install-gapps)
             HAS_GAPPS=1
