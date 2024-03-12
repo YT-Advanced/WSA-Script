@@ -186,7 +186,7 @@ jobs:
         if: env.iscustom == 'true' && success()
         run: |
           mkdir -p download
-          ./scripts/build.sh ${{ env.body }} --after-compress
+          ./scripts/build.sh ${{ env.body }}
         env:
           API_KEY: ${{ secrets.API_KEY }}
   
