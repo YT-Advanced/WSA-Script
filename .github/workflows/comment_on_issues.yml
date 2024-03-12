@@ -90,7 +90,7 @@ jobs:
                       body = '${{ env.issuebody }}'
                   else:
                       iscustom = 'false'
-                  if re.match(".*arch.*64.*release-type.*root-sol.*magisk-branch.*magisk-ver.*gapps-brand.*custom-model.*compress-format.*", body):
+                  if re.match(".*arch.*64.*release-type.*root-sol.*magisk-branch.*magisk-ver.*compress-format.*", body):
                       iscustom = 'true'
                   else:
                       iscustom = 'false'
