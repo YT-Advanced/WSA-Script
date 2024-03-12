@@ -131,18 +131,7 @@
                   "debug"
               ]
           },
-          "--gapps-brand": {
-              "name": "--gapps-brand",
-              "description": "Google Apps brand.",
-              "detailedinfo": "None for no integration of Google Apps.",
-              "required": true,
-              "default": "MindTheGapps",
-              "type": "choice",
-              "options": [
-                  "MindTheGapps",
-                  "none"
-              ]
-          },
+        /*
           "--custom-model": {
               "name": "--custom-model",
               "description": "The model which WSA will display as",
@@ -166,6 +155,7 @@
                   "felix"
               ]
           },
+          */
           "--compress-format": {
               "name": "--compress-format",
               "description": "Compression algorithms",
@@ -178,6 +168,14 @@
                   "zip"
               ]
           },
+          "--install-gapps": {
+              "name": "--install-gapps",
+              "description": "Install MindTheGapps into the system.",
+              "detailedinfo": "",
+              "required": false,
+              "default": true,
+              "type": "boolean"
+          }
           "--remove-amazon": {
               "name": "--remove-amazon",
               "description": "Remove Amazon Appstore from the system.",
