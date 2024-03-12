@@ -44,11 +44,12 @@ trap abort INT TERM
 
 default() {
     ARCH=x64
-    CUSTOM_MODEL=redfin
+#    CUSTOM_MODEL=redfin
     RELEASE_TYPE=retail
     MAGISK_BRANCH=topjohnwu
     MAGISK_VER=stable
     ROOT_SOL=magisk
+    COMPRESS_FORMAT=none
 }
 
 ARCH_MAP=(
@@ -80,21 +81,21 @@ MAGISK_VER_MAP=(
     "alpha"
 )
 
-CUSTOM_MODEL_MAP=(
-    "none"
-    "sunfish"
-    "bramble"
-    "redfin"
-    "barbet"
-    "raven"
-    "oriole"
-    "bluejay"
-    "panther"
-    "cheetah"
-    "lynx"
-    "tangorpro"
-    "felix"
-)
+# CUSTOM_MODEL_MAP=(
+#    "none"
+#    "sunfish"
+#    "bramble"
+#    "redfin"
+#    "barbet"
+#    "raven"
+#    "oriole"
+#    "bluejay"
+#    "panther"
+#    "cheetah"
+#    "lynx"
+#    "tangorpro"
+#    "felix"
+# )
 
 ROOT_SOL_MAP=(
     "magisk"
@@ -102,7 +103,14 @@ ROOT_SOL_MAP=(
     "none"
 )
 
+COMPRESS_FORMAT_MAP=(
+    "7z"
+    "zip"
+    "none"
+)
+
 ARGUMENT_LIST=(
+    "compress-format:"
     "arch:"
     "release-type:"
     "root-sol:"
@@ -125,6 +133,10 @@ opts=$(
 eval set --"$opts"
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        --compress-format)
+            COMPRESS_FORMAT="$2"
+            shift 2
+            ;;
         --arch)
             ARCH="$2"
             shift 2
@@ -185,7 +197,8 @@ check_list "$RELEASE_TYPE" "Release Type" "${RELEASE_TYPE_MAP[@]}"
 check_list "$MAGISK_BRANCH" "Magisk Branch" "${MAGISK_BRANCH_MAP[@]}"
 check_list "$MAGISK_VER" "Magisk Version" "${MAGISK_VER_MAP[@]}"
 check_list "$ROOT_SOL" "Root Solution" "${ROOT_SOL_MAP[@]}"
-check_list "$CUSTOM_MODEL" "Custom Model" "${CUSTOM_MODEL_MAP[@]}"
+# check_list "$CUSTOM_MODEL" "Custom Model" "${CUSTOM_MODEL_MAP[@]}"
+check_list "$COMPRESS_FORMAT" "Compress Format" "${COMPRESS_FORMAT_MAP[@]}"
 
 # shellcheck disable=SC1091
 [ -f "$PYTHON_VENV_DIR/bin/activate" ] && {
@@ -436,4 +449,5 @@ mv "$WORK_DIR/wsa/$ARCH" "$OUTPUT_PATH"
   echo "artifact=${artifact_name}"
   echo "arch=${ARCH}"
   echo "built=$(date -u +%Y%m%d%H%M%S)"
+  echo "file_ext=${COMPRESS_FORMAT}"
 } >> "$GITHUB_OUTPUT"
