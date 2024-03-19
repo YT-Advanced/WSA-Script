@@ -58,9 +58,13 @@ if not magisk_ver:
     magisk_ver = "stable"
 
 if magisk_branch == "vvb2060":
-    magisk_ver = "alpha"
-
-if magisk_ver == "stable" or magisk_ver == "beta" or magisk_ver == "canary" or magisk_ver == "debug":
+    try:
+        magisk_link = json.loads(requests.get(
+            f"https://install.appcenter.ms/api/v0.1/apps/vvb2060/magisk/distribution_groups/public/releases/latest?is_install_page=true", headers=headers).content)['download_url']
+        download_files[f"magisk-{magisk_ver}.zip"] = magisk_link
+    except Exception:
+        print("Failed to fetch from AppCenter API...")
+else:
     try:
         magisk_link = json.loads(requests.get(
             f"https://github.com/{magisk_branch}/magisk-files/raw/master/{magisk_ver}.json").content)['magisk']['link']
@@ -70,14 +74,6 @@ if magisk_ver == "stable" or magisk_ver == "beta" or magisk_ver == "canary" or m
         magisk_link = json.loads(requests.get(
             f"https://fastly.jsdelivr.net/gh/topjohnwu/magisk-files@master/{magisk_ver}.json").content)['magisk']['link']
         download_files[f"magisk-{magisk_ver}.zip"] = magisk_link
-else:
-    try:
-        magisk_link = json.loads(requests.get(
-            f"https://install.appcenter.ms/api/v0.1/apps/vvb2060/magisk/distribution_groups/public/releases/latest?is_install_page=true", headers=headers).content)['download_url']
-        download_files[f"magisk-{magisk_ver}.zip"] = magisk_link
-    except Exception:
-        print("Failed to fetch from AppCenter API...")
-
 res = requests.get(
     f"https://api.github.com/repos/LSPosed/WSA-Addon/releases/latest", auth=github_auth)
 json_data = json.loads(res.content)
