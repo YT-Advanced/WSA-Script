@@ -76,7 +76,8 @@ jobs:
       - name: Setup Python3 Virtual Enviroment 🐍
         working-directory: scripts
         run: |
-          sudo apt-get update
+         sudo rm /etc/apt/sources.list.d/microsoft-prod.list
+         sudo apt-get update
           PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
           python3 -m venv "$PYTHON_VENV_DIR" || abort "Failed to create python3 virtual env"
           # shellcheck disable=SC1091
