@@ -48,14 +48,14 @@ jobs:
 
       - name: Delete Tag (if exist) ❌
         if: steps.date.outputs.tag == 'WSA-Insider-Version'
-        uses: dev-drprasad/delete-tag-and-release@v1.0.1
+        uses: dev-drprasad/delete-tag-and-release@v1.1
         with:
           tag_name: ${{ steps.date.outputs.tag }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add text format to release 📝
         if: env.SHOULD_BUILD == 'yes'
-        uses: softprops/action-gh-release@v0.1.15
+        uses: softprops/action-gh-release@v2.0.4
         with:
           tag_name: ${{ steps.date.outputs.tag }}
           body: "# Changelog\n## ${{ env.MSG }}\n### SHA256 Checksum\n```"
