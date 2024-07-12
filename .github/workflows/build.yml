@@ -101,7 +101,7 @@ jobs:
           name: ${{ needs.build.outputs.zipname }}-${{ needs.build.outputs.built }}
 
       - name: Remove unused artifact ❌
-        uses: geekyeggo/delete-artifact@v4
+        uses: geekyeggo/delete-artifact@v5
         with:
           name: ${{ needs.build.outputs.zipname }}-${{ needs.build.outputs.built }}
 
@@ -131,7 +131,7 @@ jobs:
         run: ("hash=" + $(Get-FileHash -Path ${{ needs.build.outputs.zipname }}.7z -Algorithm SHA256).Hash.ToLower().ToString()) | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding UTF8 -Append
 
       - name: Update build to release 🤌
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2.0.4
         with:
           files: ${{ needs.build.outputs.zipname }}.7z
           fail_on_unmatched_files: true
