@@ -51,7 +51,7 @@ git = (
     "git checkout -f update || git switch --discard-changes --orphan update"
 )
 
-def MagiskandGappsChecker(type):
+def Magisk_Ksu_Gapps_Checker(type):
     global new_version_found
     # Get current version
     currentver = requests.get(f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/" + type + ".appversion").text.replace('\n', '')
@@ -70,6 +70,9 @@ def MagiskandGappsChecker(type):
     elif (type == "gapps"):
         latestver = json.loads(requests.get(f"https://api.github.com/repos/YT-Advanced/MindTheGappsBuilder/releases/latest", headers=reqheaders).content)['name']
         msg="Update MindTheGapps Version from `v" + currentver + "` to `v" + latestver + "`"
+    elif (type == "kernelsu"):
+        latestver = json.loads(requests.get(f"https://api.github.com/repos/tiann/KernelSU/releases/latest", headers=reqheaders).content)['name']
+        msg="Update KernelSU Version from `v" + currentver + "` to `v" + latestver + "`"
 
     # Check if version is the same or not
     if (currentver != latestver):
@@ -200,10 +203,13 @@ for user in users:
         if WSAChecker(user, "retail") == 1:
             break
         print("Checking Magisk version...\n")
-        if MagiskandGappsChecker("magisk") == 1:
+        if Magisk_Ksu_Gapps_Checker("magisk") == 1:
+            break
+        print("Checking KernelSU version...\n")
+        if Magisk_Ksu_Gapps_Checker("kernelsu") == 1:
             break
         print("Checking MindTheGapps version...\n")
-        if MagiskandGappsChecker("gapps") == 1:
+        if Magisk_Ksu_Gapps_Checker("gapps") == 1:
             break
     else:
         print("Checking WSA Insider version...\n")
