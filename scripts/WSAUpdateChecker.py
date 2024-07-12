@@ -72,7 +72,7 @@ def Magisk_Ksu_Gapps_Checker(type):
         msg="Update MindTheGapps Version from `v" + currentver + "` to `v" + latestver + "`"
     elif (type == "kernelsu"):
         latestver = json.loads(requests.get(f"https://api.github.com/repos/tiann/KernelSU/releases/latest", headers=reqheaders).content)['name']
-        msg="Update KernelSU Version from `v" + currentver + "` to `v" + latestver + "`"
+        msg="Update KernelSU Version from `" + currentver + "` to `" + latestver + "`"
 
     # Check if version is the same or not
     if (currentver != latestver):
