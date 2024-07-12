@@ -55,7 +55,7 @@ jobs:
               RLS_TYPE="retail"
           fi
 
-          if [[ "${{ inputs.gapps }}" == "MindTheGapps v13.0" ]]; then
+          if [[ "${{ inputs.gapps }}" == "MindTheGapps" ]]; then
               WITH_GAPPS="--install-gapps"
           else
               WITH_GAPPS=""
