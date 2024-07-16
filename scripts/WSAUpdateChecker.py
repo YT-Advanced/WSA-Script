@@ -177,7 +177,7 @@ def WSAChecker(user, release_type):
 # Get user_code (Thanks to @bubbles-wow because of his repository)
 users = {""}
 try:
-    response = requests.get("https://api.github.com/repos/bubbles-wow/MS-Account-Token/contents/token.cfg")
+    response = requests.get("https://api.github.com/repos/bubbles-wow/WSAUpdateChecker/contents/token.conf")
     if response.status_code == 200:
         content = response.json()["content"]
         content = content.encode("utf-8")
