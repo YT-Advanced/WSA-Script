@@ -70,11 +70,10 @@ with zipfile.ZipFile(magisk_zip) as zip:
             env.MAGISK_VERSION_CODE = versionCode
         with open(os.environ['WSA_WORK_ENV'], 'w') as environ_file:
             environ_file.write(str(env))
-    try:
+    if f"lib/{ abi_map[arch][0] }/libmagisk64.so" in zip.namelist():
         extract_as(zip, f"lib/{ abi_map[arch][0] }/libmagisk64.so", "magisk64", "magisk")
         extract_as(zip, f"lib/{ abi_map[arch][1] }/libmagisk32.so", "magisk32", "magisk")
-    except:
-        extract_as(zip, f"lib/{ abi_map[arch][0] }/libmagisk.so", "magisk64", "magisk")
-        extract_as(zip, f"lib/{ abi_map[arch][1] }/libmagisk.so", "magisk32", "magisk")
+    else:
+        extract_as(zip, f"lib/{ abi_map[arch][0] }/libmagisk.so", "magisk", "magisk")
     extract_as(zip, f"lib/{ abi_map[arch][0] }/libmagiskinit.so", "magiskinit", "magisk")
     extract_as(zip, f"lib/{ abi_map[host_abi][0] }/libmagiskboot.so", "magiskboot", "magisk")
