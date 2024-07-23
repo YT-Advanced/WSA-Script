@@ -16,6 +16,7 @@ jobs:
       - name: Install Dependencies 🧑‍🏭
         run: |
           pip3 install requests
+          pip3 install xmltodict
 
       - name: Get app version ✅
         working-directory: scripts
