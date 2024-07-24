@@ -56,8 +56,6 @@ if (((Test-Path -Path $(Get-Content -Path .\filelist-pri.txt)) -eq $false).Count
         }
     }
     $ProjectXml.Save($AppxManifestFile)
-    Remove-Item 'pri' -Recurse -Force
-    Remove-Item 'xml' -Recurse -Force
     Remove-Item 'makepri.exe' -Force
     Remove-Item 'filelist-pri.txt' -Force
     Remove-Item $PSCommandPath -Force
