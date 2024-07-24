@@ -423,7 +423,7 @@ cp "$vclibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH" || abort
 cp "$UWPVCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH" || abort
 cp "../installer/$ARCH/Install.ps1" "$WORK_DIR/wsa/$ARCH" || abort
 cp "../installer/Run.bat" "$WORK_DIR/wsa/$ARCH" || abort
-find "$WORK_DIR/wsa/$ARCH" -maxdepth 1 -mindepth 1 -not -path '*/pri/*' -printf "%P\n" >"$WORK_DIR/wsa/$ARCH/filelist.txt" || abort
+find "$WORK_DIR/wsa/$ARCH" -maxdepth 1 -mindepth 1 -printf "%P\n" >"$WORK_DIR/wsa/$ARCH/filelist.txt" || abort
 
 cp "../xml/priconfig.xml" "$WORK_DIR/wsa/$ARCH/xml/" || abort
 cp "../installer/$ARCH/MakePri.ps1" "$WORK_DIR/wsa/$ARCH" || abort
