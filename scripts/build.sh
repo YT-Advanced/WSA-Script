@@ -358,7 +358,7 @@ if [ "$HAS_GAPPS" ] || [ "$ROOT_SOL" = "magisk" ]; then
     if [ -f "$WORK_DIR/magisk/magisk64" ]; then
         "$WORK_DIR/magisk/magiskboot" compress=xz "$WORK_DIR/magisk/magisk64" "$WORK_DIR/magisk/magisk64.xz"
         "$WORK_DIR/magisk/magiskboot" compress=xz "$WORK_DIR/magisk/magisk32" "$WORK_DIR/magisk/magisk32.xz"
-        unset SKIPINITLD
+        unset SINGLEABI
     else
         "$WORK_DIR/magisk/magiskboot" compress=xz "$WORK_DIR/magisk/magisk" "$WORK_DIR/magisk/magisk.xz"
         unset SKIP
