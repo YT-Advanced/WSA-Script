@@ -50,7 +50,7 @@ class UpdateChecker(ABC):
     def __init__(self, app_name: str):
         self.app_name = app_name
 
-        self.current_version = self.get_curent_version()
+        self.current_version = self.get_current_version()
         self.latest_version = self.get_latest_version()
 
     @property
