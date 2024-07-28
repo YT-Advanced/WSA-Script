@@ -50,8 +50,8 @@ class UpdateChecker(ABC):
     def __init__(self, app_name: str):
         self.app_name = app_name
 
-        self.current_version = self.get_current_version()
-        self.latest_version = self.get_latest_version()
+        self.current_version: str
+        self.latest_version: str
 
     @property
     def update_msg(self) -> str:
@@ -107,6 +107,9 @@ class UtilUpdateChecker(UpdateChecker):
         self.latest_version_url = latest_version_url
         self.json_keys = json_keys
 
+        self.current_version = self.get_current_version()
+        self.latest_version = self.get_latest_version()
+
     @property
     def current_version_url(self) -> str:
         return f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/{self.app_id}.appversion"
@@ -149,6 +152,9 @@ class WSAUpdateChecker(UpdateChecker):
 
         self.update_channel = update_channel
 
+        self.current_version = self.get_current_version()
+        self.latest_version = self.get_latest_version()
+
     @property
     def current_version_url(self) -> str:
         return f"https://raw.githubusercontent.com/YT-Advanced/WSA-Script/update/{self.update_channel}.appversion"
@@ -174,7 +180,7 @@ class WSAUpdateChecker(UpdateChecker):
         # retail: 301870105
         # WIF:    301870107
 
-        user_code: str = ''
+        user_code: str = ""
         # retail: 301870114
         # WIF:    301870124
 
