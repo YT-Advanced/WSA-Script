@@ -160,9 +160,9 @@ class WSAUpdateChecker(UpdateChecker):
     @property
     def product_id(self) -> str: # type: ignore
         if self.update_channel == "retail":
-            return "301870105"
+            return "301870114"
         elif self.update_channel == "WIF":
-            return "301870107"
+            return "301870124"
 
     def get_current_version(self) -> str:
         response = requests.get(self.current_version_url)
@@ -170,11 +170,11 @@ class WSAUpdateChecker(UpdateChecker):
         return response.text
 
     def get_latest_version(self) -> str: # type: ignore
-        user_code: str = get_usercode()
+        # user_code: str = get_usercode()
         # retail: 301870105
         # WIF:    301870107
 
-        # user_code: str = ''
+        user_code: str = ''
         # retail: 301870114
         # WIF:    301870124
 
