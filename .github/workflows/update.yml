@@ -55,7 +55,7 @@ jobs:
 
       - name: Add text format to release 📝
         if: env.SHOULD_BUILD == 'yes'
-        uses: softprops/action-gh-release@v2.0.4
+        uses: softprops/action-gh-release@v2.0.8
         with:
           tag_name: ${{ steps.date.outputs.tag }}
           body: "# Changelog\n## ${{ env.MSG }}\n### SHA256 Checksum\n```"
