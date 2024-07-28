@@ -419,6 +419,7 @@ if [ "$HAS_GAPPS" ]; then
 fi
 
 if [ "$REMOVE_AMAZON" ]; then
+    touch "$WORK_DIR/wsa/$ARCH/apex/.gitkeep"
     rm -f "$WORK_DIR/wsa/$ARCH/apex/"mado*.apex || abort
 fi
 
