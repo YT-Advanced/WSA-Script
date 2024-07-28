@@ -55,7 +55,7 @@ class UpdateChecker(ABC):
 
     @property
     def update_msg(self) -> str:
-        return f"Update {self.app_name} Version from 'v{self.current_version}' to 'v{self.latest_version}'"
+        return f"Update {self.app_name} Version from 'v{self.current_version.lstrip("v")}' to 'v{self.latest_version.lstrip("v")}'"
 
     @abstractmethod
     def get_current_version(self) -> str: ...
@@ -245,7 +245,7 @@ magisk_update_checker = UtilUpdateChecker(
 gapps_update_checker = UtilUpdateChecker(
     app_id="gapps",
     app_name="MindTheGapps",
-    latest_version_url="https://api.github.com/repos/YT-Advanced/MindTheGappsBuilder/releases/latest",
+    latest_version_url="https://api.github.com/repos/LSPosed/WSA-Addon/releases/latest",
     json_keys=("name",),
 )
 
@@ -288,12 +288,8 @@ def main() -> None:
     if not gapps_update_checker.is_up_to_date():
         gapps_update_checker.get_update()
         return
-
-    print("Checking KernelSU version...", end="\n")
-    if not kernelsu_update_checker.is_up_to_date():
-        kernelsu_update_checker.get_update()
         return
 
 
 if __name__ == "__main__":
-    main()
+    main() 
