@@ -55,7 +55,7 @@ class UpdateChecker(ABC):
 
     @property
     def update_msg(self) -> str:
-        return f"Update {self.app_name} Version from 'v{self.current_version.lstrip("v")}' to 'v{self.latest_version.lstrip("v")}'"
+        return f"Update {self.app_name} Version from `v{self.current_version.lstrip('v')}` to `v{self.latest_version.lstrip('v')}`"
 
     @abstractmethod
     def get_current_version(self) -> str: ...
@@ -135,10 +135,7 @@ class UtilUpdateChecker(UpdateChecker):
     def write_to_github_environment(self) -> None:
         with open(ENV_FILE_PATH, "a") as env_file:
             env_file.write(
-                f"""
-                SHOULD_BUILD=yes
-                MSG={self.update_msg}
-                """.strip()
+                f"SHOULD_BUILD=yes\nMSG={self.update_msg}"
             )
 
     def overwrite_current_version(self) -> None:
@@ -223,11 +220,7 @@ class WSAUpdateChecker(UpdateChecker):
     def write_to_github_environment(self) -> None:
         with open(ENV_FILE_PATH, "a") as env_file:
             env_file.write(
-                f"""
-                SHOULD_BUILD=yes
-                RELEASE_TYPE={self.update_channel}
-                MSG={self.update_msg}
-                """.strip()
+                f"SHOULD_BUILD=yes\nRELEASE_TYPE={self.update_channel}\nMSG={self.update_msg}"
             )
 
     def overwrite_current_version(self) -> None:
@@ -288,6 +281,10 @@ def main() -> None:
     if not gapps_update_checker.is_up_to_date():
         gapps_update_checker.get_update()
         return
+
+    print("Checking KernelSU version...", end="\n")
+    if not kernelsu_update_checker.is_up_to_date():
+        kernelsu_update_checker.get_update()
         return
 
 
