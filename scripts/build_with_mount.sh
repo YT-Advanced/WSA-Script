@@ -715,7 +715,7 @@ if [ "$HAS_GAPPS" ]; then
 else
     name2=-Gapps-13.0
 fi
-artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}${name3}
+artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}
 if [ "$REMOVE_AMAZON" = "yes" ]; then
     artifact_name+="-RemovedAmazon"
     touch "$WORK_DIR/wsa/$ARCH/apex/.gitkeep"
