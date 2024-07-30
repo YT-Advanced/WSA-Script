@@ -104,12 +104,12 @@ jobs:
           if [[ "${{ inputs.root_sol }}" == *Magisk* ]]; then
               MAGISK_BRANCH="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
               ROOT_SOL="magisk"
-              chmod +x ./build_with_lspinit.sh
+              chmod +x ./scripts/build_with_lspinit.sh
               ./scripts/build_with_lspinit.sh --arch ${{ inputs.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-branch "$MAGISK_BRANCH" --magisk-ver "${opts[MAGISK_TYPE,${{ inputs.magisk_channel }}]}" --root-sol $ROOT_SOL ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]} 
           else
               MAGISK_BRANCH="topjohnwu"
               ROOT_SOL="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
-              chmod +x ./build_with_mount.sh
+              chmod +x ./scripts/build_with_mount.sh
               ./scripts/build_with_mount.sh --arch ${{ inputs.arch }} --release-type ${opts[RELEASE_TYPE,${{ inputs.release_type }}]} --magisk-branch "$MAGISK_BRANCH" --magisk-ver "${opts[MAGISK_TYPE,${{ inputs.magisk_channel }}]}" --root-sol $ROOT_SOL ${opts[GAPPS_BRAND,${{ inputs.gapps_brand }}]} ${opts[REMOVE_AMAZON,${{ inputs.remove_amazon }}]} 
           fi
 
