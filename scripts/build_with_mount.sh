@@ -66,8 +66,8 @@ default() {
     RELEASE_TYPE=retail
     MAGISK_BRANCH=topjohnwu
     MAGISK_VER=stable
-    GAPPS_BRAND=MindTheGapps
     ROOT_SOL=magisk
+    COMPRESS_FORMAT=none
 }
 
 vhdx_to_raw_img() {
@@ -174,11 +174,6 @@ MAGISK_VER_MAP=(
     "alpha"
 )
 
-GAPPS_BRAND_MAP=(
-    "MindTheGapps"
-    "none"
-)
-
 ROOT_SOL_MAP=(
     "magisk"
     "kernelsu"
@@ -195,10 +190,9 @@ ARGUMENT_LIST=(
     "release-type:"
     "magisk-branch:"
     "magisk-ver:"
-    "gapps-brand:"
     "root-sol:"
     "compress-format:"
-    "after-compress"
+    "install-gapps"
     "remove-amazon"
 )
 
@@ -220,7 +214,7 @@ while [[ $# -gt 0 ]]; do
         --gapps-brand       ) GAPPS_BRAND="$2"; shift 2 ;;
         --root-sol          ) ROOT_SOL="$2"; shift 2 ;;
         --compress-format   ) COMPRESS_FORMAT="$2"; shift 2 ;;
-        --after-compress    ) AFTER_COMPRESS="yes"; shift ;;
+        --install-gapps     ) HAS_GAPPS="yes"; shift ;;
         --remove-amazon     ) REMOVE_AMAZON="yes"; shift ;;
         --magisk-branch     ) MAGISK_BRANCH="$2"; shift 2 ;;
         --magisk-ver        ) MAGISK_VER="$2"; shift 2 ;;
@@ -252,7 +246,6 @@ check_list "$ARCH" "Architecture" "${ARCH_MAP[@]}"
 check_list "$RELEASE_TYPE" "Release Type" "${RELEASE_TYPE_MAP[@]}"
 check_list "$MAGISK_BRANCH" "Magisk Branch" "${MAGISK_BRANCH_MAP[@]}"
 check_list "$MAGISK_VER" "Magisk Version" "${MAGISK_VER_MAP[@]}"
-check_list "$GAPPS_BRAND" "GApps Brand" "${GAPPS_BRAND_MAP[@]}"
 check_list "$ROOT_SOL" "Root Solution" "${ROOT_SOL_MAP[@]}"
 check_list "$COMPRESS_FORMAT" "Compress Format" "${COMPRESS_FORMAT_MAP[@]}"
 
@@ -314,7 +307,7 @@ else
     WSA_VER=$(curl -sL https://api.github.com/repos/bubbles-wow/WSA-Archive/releases/latest | jq -r '.tag_name')
     WSA_MAJOR_VER=${WSA_VER:0:4}
 fi
-if [ "$ROOT_SOL" = "magisk" ] || [ "$GAPPS_BRAND" != "none" ]; then
+if [ "$ROOT_SOL" = "magisk" ] || [ "$HAS_GAPPS" == "yes" ]; then
     python3 generateMagiskLink.py "$MAGISK_BRANCH" "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
 fi
 if [ "$ROOT_SOL" = "kernelsu" ]; then
@@ -325,7 +318,7 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     # shellcheck disable=SC2153
     echo "KERNELSU_VER=$KERNELSU_VER" >"$KERNELSU_INFO"
 fi
-if [ "$GAPPS_BRAND" != "none" ]; then
+if [ "$HAS_GAPPS" == "yes" ]; then
     update_gapps_zip_name
     python3 generateGappsLink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$GAPPS_ZIP_NAME" || abort
 fi
@@ -349,7 +342,7 @@ else
     exit 1
 fi
 
-if [ "$GAPPS_BRAND" != "none" ] || [ "$ROOT_SOL" = "magisk" ]; then
+if [ "$HAS_GAPPS" == "yes" ] || [ "$ROOT_SOL" = "magisk" ]; then
     echo "Extract Magisk"
     if [ -f "$MAGISK_PATH" ]; then
         MAGISK_VERSION_NAME=""
@@ -383,7 +376,7 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     echo -e "done\n"
 fi
 
-if [ "$GAPPS_BRAND" != 'none' ]; then
+if [ "$HAS_GAPPS" != 'yes' ]; then
     update_gapps_zip_name
     echo "Extract MindTheGapps"
     mkdir -p "$WORK_DIR/gapps" || abort
@@ -596,7 +589,7 @@ find "../cacerts/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder
 find "../cacerts/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/cacerts/placeholder" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
 echo -e "Permissions management Netfree and Netspark security certificates done\n"
 
-if [ "$GAPPS_BRAND" != 'none' ]; then
+if [ "$HAS_GAPPS" == 'yes' ]; then
     echo "Integrate MindTheGapps"
     find "$WORK_DIR/gapps/" -mindepth 1 -type d -exec sudo chmod 0755 {} \;
     find "$WORK_DIR/gapps/" -mindepth 1 -type d -exec sudo chown root:root {} \;
@@ -681,7 +674,7 @@ mkdir "$WORK_DIR/wsa/$ARCH/uwp"
 cp "$VCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH/uwp/" || abort
 cp "$UWPVCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH/uwp/" || abort
 cp "../xml/priconfig.xml" "$WORK_DIR/wsa/$ARCH/xml/" || abort
-if [[ "$ROOT_SOL" = "none" ]] && [[ "$GAPPS_BRAND" = "none" ]] && [[ "$REMOVE_AMAZON" == "yes" ]]; then
+if [[ "$ROOT_SOL" = "none" ]] && [[ "$HAS_GAPPS" = "yes" ]] && [[ "$REMOVE_AMAZON" == "yes" ]]; then
     sed -i -e 's@Start-Process\ "wsa://com.topjohnwu.magisk"@@g' "../installer/$ARCH/Install.ps1"
     sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' "../installer/$ARCH/Install.ps1"
 else
@@ -694,9 +687,9 @@ else
     elif [[ "$MAGISK_BRANCH" = "vvb2060" ]]; then
         sed -i -e 's@com.topjohnwu.magisk@io.github.vvb2060.magisk@g' "../installer/$ARCH/Install.ps1"
     fi
-    if [[ "$GAPPS_BRAND" = "none" ]] && [[ "$REMOVE_AMAZON" != "yes" ]]; then
+    if [[ "$HAS_GAPPS" = "yes" ]] && [[ "$REMOVE_AMAZON" != "yes" ]]; then
         sed -i -e 's@com.android.vending@com.amazon.venezia@g' "../installer/$ARCH/Install.ps1"
-    elif [[ "$GAPPS_BRAND" = "none" ]]; then
+    elif [[ "$HAS_GAPPS" = "yes" ]]; then
         sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' "../installer/$ARCH/Install.ps1"
     fi
 fi
@@ -716,10 +709,10 @@ elif [ "$ROOT_SOL" = "magisk" ]; then
 elif [ "$ROOT_SOL" = "kernelsu" ]; then
     name1="-with-KernelSU-$KERNELSU_VER"
 fi
-if [ "$GAPPS_BRAND" = "none" ]; then
+if [ "$HAS_GAPPS" = "yes" ]; then
     name2="-NoGApps"
 else
-    name2=-MindTheGapps-13.0
+    name2=-Gapps-13.0
 fi
 artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}${name3}
 if [ "$REMOVE_AMAZON" = "yes" ]; then
@@ -730,19 +723,12 @@ echo "$artifact_name"
 echo -e "\nFinishing building...."
 mkdir -p "$OUTPUT_DIR"
 OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name"
-mv "$WORK_DIR/wsa/$ARCH" "$WORK_DIR/wsa/$artifact_name"
+OUTPUT_PATH="${OUTPUT_DIR:?}/$artifact_name"
+mv "$WORK_DIR/wsa/$ARCH" "$OUTPUT_PATH"
 {
   echo "artifact=${artifact_name}"
   echo "arch=${ARCH}"
-  echo "file_ext=.${COMPRESS_FORMAT}"
   echo "built=$(date -u +%Y%m%d%H%M%S)"
+  echo "file_ext=${COMPRESS_FORMAT}"
 } >> "$GITHUB_OUTPUT"
-if [[ "$COMPRESS_FORMAT" = "7z" && -z $AFTER_COMPRESS ]]; then
-    echo "Compressing with 7-Zip"
-    OUTPUT_PATH="$OUTPUT_PATH.7z"
-    7z a -mx=7 "${OUTPUT_PATH:?}" "$WORK_DIR/wsa/$artifact_name" || abort
-else
-    echo "Compressing with ZIP later..."
-    cp -r "$WORK_DIR/wsa/$artifact_name" "$OUTPUT_PATH" || abort
-fi
 echo -e "Done\n"
