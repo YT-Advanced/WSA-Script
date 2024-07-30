@@ -307,7 +307,7 @@ else
     WSA_VER=$(curl -sL https://api.github.com/repos/bubbles-wow/WSA-Archive/releases/latest | jq -r '.tag_name')
     WSA_MAJOR_VER=${WSA_VER:0:4}
 fi
-if [ "$ROOT_SOL" = "magisk" ] || [ "$HAS_GAPPS" == "yes" ]; then
+if [ "$ROOT_SOL" = "magisk" ] || [ "$HAS_GAPPS" ]; then
     python3 generateMagiskLink.py "$MAGISK_BRANCH" "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
 fi
 if [ "$ROOT_SOL" = "kernelsu" ]; then
@@ -318,7 +318,7 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     # shellcheck disable=SC2153
     echo "KERNELSU_VER=$KERNELSU_VER" >"$KERNELSU_INFO"
 fi
-if [ "$HAS_GAPPS" == "yes" ]; then
+if [ "$HAS_GAPPS" ]; then
     update_gapps_zip_name
     python3 generateGappsLink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$GAPPS_ZIP_NAME" || abort
 fi
@@ -342,7 +342,7 @@ else
     exit 1
 fi
 
-if [ "$HAS_GAPPS" == "yes" ] || [ "$ROOT_SOL" = "magisk" ]; then
+if [ "$HAS_GAPPS" ] || [ "$ROOT_SOL" = "magisk" ]; then
     echo "Extract Magisk"
     if [ -f "$MAGISK_PATH" ]; then
         MAGISK_VERSION_NAME=""
@@ -376,7 +376,7 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     echo -e "done\n"
 fi
 
-if [ "$HAS_GAPPS" != 'yes' ]; then
+if [ "$HAS_GAPPS" ]; then
     update_gapps_zip_name
     echo "Extract MindTheGapps"
     mkdir -p "$WORK_DIR/gapps" || abort
@@ -580,6 +580,7 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
     echo "Copy KernelSU kernel"
     cp "$WORK_DIR/kernelsu/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel"
     echo -e "Copy KernelSU kernel done\n"
+fi
 
 echo "Permissions management Netfree and Netspark security certificates"
 sudo cp -r "../cacerts/"* "$SYSTEM_MNT/etc/security/cacerts/" || abort
@@ -589,7 +590,7 @@ find "../cacerts/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder
 find "../cacerts/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/cacerts/placeholder" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
 echo -e "Permissions management Netfree and Netspark security certificates done\n"
 
-if [ "$HAS_GAPPS" == 'yes' ]; then
+if [ "$HAS_GAPPS" ]; then
     echo "Integrate MindTheGapps"
     find "$WORK_DIR/gapps/" -mindepth 1 -type d -exec sudo chmod 0755 {} \;
     find "$WORK_DIR/gapps/" -mindepth 1 -type d -exec sudo chown root:root {} \;
@@ -674,7 +675,7 @@ mkdir "$WORK_DIR/wsa/$ARCH/uwp"
 cp "$VCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH/uwp/" || abort
 cp "$UWPVCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH/uwp/" || abort
 cp "../xml/priconfig.xml" "$WORK_DIR/wsa/$ARCH/xml/" || abort
-if [[ "$ROOT_SOL" = "none" ]] && [[ "$HAS_GAPPS" = "yes" ]] && [[ "$REMOVE_AMAZON" == "yes" ]]; then
+if [[ "$ROOT_SOL" = "none" ]] && [[ "$HAS_GAPPS" ]] && [[ "$REMOVE_AMAZON" == "yes" ]]; then
     sed -i -e 's@Start-Process\ "wsa://com.topjohnwu.magisk"@@g' "../installer/$ARCH/Install.ps1"
     sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' "../installer/$ARCH/Install.ps1"
 else
@@ -687,9 +688,9 @@ else
     elif [[ "$MAGISK_BRANCH" = "vvb2060" ]]; then
         sed -i -e 's@com.topjohnwu.magisk@io.github.vvb2060.magisk@g' "../installer/$ARCH/Install.ps1"
     fi
-    if [[ "$HAS_GAPPS" = "yes" ]] && [[ "$REMOVE_AMAZON" != "yes" ]]; then
+    if [[ "$HAS_GAPPS" ]] && [[ "$REMOVE_AMAZON" != "yes" ]]; then
         sed -i -e 's@com.android.vending@com.amazon.venezia@g' "../installer/$ARCH/Install.ps1"
-    elif [[ "$HAS_GAPPS" = "yes" ]]; then
+    elif [[ "$HAS_GAPPS" ]]; then
         sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' "../installer/$ARCH/Install.ps1"
     fi
 fi
@@ -709,7 +710,7 @@ elif [ "$ROOT_SOL" = "magisk" ]; then
 elif [ "$ROOT_SOL" = "kernelsu" ]; then
     name1="-with-KernelSU-$KERNELSU_VER"
 fi
-if [ "$HAS_GAPPS" = "yes" ]; then
+if [ "$HAS_GAPPS" ]; then
     name2="-NoGApps"
 else
     name2=-Gapps-13.0
