@@ -268,18 +268,37 @@ GAPPS_ZIP_NAME=MindTheGapps-$ARCH-13.0.zip
 GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 WSA_MAJOR_VER=0
 
+getKernelVersion() {
+    local bintype kernel_string kernel_version
+    bintype="$(file -b "$1")"
+    if [[ $bintype == *"version"* ]]; then
+        readarray -td '' kernel_string < <(awk '{ gsub(/, /,"\0"); print; }' <<<"$bintype, ")
+        unset 'kernel_string[-1]'
+        for i in "${kernel_string[@]}"; do
+            if [[ $i == *"version"* ]]; then
+                IFS=" " read -r -a kernel_string <<<"$i"
+                kernel_version="${kernel_string[1]}"
+            fi
+        done
+    else
+        IFS=" " read -r -a kernel_string <<<"$(strings "$1" | grep 'Linux version')"
+        kernel_version="${kernel_string[2]}"
+    fi
+    IFS=" " read -r -a arr <<<"${kernel_version//-/ }"
+    printf '%s' "${arr[0]}"
+}
+
 update_ksu_zip_name() {
     KERNEL_VER=""
-    case "$WSA_MAJOR_VER" in
-      "2308") KERNEL_VER="5.15.104.3";;
-      "2309"|"2310"|"2311"|"2407") KERNEL_VER="5.15.104.4";;
-      *) abort "KernelSU is not supported in this WSA version: $WSA_MAJOR_VER"
-    esac
+    if [ -f "$WORK_DIR/wsa/$ARCH/Tools/kernel" ]; then
+        KERNEL_VER=$(getKernelVersion "$WORK_DIR/wsa/$ARCH/Tools/kernel")
+    fi
     KERNELSU_ZIP_NAME=kernelsu-$ARCH-$KERNEL_VER.zip
     KERNELSU_PATH=$DOWNLOAD_DIR/$KERNELSU_ZIP_NAME
     KERNELSU_APK_PATH=$DOWNLOAD_DIR/KernelSU.apk
     KERNELSU_INFO="$KERNELSU_PATH.info"
 }
+
 update_gapps_zip_name() {
     GAPPS_ZIP_NAME=MindTheGapps-$ARCH-13.0.zip
     GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
@@ -361,19 +380,22 @@ if [ "$HAS_GAPPS" ] || [ "$ROOT_SOL" = "magisk" ]; then
 fi
 
 if [ "$ROOT_SOL" = "kernelsu" ]; then
-    update_ksu_zip_name
-    echo "Extract KernelSU"
+    echo "Extracting KernelSU"
     # shellcheck disable=SC1090
     source "${KERNELSU_INFO:?}" || abort
+    echo "WSA Kernel Version: $KERNEL_VER"
+    echo "KernelSU Version: $KERNELSU_VER"
     if ! unzip "$KERNELSU_PATH" -d "$WORK_DIR/kernelsu"; then
         abort "Unzip KernelSU failed, package is corrupted?"
     fi
     if [ "$ARCH" = "x64" ]; then
         mv "$WORK_DIR/kernelsu/bzImage" "$WORK_DIR/kernelsu/kernel"
-    else
+    elif [ "$ARCH" = "arm64" ]; then
         mv "$WORK_DIR/kernelsu/Image" "$WORK_DIR/kernelsu/kernel"
     fi
-    echo -e "done\n"
+    echo "Integrate KernelSU"
+    mv "$WORK_DIR/wsa/$ARCH/Tools/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel_origin"
+    cp "$WORK_DIR/kernelsu/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel"
 fi
 
 if [ "$HAS_GAPPS" ]; then
