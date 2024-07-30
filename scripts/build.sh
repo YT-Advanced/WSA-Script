@@ -301,7 +301,7 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
 fi
 if [ "$HAS_GAPPS" ]; then
     update_gapps_files_name
-    python3 generateGappsLink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$ANDROID_API" "$GAPPS_IMAGE_NAME" || abort
+    python3 generateAddonsLink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$ANDROID_API" "$GAPPS_IMAGE_NAME" || abort
 fi
 if [ -f "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" ]; then
     echo "Downloading Artifacts"
