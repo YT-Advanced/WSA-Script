@@ -67,7 +67,7 @@ default() {
     MAGISK_BRANCH=topjohnwu
     MAGISK_VER=stable
     ROOT_SOL=magisk
-    COMPRESS_FORMAT=none
+    COMPRESS_FORMAT=zip
 }
 
 vhdx_to_raw_img() {
