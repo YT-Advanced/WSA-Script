@@ -194,7 +194,7 @@ jobs:
               ./scripts/build_with_lspinit.sh ${{ env.body }}
           else
               ./scripts/build_with_mount.sh ${{ env.body }}
-            
+          fi
       - name: Pass to Windows
         if: env.iscustom == 'true' && success()
         uses: actions/cache/save@v4
