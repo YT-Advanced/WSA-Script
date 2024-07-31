@@ -341,6 +341,7 @@ fi
 if [ "$ROOT_SOL" = "magisk" ] || [ "$HAS_GAPPS" = "yes" ]; then
     python3 generateMagiskLink.py "$MAGISK_BRANCH" "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
 fi
+
 if [ "$ROOT_SOL" = "kernelsu" ]; then
     update_ksu_zip_name
     python3 generateKernelSULink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$KERNEL_VER" "$KERNELSU_ZIP_NAME" || abort
@@ -354,12 +355,13 @@ if [ "$HAS_GAPPS" = "yes" ]; then
     python3 generateGappsLink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$GAPPS_ZIP_NAME" || abort
 fi
 
-echo "Download Artifacts"
-
-if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j7 -m0 \
-    --async-dns=false --check-integrity=true \
-    -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_WSA_CONF_NAME"; then
-    abort "We have encountered an error while downloading files."
+if [ -f "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" ]; then
+    echo "Downloading Artifacts"
+    if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j7 -m0 \
+        --async-dns=false --check-integrity=true \
+        -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"; then
+        abort "We have encountered an error while downloading files."
+    fi
 fi
 
 if [ "$HAS_GAPPS" = "yes" ] || [ "$ROOT_SOL" = "magisk" ]; then
@@ -614,7 +616,7 @@ find "../cacerts/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder
 echo -e "Permissions management Netfree and Netspark security certificates done\n"
 
 if [ "$HAS_GAPPS" = "yes" ]; then
-    echo "Integrate MindTheGapps"
+    echo "Integrate GApps"
     find "$WORK_DIR/gapps/" -mindepth 1 -type d -exec sudo chmod 0755 {} \;
     find "$WORK_DIR/gapps/" -mindepth 1 -type d -exec sudo chown root:root {} \;
     file_list="$(find "$WORK_DIR/gapps/" -mindepth 1 -type f)"
