@@ -81,22 +81,6 @@ MAGISK_VER_MAP=(
     "alpha"
 )
 
-# CUSTOM_MODEL_MAP=(
-#    "none"
-#    "sunfish"
-#    "bramble"
-#    "redfin"
-#    "barbet"
-#    "raven"
-#    "oriole"
-#    "bluejay"
-#    "panther"
-#    "cheetah"
-#    "lynx"
-#    "tangorpro"
-#    "felix"
-# )
-
 ROOT_SOL_MAP=(
     "magisk"
     "kernelsu"
@@ -197,7 +181,6 @@ check_list "$RELEASE_TYPE" "Release Type" "${RELEASE_TYPE_MAP[@]}"
 check_list "$MAGISK_BRANCH" "Magisk Branch" "${MAGISK_BRANCH_MAP[@]}"
 check_list "$MAGISK_VER" "Magisk Version" "${MAGISK_VER_MAP[@]}"
 check_list "$ROOT_SOL" "Root Solution" "${ROOT_SOL_MAP[@]}"
-# check_list "$CUSTOM_MODEL" "Custom Model" "${CUSTOM_MODEL_MAP[@]}"
 check_list "$COMPRESS_FORMAT" "Compress Format" "${COMPRESS_FORMAT_MAP[@]}"
 
 # shellcheck disable=SC1091
@@ -424,18 +407,42 @@ if [ "$REMOVE_AMAZON" ]; then
 fi
 
 echo "Removing signature and add scripts"
-rm -rf "${WORK_DIR:?}"/wsa/"$ARCH"/\[Content_Types\].xml "$WORK_DIR/wsa/$ARCH/AppxBlockMap.xml" "$WORK_DIR/wsa/$ARCH/AppxSignature.p7x" "$WORK_DIR/wsa/$ARCH/AppxMetadata" || abort
-cp "$vclibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH" || abort
-cp "$UWPVCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH" || abort
-cp "../installer/$ARCH/Install.ps1" "$WORK_DIR/wsa/$ARCH" || abort
-cp "../installer/Run.bat" "$WORK_DIR/wsa/$ARCH" || abort
-find "$WORK_DIR/wsa/$ARCH" -maxdepth 1 -mindepth 1 -printf "%P\n" >"$WORK_DIR/wsa/$ARCH/filelist.txt" || abort
-
+sudo rm -rf "${WORK_DIR:?}"/wsa/"$ARCH"/\[Content_Types\].xml "$WORK_DIR/wsa/$ARCH/AppxBlockMap.xml" "$WORK_DIR/wsa/$ARCH/AppxSignature.p7x" "$WORK_DIR/wsa/$ARCH/AppxMetadata" || abort
+if [ "$ARCH" = "x64" ]; then
+    sudo rm -rf "$WORK_DIR/wsa/$ARCH/arm64/" || abort
+else
+    sudo rm -rf "$WORK_DIR/wsa/$ARCH/amd64/" || abort
+fi
+mkdir "$WORK_DIR/wsa/$ARCH/uwp"
+cp "$vclibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH/uwp/" || abort
+cp "$UWPVCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH/uwp/" || abort
 cp "../xml/priconfig.xml" "$WORK_DIR/wsa/$ARCH/xml/" || abort
-cp "../installer/$ARCH/MakePri.ps1" "$WORK_DIR/wsa/$ARCH" || abort
+if [[ "$ROOT_SOL" = "none" ]] && [[ "$HAS_GAPPS" ]] && [[ "$REMOVE_AMAZON" ]]; then
+    sed -i -e 's@Start-Process\ "wsa://com.topjohnwu.magisk"@@g' "../installer/$ARCH/Install.ps1"
+    sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' "../installer/$ARCH/Install.ps1"
+else
+    if [[ "$ROOT_SOL" == "none" ]]; then
+        sed -i -e 's@Start-Process "wsa://com.topjohnwu.magisk"@@g' "../installer/$ARCH/Install.ps1"
+    elif [[ "$ROOT_SOL" = "kernelsu" ]]; then
+        sed -i -e 's@wsa://com.topjohnwu.magisk@https://github.com/YT-Advanced/WSA-Script/blob/HEAD/docs/Guides/KernelSU.md@g' "../installer/$ARCH/Install.ps1"
+    elif [[ "$MAGISK_BRANCH" = "HuskyDG" ]]; then
+        sed -i -e 's@com.topjohnwu.magisk@io.github.huskydg.magisk@g' "../installer/$ARCH/Install.ps1"
+    elif [[ "$MAGISK_BRANCH" = "vvb2060" ]]; then
+        sed -i -e 's@com.topjohnwu.magisk@io.github.vvb2060.magisk@g' "../installer/$ARCH/Install.ps1"
+    fi
+    if [[ -z "$HAS_GAPPS" ]] && [[ -z "$REMOVE_AMAZON" ]]; then
+        sed -i -e 's@com.android.vending@com.amazon.venezia@g' "../installer/$ARCH/Install.ps1"
+    elif [[ -z "$HAS_GAPPS" ]]; then
+        sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' "../installer/$ARCH/Install.ps1"
+    fi
+fi
+cp "../installer/$ARCH/Install.ps1" "$WORK_DIR/wsa/$ARCH" || abort
+find "$WORK_DIR/wsa/$ARCH" -not -path "*/uwp*" -not -path "*/pri*" -not -path "*/xml*" -printf "%P\n" | sed -e 's@/@\\@g' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist.txt" || abort
 find "$WORK_DIR/wsa/$ARCH/pri" -printf "%P\n" | sed -e 's/^/pri\\/' -e '/^$/d' > "$WORK_DIR/wsa/$ARCH/filelist-pri.txt" || abort
 find "$WORK_DIR/wsa/$ARCH/xml" -printf "%P\n" | sed -e 's/^/xml\\/' -e '/^$/d' >> "$WORK_DIR/wsa/$ARCH/filelist-pri.txt" || abort
-echo -e "Done\n"
+cp "../installer/$ARCH/MakePri.ps1" "$WORK_DIR/wsa/$ARCH" || abort
+cp ../installer/Run.bat "$WORK_DIR/wsa/$ARCH" || abort
+echo -e "Remove signature and Add scripts done\n"
 
 if [[ "$ROOT_SOL" = "none" ]]; then
     name1=""
