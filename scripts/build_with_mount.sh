@@ -716,9 +716,9 @@ else
     elif [[ "$MAGISK_BRANCH" = "vvb2060" ]]; then
         sed -i -e 's@com.topjohnwu.magisk@io.github.vvb2060.magisk@g' "../installer/$ARCH/Install.ps1"
     fi
-    if [[ "$HAS_GAPPS" = "yes" ]] && [[ "$REMOVE_AMAZON" != "yes" ]]; then
+    if [[ "$HAS_GAPPS" != "yes" ]] && [[ "$REMOVE_AMAZON" != "yes" ]]; then
         sed -i -e 's@com.android.vending@com.amazon.venezia@g' "../installer/$ARCH/Install.ps1"
-    elif [[ "$HAS_GAPPS" = "yes" ]]; then
+    elif [[ "$HAS_GAPPS" != "yes" ]]; then
         sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' "../installer/$ARCH/Install.ps1"
     fi
 fi
