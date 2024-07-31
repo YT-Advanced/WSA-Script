@@ -337,7 +337,7 @@ else
     exit 1
 fi
 
-if [ "$ROOT_SOL" = "magisk" ] || [ "$HAS_GAPPS" ]; then
+if [ "$ROOT_SOL" = "magisk" ] || [ "$HAS_GAPPS" = "yes" ]; then
     python3 generateMagiskLink.py "$MAGISK_BRANCH" "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
 fi
 if [ "$ROOT_SOL" = "kernelsu" ]; then
@@ -348,7 +348,7 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     # shellcheck disable=SC2153
     echo "KERNELSU_VER=$KERNELSU_VER" >"$KERNELSU_INFO"
 fi
-if [ "$HAS_GAPPS" ]; then
+if [ "$HAS_GAPPS" = "yes" ]; then
     update_gapps_zip_name
     python3 generateGappsLink.py "$ARCH" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" "$GAPPS_ZIP_NAME" || abort
 fi
@@ -361,7 +361,7 @@ if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" 
     abort "We have encountered an error while downloading files."
 fi
 
-if [ "$HAS_GAPPS" ] || [ "$ROOT_SOL" = "magisk" ]; then
+if [ "$HAS_GAPPS" = "yes" ] || [ "$ROOT_SOL" = "magisk" ]; then
     echo "Extract Magisk"
     if [ -f "$MAGISK_PATH" ]; then
         MAGISK_VERSION_NAME=""
@@ -398,7 +398,7 @@ if [ "$ROOT_SOL" = "kernelsu" ]; then
     cp "$WORK_DIR/kernelsu/kernel" "$WORK_DIR/wsa/$ARCH/Tools/kernel"
 fi
 
-if [ "$HAS_GAPPS" ]; then
+if [ "$HAS_GAPPS" = "yes" ]; then
     update_gapps_zip_name
     echo "Extract MindTheGapps"
     mkdir -p "$WORK_DIR/gapps" || abort
@@ -612,7 +612,7 @@ find "../cacerts/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder
 find "../cacerts/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_MNT/etc/security/cacerts/placeholder" -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
 echo -e "Permissions management Netfree and Netspark security certificates done\n"
 
-if [ "$HAS_GAPPS" ]; then
+if [ "$HAS_GAPPS" = "yes" ]; then
     echo "Integrate MindTheGapps"
     find "$WORK_DIR/gapps/" -mindepth 1 -type d -exec sudo chmod 0755 {} \;
     find "$WORK_DIR/gapps/" -mindepth 1 -type d -exec sudo chown root:root {} \;
@@ -643,6 +643,12 @@ if [ "$HAS_GAPPS" ]; then
     find "$WORK_DIR/gapps/system_ext/priv-app/" -maxdepth 1 -mindepth 1 -printf '%P\n' | xargs -I placeholder sudo find "$SYSTEM_EXT_MNT/priv-app/placeholder" -type f -exec setfattr -n security.selinux -v "u:object_r:system_file:s0" {} \; || abort
     sudo LD_LIBRARY_PATH="../linker" "$WORK_DIR/magisk/magiskpolicy" --load "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" --save "$VENDOR_MNT/etc/selinux/precompiled_sepolicy" "allow gmscore_app gmscore_app vsock_socket { create connect write read }" "allow gmscore_app device_config_runtime_native_boot_prop file read" "allow gmscore_app system_server_tmpfs dir search" "allow gmscore_app system_server_tmpfs file open" "allow gmscore_app system_server_tmpfs filesystem getattr" "allow gmscore_app gpu_device dir search" "allow gmscore_app media_rw_data_file filesystem getattr" || abort
     echo -e "Integrate MindTheGapps done\n"
+fi
+
+if [ "$HAS_GAPPS" = "yes" ]; then
+    echo "Fix MindTheGapps prop"
+    sudo python3 fixGappsProp.py "$ROOT_MNT" || abort
+    echo -e "Done\n"
 fi
 
 sudo find "$ROOT_MNT" -not -type l -exec touch -amt 200901010000.00 {} \;
@@ -697,7 +703,7 @@ mkdir "$WORK_DIR/wsa/$ARCH/uwp"
 cp "$VCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH/uwp/" || abort
 cp "$UWPVCLibs_PATH" "$xaml_PATH" "$WORK_DIR/wsa/$ARCH/uwp/" || abort
 cp "../xml/priconfig.xml" "$WORK_DIR/wsa/$ARCH/xml/" || abort
-if [[ "$ROOT_SOL" = "none" ]] && [[ "$HAS_GAPPS" ]] && [[ "$REMOVE_AMAZON" == "yes" ]]; then
+if [[ "$ROOT_SOL" = "none" ]] && [[ "$HAS_GAPPS" = "yes" ]] && [[ "$REMOVE_AMAZON" == "yes" ]]; then
     sed -i -e 's@Start-Process\ "wsa://com.topjohnwu.magisk"@@g' "../installer/$ARCH/Install.ps1"
     sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' "../installer/$ARCH/Install.ps1"
 else
@@ -710,9 +716,9 @@ else
     elif [[ "$MAGISK_BRANCH" = "vvb2060" ]]; then
         sed -i -e 's@com.topjohnwu.magisk@io.github.vvb2060.magisk@g' "../installer/$ARCH/Install.ps1"
     fi
-    if [[ "$HAS_GAPPS" ]] && [[ "$REMOVE_AMAZON" != "yes" ]]; then
+    if [[ "$HAS_GAPPS" = "yes" ]] && [[ "$REMOVE_AMAZON" != "yes" ]]; then
         sed -i -e 's@com.android.vending@com.amazon.venezia@g' "../installer/$ARCH/Install.ps1"
-    elif [[ "$HAS_GAPPS" ]]; then
+    elif [[ "$HAS_GAPPS" = "yes" ]]; then
         sed -i -e 's@Start-Process\ "wsa://com.android.vending"@@g' "../installer/$ARCH/Install.ps1"
     fi
 fi
@@ -732,7 +738,7 @@ elif [ "$ROOT_SOL" = "magisk" ]; then
 elif [ "$ROOT_SOL" = "kernelsu" ]; then
     name1="-with-KernelSU-$KERNELSU_VER"
 fi
-if [ "$HAS_GAPPS" ]; then
+if [ "$HAS_GAPPS" = "yes" ]; then
     name2="-NoGApps"
 else
     name2=-Gapps-13.0
