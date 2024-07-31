@@ -80,3 +80,8 @@ with zipfile.ZipFile(magisk_zip) as zip:
         extract_as(zip, f"lib/{ abi_map[arch][0] }/libinit-ld.so", "init-ld", "magisk")
     extract_as(zip, f"lib/{ abi_map[arch][0] }/libmagiskinit.so", "magiskinit", "magisk")
     extract_as(zip, f"lib/{ abi_map[host_abi][0] }/libmagiskboot.so", "magiskboot", "magisk")
+
+    if f"lib/{ abi_map[arch][0] }/libmagiskpolicy.so" in namelist:
+        extract_as(zip, f"lib/{ abi_map[host_abi][0] }/libmagiskpolicy.so", "magiskpolicy", "magisk")
+    else:
+        extract_as(zip, f"lib/{ abi_map[host_abi][0] }/libmagiskinit.so", "magiskpolicy", "magisk")

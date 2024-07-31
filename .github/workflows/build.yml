@@ -62,9 +62,12 @@ jobs:
           fi
 
           mkdir -p download
-          ./scripts/build.sh --arch ${{ inputs.arch }} --release-type $RLS_TYPE --magisk-branch topjohnwu --magisk-ver stable $WITH_GAPPS --root-sol ${{ inputs.root }} --remove-amazon --compress-format zip
-        env:
-          API_KEY: ${{ secrets.API_KEY }}
+
+          if [[ "${{ inputs.root_sol }}" == *Magisk* ]]; then
+              ./scripts/build_with_lspinit.sh --arch ${{ inputs.arch }} --release-type $RLS_TYPE --magisk-branch topjohnwu --magisk-ver stable $WITH_GAPPS --root-sol ${{ inputs.root }} --remove-amazon --compress-format 7zip
+          else
+              ./scripts/build_with_mount.sh --arch ${{ inputs.arch }} --release-type $RLS_TYPE --magisk-branch topjohnwu --magisk-ver stable $WITH_GAPPS --root-sol ${{ inputs.root }} --remove-amazon --compress-format 7zip
+          fi
   
       - name: Pass to Windows 💸
         uses: actions/upload-artifact@v4

@@ -82,6 +82,7 @@ jobs:
               subprocess.call(["echo '{}={}' >> $GITHUB_ENV".format(name, value)], shell=True)
           if __name__ == '__main__':
               issues = 'false'
+              ismagisk = 'false'
               iscustom = 'true'
               errinfo = body = ''
               try:
@@ -95,11 +96,14 @@ jobs:
                   else:
                       iscustom = 'false'
                       errinfo = 'Argument is invaild, please update the body of the Issues'
+                  if re.match(".*arch.*64.*release-type.*root-sol\smagisk.*magisk-branch.*magisk-ver.*compress-format.*", body):
+                      ismagisk = 'true'
               except Exception as e:
                   iscustom = 'false'
                   errinfo = 'Issues Body error, {}.'.format(e)
               set_output('issues', issues)
               set_output('iscustom', iscustom)
+              set_output('ismagisk', ismagisk)
               set_output('errinfo', errinfo)
               set_output('body', body)
 
@@ -183,13 +187,14 @@ jobs:
 
       - name: Build WSA
         id: wsa
-        if: env.iscustom == 'true' && success()
+        if: env.iscustom == 'true' && env.ismagisk == 'true' && success()
         run: |
           mkdir -p download
-          ./scripts/build.sh ${{ env.body }}
-        env:
-          API_KEY: ${{ secrets.API_KEY }}
-  
+          if [[ ${{ env.ismagisk }} == 'true' ]]; then
+              ./scripts/build_with_lspinit.sh ${{ env.body }}
+          else
+              ./scripts/build_with_mount.sh ${{ env.body }}
+            
       - name: Pass to Windows
         if: env.iscustom == 'true' && success()
         uses: actions/cache/save@v4
