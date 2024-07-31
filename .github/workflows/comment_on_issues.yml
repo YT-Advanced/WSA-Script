@@ -185,7 +185,7 @@ jobs:
           }
           deactivate
 
-      - name: Build WSA with lspinit
+      - name: Build WSA
         id: wsa
         if: env.iscustom == 'true' && env.ismagisk == 'true' && success()
         run: |
