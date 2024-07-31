@@ -37,7 +37,7 @@ reqheaders = {
     "Accept": "application/vnd.github.v3+json",
     "Authorization" : authorization,
 }
-#Catagory ID
+#Category ID
 cat_id = '858014f3-3934-4abe-8078-4aa193e74ca8'
 
 release_type = "WIF"
