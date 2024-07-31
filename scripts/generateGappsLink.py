@@ -19,7 +19,6 @@
 #
 
 from datetime import datetime
-from os import getenv
 import sys
 
 import requests
@@ -27,19 +26,6 @@ import json
 import re
 from pathlib import Path
 
-class BearerAuth(requests.auth.AuthBase):
-    def __init__(self, token):
-        self.token = token
-
-    def __call__(self, r):
-        r.headers["authorization"] = "Bearer " + self.token
-        return r
-
-github_auth = None
-if Path.cwd().joinpath('token').exists():
-    with open(Path.cwd().joinpath('token'), 'r') as token_file:
-        github_auth = BearerAuth(token_file.read())
-        print("Using token file for authentication", flush=True)
 arch = sys.argv[1]
 arg4 = sys.argv[2]
 download_dir = Path.cwd().parent / "download" if arg4 == "" else Path(arg4)
@@ -47,7 +33,7 @@ tempScript = sys.argv[3]
 file_name = sys.argv[4]
 print(f"Generating MindTheGapps download link: arch={arch}", flush=True)
 abi_map = {"x64": "x86_64", "arm64": "arm64"}
-res = requests.get(f"https://api.github.com/repos/YT-Advanced/MindTheGappsBuilder/releases/latest", auth=github_auth)
+res = requests.get(f"https://api.github.com/repos/s1204IT/MindTheGappsBuilder/releases/latest")
 json_data = json.loads(res.content)
 headers = res.headers
 x_ratelimit_remaining = headers["x-ratelimit-remaining"]
@@ -55,7 +41,7 @@ if res.status_code == 200:
     assets = json_data["assets"]
     for asset in assets:
         if re.match(f'.*13\\.0\\.0.{abi_map[arch]}.*.zip$', asset["name"]):
-            link = asset["url"]
+            link = asset["browser_download_url"]
             break
 elif res.status_code == 403 and x_ratelimit_remaining == '0':
     message = json_data["message"]
