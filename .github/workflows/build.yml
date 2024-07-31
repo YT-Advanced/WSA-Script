@@ -63,7 +63,7 @@ jobs:
 
           mkdir -p download
 
-          if [[ "${{ inputs.root_sol }}" == *Magisk* ]]; then
+          if [[ "${{ inputs.root_sol }}" == *magisk* ]]; then
               ./scripts/build_with_lspinit.sh --arch ${{ inputs.arch }} --release-type $RLS_TYPE --magisk-branch topjohnwu --magisk-ver stable $WITH_GAPPS --root-sol ${{ inputs.root }} --remove-amazon --compress-format 7z
           else
               ./scripts/build_with_mount.sh --arch ${{ inputs.arch }} --release-type $RLS_TYPE --magisk-branch topjohnwu --magisk-ver stable $WITH_GAPPS --root-sol ${{ inputs.root }} --remove-amazon --compress-format 7z
