@@ -304,33 +304,24 @@ update_gapps_zip_name() {
     GAPPS_PATH=$DOWNLOAD_DIR/$GAPPS_ZIP_NAME
 }
 
-echo "Generate Download Links"
-if [ "$RELEASE_TYPE" != "latest" ]; then
-    python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
-    # shellcheck disable=SC1090
-    source "$WSA_WORK_ENV" || abort
-else
-    printf "%s\n" "$(curl -sL https://api.github.com/repos/bubbles-wow/WSA-Archive/releases/latest | jq -r '.assets[] | .browser_download_url')" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    printf "  out=wsa-latest.zip\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    mkdir -p "$DOWNLOAD_DIR/xaml"
-    curl -sO "https://globalcdn.nuget.org/packages/microsoft.ui.xaml.2.8.5.nupkg" --output-dir "$DOWNLOAD_DIR/xaml"
-    7z x $DOWNLOAD_DIR/xaml/*.nupkg -o../download/ | tail -4
-    mv "$DOWNLOAD_DIR/tools/AppX/$ARCH/Release/Microsoft.UI.Xaml.2.8.appx" "$xaml_PATH"
-    printf "https://aka.ms/Microsoft.VCLibs.%s.14.00.Desktop.appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    printf "  out=Microsoft.VCLibs.140.00.UWPDesktop_%s.appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    printf "https://cdn.glitch.global/847a3043-7118-4fd2-8853-fe9756f88702/Microsoft.VCLibs.140.00_14.0.32530.0_%s__8wekyb3d8bbwe.Appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
-    printf "  out=Microsoft.VCLibs.140.00_%s.appx\n" "$ARCH" >> "$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME" || abort
+echo "Generating WSA Download Links"
+python3 generateWSALinks.py "$ARCH" "$RELEASE_TYPE" "$DOWNLOAD_DIR" "$DOWNLOAD_WSA_CONF_NAME" || abort
+
+if [ "$RELEASE_TYPE" == "latest" ]; then
+    printf "%s\n" "$(curl -sL https://api.github.com/repos/bubbles-wow/WSA-Archive/releases/latest | jq -r '.assets[] | .browser_download_url')" >> "$DOWNLOAD_DIR/$DOWNLOAD_WSA_CONF_NAME" || abort
+    printf "  dir=%s\n" "$DOWNLOAD_DIR" >> "$DOWNLOAD_DIR/$DOWNLOAD_WSA_CONF_NAME" || abort
+    printf "  out=wsa-latest.zip\n" >> "$DOWNLOAD_DIR/$DOWNLOAD_WSA_CONF_NAME" || abort
     WSA_VER=$(curl -sL https://api.github.com/repos/bubbles-wow/WSA-Archive/releases/latest | jq -r '.tag_name')
     WSA_MAJOR_VER=${WSA_VER:0:4}
+else
+    # shellcheck disable=SC1090
+    source "$WSA_WORK_ENV" || abort
 fi
 
-echo "Download Artifacts"
-if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j7 -m0 --async-dns=false --check-integrity=true -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"; then
-    echo "We have encountered an error while downloading files."
-    exit 1
+if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j7 -m0 \
+    --async-dns=false --check-integrity=true \
+    -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_WSA_CONF_NAME"; then
+    abort "We have encountered an error while downloading files."
 fi
 
 echo "Extract WSA"
@@ -363,9 +354,11 @@ if [ "$HAS_GAPPS" ]; then
 fi
 
 echo "Download Artifacts"
-if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j7 -m0 --async-dns=false --check-integrity=true -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"; then
-    echo "We have encountered an error while downloading files."
-    exit 1
+
+if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j7 -m0 \
+    --async-dns=false --check-integrity=true \
+    -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_WSA_CONF_NAME"; then
+    abort "We have encountered an error while downloading files."
 fi
 
 if [ "$HAS_GAPPS" ] || [ "$ROOT_SOL" = "magisk" ]; then
