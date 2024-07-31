@@ -187,7 +187,7 @@ jobs:
 
       - name: Build WSA
         id: wsa
-        if: env.iscustom == 'true' && env.ismagisk == 'true' && success()
+        if: env.iscustom == 'true' && success()
         run: |
           mkdir -p download
           if [[ ${{ env.ismagisk }} == 'true' ]]; then
