@@ -326,6 +326,26 @@ else
     WSA_VER=$(curl -sL https://api.github.com/repos/bubbles-wow/WSA-Archive/releases/latest | jq -r '.tag_name')
     WSA_MAJOR_VER=${WSA_VER:0:4}
 fi
+
+echo "Download Artifacts"
+if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j7 -m0 --async-dns=false --check-integrity=true -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"; then
+    echo "We have encountered an error while downloading files."
+    exit 1
+fi
+
+echo "Extract WSA"
+if [ -f "$WSA_ZIP_PATH" ]; then
+    if ! python3 extractWSA.py "$ARCH" "$WSA_ZIP_PATH" "$WORK_DIR" "$WSA_WORK_ENV"; then
+        abort "Unzip WSA failed, is the download incomplete?"
+    fi
+    echo -e "Extract done\n"
+    # shellcheck disable=SC1090
+    source "$WSA_WORK_ENV" || abort
+else
+    echo "The WSA zip package does not exist, is the download incomplete?"
+    exit 1
+fi
+
 if [ "$ROOT_SOL" = "magisk" ] || [ "$HAS_GAPPS" ]; then
     python3 generateMagiskLink.py "$MAGISK_BRANCH" "$MAGISK_VER" "$DOWNLOAD_DIR" "$DOWNLOAD_CONF_NAME" || abort
 fi
@@ -345,19 +365,6 @@ fi
 echo "Download Artifacts"
 if ! aria2c --no-conf --log-level=info --log="$DOWNLOAD_DIR/aria2_download.log" -x16 -s16 -j7 -m0 --async-dns=false --check-integrity=true -d"$DOWNLOAD_DIR" -i"$DOWNLOAD_DIR/$DOWNLOAD_CONF_NAME"; then
     echo "We have encountered an error while downloading files."
-    exit 1
-fi
-
-echo "Extract WSA"
-if [ -f "$WSA_ZIP_PATH" ]; then
-    if ! python3 extractWSA.py "$ARCH" "$WSA_ZIP_PATH" "$WORK_DIR" "$WSA_WORK_ENV"; then
-        abort "Unzip WSA failed, is the download incomplete?"
-    fi
-    echo -e "Extract done\n"
-    # shellcheck disable=SC1090
-    source "$WSA_WORK_ENV" || abort
-else
-    echo "The WSA zip package does not exist, is the download incomplete?"
     exit 1
 fi
 
