@@ -48,6 +48,7 @@ declare -A UPPER_PARTITION=(["zsystem"]="$SYSTEM_MNT_RW" ["vendor"]="$VENDOR_MNT
 declare -A MERGED_PARTITION=(["zsystem"]="$ROOT_MNT" ["vendor"]="$VENDOR_MNT" ["product"]="$PRODUCT_MNT" ["system_ext"]="$SYSTEM_EXT_MNT")
 
 DOWNLOAD_DIR=../download
+DOWNLOAD_WSA_CONF_NAME=wsa.list
 DOWNLOAD_CONF_NAME=download.list
 PYTHON_VENV_DIR="$(dirname "$PWD")/python3-env"
 OUTPUT_DIR=../output
