@@ -134,10 +134,10 @@ jobs:
         run: ("hash=" + $(Get-FileHash -Path "${{ needs.build.outputs.zipname }}.7z" -Algorithm SHA256).Hash.ToLower().ToString()) | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding UTF8 -Append
 
       - name: Update build to release 🤌
-        uses: softprops/action-gh-release@v2.2.0
+        uses: softprops/action-gh-release@v2.1.0
         with:
           files: ${{ needs.build.outputs.zipname }}.7z
-          fail_on_unmatched_files: false
+          fail_on_unmatched_files: true
           append_body: true
           tag_name: ${{ needs.build.outputs.date }}
           body: ${{ steps.run.outputs.hash }}  ${{ needs.build.outputs.zipname }}.7z
