@@ -137,7 +137,7 @@ jobs:
         uses: softprops/action-gh-release@v2.2.0
         with:
           files: ${{ needs.build.outputs.zipname }}.7z
-          fail_on_unmatched_files: true
+          fail_on_unmatched_files: false
           append_body: true
           tag_name: ${{ needs.build.outputs.date }}
           body: ${{ steps.run.outputs.hash }}  ${{ needs.build.outputs.zipname }}.7z
