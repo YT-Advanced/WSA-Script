@@ -751,9 +751,9 @@ elif [ "$ROOT_SOL" = "kernelsu" ]; then
     name1="-with-KernelSU-$KERNELSU_VER"
 fi
 if [ "$HAS_GAPPS" = "yes" ]; then
-    name2="-NoGApps"
+    name2="-GApps-13.0"
 else
-    name2=-Gapps-13.0
+    name2="-NoGApps"
 fi
 artifact_name=WSA_${WSA_VER}_${ARCH}_${WSA_REL}${name1}${name2}
 if [ "$REMOVE_AMAZON" = "yes" ]; then
