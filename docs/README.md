@@ -49,14 +49,14 @@
   <tr>
     <td><a href=https://github.com/YT-Advanced/WSA-Script/releases/tag/WSA-Insider-Version><img src="https://img.shields.io/badge/Pre--Release%20Builds-orange?style=for-the-badge" height="28"></a></td>
     <td>Follows the "WSA Preview Program Channel" </br> </br> Builds are generally newer than the "WSA Retail" and "Insider Fast Channel"</td>
-    <td>2407.40000.0.0<br></td>
-    <td>Builds Released: 16/07/2024</td>
+    <td>2407.40000.4.0<br></td>
+    <td>Builds Released: 10/12/2024</td>
   </tr>
   <tr>
     <td><a href=https://github.com/YT-Advanced/WSA-Script/releases/latest><img src="https://img.shields.io/badge/Stable%20Builds-blue?style=for-the-badge" alt="Image" height="28"></a></td>
     <td>Follows the "WSA Retail Channel" <br><br> Builds are generally more stable than the builds in the "WSA Preview Program Channel" </td>
-    <td>2311.40000.5.0<br></td>
-    <td>Builds Released: 13/07/2024</td>
+    <td>2407.40000.4.0<br></td>
+    <td>Builds Released: 25/01/2025</td>
   </tr>
   <tr>
     <td colspan="4"><h4>It is recommend to check this table regularly to see if there is a newer update avaliable for WSA for the Stable Builds and Pre-Release Builds<h4></td>
