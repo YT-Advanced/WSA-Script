@@ -60,12 +60,7 @@ if brand == "MindTheGapps":
         print(f"The current rate limit window resets in {ratelimit_reset}", flush=True)
         exit(1)
 elif brand == "LiteGapps":
-    res = requests.get(
-        f'https://sourceforge.net/projects/litegapps/rss?path=/litegapps/{abi_map[arch]}/33/lite&limit=100')
-    matched = re.search(f'https://.*AUTO-LiteGapps-{abi_map[arch]}-13.0-v([\d.]+)-official\.zip/download', res.text, flags=re.IGNORECASE)
-    if matched:
-        link = matched.group().replace(
-            '.zip/download', '.zip').replace('sourceforge.net/projects/litegapps/files', 'downloads.sourceforge.net/project/litegapps')
+    link = "https://master.dl.sourceforge.net/project/litegapps/litegapps/x86_64/33/lite/2024-02-24/AUTO-LiteGapps-x86_64-13.0-20240224-official.zip?viasf=1"
 
 print(f"download link: {link}", flush=True)
 
