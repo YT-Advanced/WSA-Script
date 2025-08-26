@@ -7,13 +7,13 @@ on:
         type: choice
         description: Target CPU architecture of WSA.
         required: true
-        options: [x64, arm64]
+        options: [ x64, arm64 ]
         default: x64
       release_type:
         type: choice
         description: WSA Release Channel
         required: true
-        options: ["Retail","Release Preview","Insider Slow","Insider Fast","Insider Private"]
+        options: [ "Retail", "Release Preview", "Insider Slow", "Insider Fast", "Insider Private" ]
         default: "Retail"
       user_code:
         type: string
@@ -24,25 +24,25 @@ on:
         type: choice
         description: Google Apps brand
         required: true
-        options: ["MindTheGapps v13.0","No GApps"]
+        options: [ "MindTheGapps v13.0", "No GApps" ]
         default: "MindTheGapps v13.0"
       root_sol:
         type: choice
         description: Root solution
         required: true
-        options: ["Non-root","KernelSU","Magisk Official","Magisk Alpha (vvb2060)","Magisk Delta (HuskyDG)"]
+        options: [ "Non-root", "KernelSU", "Magisk Official", "Magisk Alpha (vvb2060)", "Magisk Delta (HuskyDG)" ]
         default: "Magisk Official"
       magisk_channel:
         type: choice
         description: Magisk channel
         required: true
-        options: ["Magisk Stable","Magisk Beta","Magisk Canary","Magisk Debug"]
+        options: [ "Magisk Stable", "Magisk Beta", "Magisk Canary", "Magisk Debug" ]
         default: "Magisk Stable"
       compression:
         type: choice
         description: Compression format.
         required: true
-        options: [".zip",".7z"]
+        options: [ ".zip", ".7z" ]
         default: ".7z"
       remove_amazon:
         description: "Remove Amazon Appstore from the system"
@@ -63,7 +63,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           check-latest: true
-          python-version: '3.10'
+          python-version: '3.13'
           cache: 'pip'
           cache-dependency-path: scripts/
 
@@ -94,7 +94,7 @@ jobs:
 
           mkdir -p download
           echo -e "user_code=$(cat $GITHUB_EVENT_PATH | jq -r '.inputs.user_code')" > download/.ms_account
-          
+
           if [[ "${{ inputs.root_sol }}" == *Magisk* ]]; then
               MAGISK_BRANCH="${opts[ROOT_SOL,${{ inputs.root_sol }}]}"
               ROOT_SOL="magisk"

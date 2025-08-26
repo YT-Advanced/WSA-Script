@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           check-latest: true
-          python-version: '3.10'
+          python-version: '3.13'
           cache: 'pip'
           cache-dependency-path: scripts/
 
@@ -68,7 +68,7 @@ jobs:
           else
               ./scripts/build_with_mount.sh --arch ${{ inputs.arch }} --release-type $RLS_TYPE --magisk-branch topjohnwu --magisk-ver stable $WITH_GAPPS --root-sol ${{ inputs.root }} --remove-amazon --compress-format 7z
           fi
-  
+
       - name: Pass to Windows 💸
         uses: actions/upload-artifact@v4
         with:
@@ -104,7 +104,7 @@ jobs:
           name: ${{ needs.build.outputs.zipname }}-${{ needs.build.outputs.built }}
 
       - name: Remove unused artifact ❌
-        uses: geekyeggo/delete-artifact@v5
+        uses: GeekyEggo/delete-artifact@v5
         with:
           name: ${{ needs.build.outputs.zipname }}-${{ needs.build.outputs.built }}
 
@@ -115,6 +115,7 @@ jobs:
           } else {
             Copy-Item -Force "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\arm64\makepri.exe" "${{ github.workspace }}\output\${{ needs.build.outputs.zipname }}"
           }
+
       - name: Compact Images 💿
         run: |
          foreach ($Partition in 'system','product','system_ext','vendor') {
@@ -134,7 +135,7 @@ jobs:
         run: ("hash=" + $(Get-FileHash -Path "${{ needs.build.outputs.zipname }}.7z" -Algorithm SHA256).Hash.ToLower().ToString()) | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding UTF8 -Append
 
       - name: Update build to release 🤌
-        uses: softprops/action-gh-release@v2.3.2
+        uses: softprops/action-gh-release@v2
         with:
           files: ${{ needs.build.outputs.zipname }}.7z
           fail_on_unmatched_files: true
