@@ -46,7 +46,7 @@ jobs:
 
       - name: Get Issues Info
         id: get-issues
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             var fs = require('fs');
@@ -333,7 +333,7 @@ jobs:
 
       - name: Delete build Data
         id: delete-build
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             async function main() {
