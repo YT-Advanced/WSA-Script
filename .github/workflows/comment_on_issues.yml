@@ -258,7 +258,7 @@ jobs:
 
       - name: Upload to Artifacts
         if: success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ needs.build.outputs.artifact }}-built
           path: output
